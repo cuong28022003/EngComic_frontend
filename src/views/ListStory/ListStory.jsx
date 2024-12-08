@@ -41,40 +41,41 @@ function ListStory() {
   }, [])
   return (
     <>
-      <div className='d-flex'>
-        <div className='col-8'>
+      <div className="d-flex">
+        <div className="col-8">
           <Section>
             <SectionHeading>
-              <h4 className='section-title'>Biên tập viên đề cử</h4>
-              <Link to='tat-ca'>Xem tất cả</Link>
+              <h4 className="section-title">Biên tập viên đề cử</h4>
+              <Link to="tat-ca">Xem tất cả</Link>
             </SectionHeading>
             <SectionBody>
-              <div className='list-story'>
-                {datas.map((data, index) => <Story key={index} data={data} />)}
+              <div className="list-story">
+                {datas.map((data, index) => (
+                  <Story key={index} data={data} />
+                ))}
               </div>
             </SectionBody>
           </Section>
-
         </div>
 
-        <div className='col-4'>
+        <div className="col-4">
           <Section>
             <SectionHeading>
-              <h4 className='section-title'>Đang đọc</h4>
-              <a>Xem tất cả</a>
+              <h4 className="section-title">Đang đọc</h4>
+              <Link to="/user/tu-truyen/reading">Xem tất cả</Link>
             </SectionHeading>
             <SectionBody>
-              <div className='list-reading'>
-                {readings.map((item, i) => <Reading key={i} data={item} />)}
+              <div className="list-reading">
+                {readings.map((item, i) => (
+                  <Reading key={i} data={item} />
+                ))}
               </div>
             </SectionBody>
           </Section>
-
         </div>
       </div>
     </>
-
-  )
+  );
 }
 
 export default ListStory
