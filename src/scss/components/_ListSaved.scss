@@ -1,0 +1,48 @@
+.saved-item {
+  display: flex;
+  width: 100%;
+  padding: 6px;
+  gap: 20px;
+
+  &__img-wrap {
+    width: 40px;
+
+    img {
+      max-height: 100%;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__title {
+    display: -webkit-box;
+    font-size: 15px;
+    font-weight: 600;
+    overflow: hidden;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+  }
+
+  &__info {
+    font-weight: 400;
+    opacity: 0.8;
+  }
+
+  .btn-remove {
+    background-color: #ff4d4f;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+
+    &:hover {
+      background-color: #d9363e;
+    }
+  }
+}
