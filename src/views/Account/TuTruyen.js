@@ -188,11 +188,7 @@ const StoryCreate = ({ userInfo }) => {
           toast.success(res.data.message);
         })
         .catch((err) => {
-          toast.error(getData(err.response)?.details.message, {
-            hideProgressBar: true,
-            autoClose: 1000,
-            pauseOnHover: false,
-          });
+          toast.error("Đã xảy ra lỗi!");
         });
     }
   };
