@@ -1,147 +1,190 @@
-import React from 'react'
-import { useState } from 'react';
-import { useEffect } from 'react';
-import apiMain from '../../api/apiMain';
-import { loginSuccess } from '../../redux/authSlice';
-import { useSelector, useDispatch } from 'react-redux'
-import avt from '../../assets/img/avt.png'
-import { storage } from '../../firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { toast } from 'react-toastify';
-import { setLoading } from '../../redux/messageSlice'
-import Loading from '../../components/Loading';
-import LoadingData from '../../components/LoadingData';
+import React, { useState, useEffect } from "react";
+import apiMain from "../../api/apiMain";
+import { loginSuccess } from "../../redux/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import avt from "../../assets/img/avt.png";
+import { storage } from "../../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { toast } from "react-toastify";
+import { setLoading } from "../../redux/messageSlice";
+import Loading from "../../components/Loading";
+import LoadingData from "../../components/LoadingData";
+import getData from "../../api/getData";
 
-function Profile({userInfo,changeUserInfo}) {
-  const user = useSelector(state => state.auth.login?.user);
+function Profile({ userInfo, changeUserInfo }) {
+  const user = useSelector((state) => state.auth.login?.user);
   const [image, setImage] = useState("");
-  const [preview, setPreview] = useState(userInfo?.image || avt)
+  const [preview, setPreview] = useState(userInfo?.image || avt);
   const [name, setName] = useState(userInfo?.tenhienthi || "");
   const [birthDate, setBirthDate] = useState(new Date());
-  const loading = useSelector(state => state.message.loading)
-  const [loadingUser, setLoadingUser] = useState(true)
-  const dispatch = useDispatch()
+  const loading = useSelector((state) => state.message.loading);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const loadUserInfo = async() => {//load thông tin của user
+    const loadUserInfo = async () => {
       if (userInfo) {
-        setName(userInfo?.tenhienthi)
-        setBirthDate(userInfo?.birthdate?new Date(userInfo?.birthdate):new Date())
-        setPreview(userInfo?.image)
-        setLoadingUser(false)
+        setName(userInfo?.tenhienthi);
+        setBirthDate(
+          userInfo?.birthdate ? new Date(userInfo?.birthdate) : new Date()
+        );
+        setPreview(userInfo?.image);
+        setLoadingUser(false);
       }
-    }
+    };
     loadUserInfo();
-  }, [userInfo])
+  }, [userInfo]);
 
-  const upload = async () => { //upload ảnh lên firebase
-    if (image == null)
-      return;
-    const storageRef = ref(storage, `/images/${userInfo?.username}`);
-    uploadBytes(storageRef, image).then((result) => {
-      getDownloadURL(result.ref).then(async (url) => {//lấy liên kết tới ảnh
-        const data = {
-          tenhienthi: name,
-          image: url,
-          birthdate: birthDate
-        }
-        await handleSubmitSaveProfile(data)  // xử lý update lại ảnh
-      })
-    })
-  }
-
-  const handleSubmitSaveProfile = async (data) => {//xử lý submit lưu thông tin
+  const handleSubmitSaveProfile = async (data) => {
     try {
-      dispatch(setLoading(true))
-      const update = await apiMain.updateUserInfo(user, dispatch, loginSuccess, data)
-      dispatch(setLoading(false))
-      toast.success("Cập nhật thông tin thành công", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false })
-      const newUser ={...user, image:update.image,tenhienthi:update.tenhienthi}
-      dispatch(loginSuccess(newUser))
-      changeUserInfo(update.userInfo)
+      dispatch(setLoading(true));
+      const response = await apiMain.updateUserInfo(
+        user,
+        dispatch,
+        loginSuccess,
+        data
+      );
+      
+      // const payload = { name: response.userInfo.tenhienthi, image: response.userInfo.image };
+
+      
+      // console.log("Update:" + JSON.stringify(response));
+      // console.log("name: " + response.userInfo.tenhienthi);
+      // console.log("payload: " + payload);
+      // dispatch(updateUserProfile(payload));
+      // console.log("name_user: " + user.image);
+      dispatch(setLoading(false));
+      toast.success("Cập nhật thông tin thành công", {
+        autoClose: 1000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
+      const newUser = {
+        ...user,
+        image: response.userInfo.image,
+        name: response.userInfo.tenhienthi,
+      };
+      dispatch(loginSuccess(newUser));
+      changeUserInfo(response.userInfo);
     } catch (error) {
-      console.log(error)
-      toast.error("Lỗi cập nhật thông tin", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false })
+      console.log(error);
+      toast.error("Lỗi cập nhật thông tin", {
+        autoClose: 1000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
     }
-  }
+  };
 
   const handleEdit = async (e) => {
-    e.preventDefault()
-    const data = {
-      tenhienthi: name,
-      image: preview,
-      birthdate: birthDate
-    }
-    await handleSubmitSaveProfile(data)
-  }
+    e.preventDefault();
+    try {
+      let imageUrl = preview; // Sử dụng ảnh cũ nếu không thay đổi
 
-  ///OnChange event
-  const onChangeName = (e) => {
-    setName(e.target.value)
-  }
-  const onChangeBirthDate = (e) => {//xử lý khi thay đổi ngày sinh
-    try{
-      const date=new Date(e.target.value)
-      const regex = new RegExp("([0-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))")
-      if(regex.test(date.toISOString().substring(0,10))){//nếu ngày hợp lệ
-        setBirthDate(date)
+      if (image) {
+        const storageRef = ref(storage, `/images/${userInfo?.username}`);
+        const result = await uploadBytes(storageRef, image);
+        imageUrl = await getDownloadURL(result.ref); // Lấy URL mới nếu có upload
       }
-      else//nếu ngày không hợp lệ thì mặc định là ngày hôm nay
-        setBirthDate(new Date())
-    }
-    catch(err){
-      setBirthDate(new Date())
-    }
-    
-  }
 
-  const onChangeImage = (e) => {//xử lý chọn ảnh
-    if (e.target.files.lenght !== 0) {
+      const data = {
+        tenhienthi: name,
+        image: imageUrl,
+        birthdate: birthDate,
+      };
+
+      await handleSubmitSaveProfile(data);
+    } catch (error) {
+      console.error("Lỗi khi upload ảnh hoặc cập nhật thông tin:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật thông tin.", {
+        autoClose: 1000,
+        hideProgressBar: true,
+        pauseOnHover: false,
+      });
+    }
+  };
+
+  const onChangeName = (e) => setName(e.target.value);
+
+  const onChangeBirthDate = (e) => {
+    try {
+      const date = new Date(e.target.value);
+      const regex = new RegExp(
+        "([0-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))"
+      );
+      if (regex.test(date.toISOString().substring(0, 10))) {
+        setBirthDate(date);
+      } else {
+        setBirthDate(new Date());
+      }
+    } catch {
+      setBirthDate(new Date());
+    }
+  };
+
+  const onChangeImage = (e) => {
+    if (e.target.files.length !== 0) {
       setImage(e.target.files[0]);
-      setPreview(URL.createObjectURL(e.target.files[0]))
+      setPreview(URL.createObjectURL(e.target.files[0]));
     }
-  }
+  };
 
-  //style
-  const labelStyle = { 'minWidth': '100px', 'display': 'inline-block' }
+  const labelStyle = { minWidth: "100px", display: "inline-block" };
+
   return (
     <>
-      {
-        loadingUser ? <LoadingData />
-          :
-          <div className="profile__wrap d-flex">
-            <div className="col-5 profile__avt">
-
-              <img src={preview} alt="" />
-              <input type={"file"} accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*" name={"avatar"} onChange={onChangeImage} />
-              <button onClick={upload}>Upload</button>
-            </div>
-            <div className="col-7 ">
-              <div className="profile__main">
-                <form>
-                  <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Tên hiển thị</label>
-                    <input onChange={onChangeName} value={name || ""} />
-                  </div>
-                  <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Email</label>
-                    {<input readOnly value={userInfo?.email || ""}></input>}
-                  </div>
-                  <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Ngày sinh</label>
-                    <input onChange={onChangeBirthDate} type="date" id="birthday" name="birthday" value={birthDate?.toISOString().substring(0, 10)}></input>
-                  </div>
-                  <div className="d-flex">
-                    <button onClick={handleEdit}>{loading ? <Loading /> : ''} Cập nhật</button>
-                  </div>
-                </form>
-
-              </div>
+      {loadingUser ? (
+        <LoadingData />
+      ) : (
+        <div className="profile__wrap d-flex">
+          <div className="col-5 profile__avt">
+            <img src={preview} alt="" />
+            <input
+              type="file"
+              accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+              name="avatar"
+              onChange={onChangeImage}
+            />
+          </div>
+          <div className="col-7">
+            <div className="profile__main">
+              <form>
+                <div className="group-info">
+                  <label htmlFor="" style={labelStyle}>
+                    Tên hiển thị
+                  </label>
+                  <input onChange={onChangeName} value={name || ""} />
+                </div>
+                <div className="group-info">
+                  <label htmlFor="" style={labelStyle}>
+                    Email
+                  </label>
+                  <input readOnly value={userInfo?.email || ""} />
+                </div>
+                <div className="group-info">
+                  <label htmlFor="" style={labelStyle}>
+                    Ngày sinh
+                  </label>
+                  <input
+                    onChange={onChangeBirthDate}
+                    type="date"
+                    id="birthday"
+                    name="birthday"
+                    value={birthDate?.toISOString().substring(0, 10)}
+                  />
+                </div>
+                <div className="d-flex">
+                  <button onClick={handleEdit}>
+                    {loading ? <Loading /> : ""} Cập nhật
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-      }</>
-
-  )
+        </div>
+      )}
+    </>
+  );
 }
 
-export default Profile
+export default Profile;
