@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import apiMain from '../../api/apiMain';
 import getData from '../../api/getData';
 import { Link } from 'react-router-dom';
@@ -14,8 +14,23 @@ function Chapter(props) {
     const [fontsize, setFontsize] = useState(18);
     const [lineHeight, setLineHeight] = useState(1.5);
     const [manual, setManual] = useState("");
+    const [comic, setComic] = useState(null);
     const user = useSelector(state => state.auth.login?.user);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getComic = async () => {
+            try {
+                let params = { url };
+                const res = await apiMain.getComic(params);
+                console.log(res);
+                setComic(res);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        getComic();   
+    }, [url])
 
     useEffect(() => { // Xử lý load dữ liệu chương truyện
         const getChapter = async () => { // Tạo hàm
@@ -45,10 +60,7 @@ function Chapter(props) {
                         <ul className="chapter-manual fs-24">
                             <li className={`chapter-manual__item ${manual === 'list-chap' ? 'active' : ''}`} onClick={(e) => {
                                 e.stopPropagation();
-                                if (manual === 'list-chap')
-                                    setChapter("");
-                                else
-                                    setManual("list-chap");
+                                setManual((prevManual) => (prevManual === 'list-chap' ? '' : 'list-chap')); // Toggle trạng thái
                             }}>
                                 <a><i className="fa-solid fa-bars"></i></a>
                                 <div className="chapter-manual__popup">
@@ -57,56 +69,23 @@ function Chapter(props) {
                                     </div>
                                 </div>
                             </li>
-                            <li className={`chapter-manual__item ${manual === 'setting' ? 'active' : ''}`} onClick={(e) => {
-                                e.stopPropagation();
-                                if (manual === "setting")
-                                    setManual("");
-                                else
-                                    setManual("setting");
-                            }}>
-                                <a><i className="fa-solid fa-gear"></i></a>
-                                <div className="chapter-manual__popup">
-                                    <h4>Cài đặt</h4>
-                                    <div className="chapter-setting">
-                                        <table className="chapter-setting__body fs-18">
-                                            <tbody>
-                                                <tr>
-                                                    <td className="col-4">
-                                                        <div className="chapter-setting__label">
-                                                            <i className="fa-solid fa-font"></i>
-                                                            Cỡ chữ
-                                                        </div>
-                                                    </td>
-                                                    <td className="col-8">
-                                                        <div className="d-flex chapter-setting__input">
-                                                            <button onClick={() => { setFontsize(pre => pre - 1); }}><i className="fa-solid fa-minus"></i></button>
-                                                            <div>{`${fontsize}px`}</div>
-                                                            <button onClick={() => { setFontsize(pre => pre + 1); }}><i className="fa-solid fa-plus"></i></button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="col-4">
-                                                        <div className="chapter-setting__label">
-                                                            <i className="fa-solid fa-font"></i>
-                                                            Giãn dòng
-                                                        </div>
-                                                    </td>
-                                                    <td className="col-8">
-                                                        <div className="d-flex chapter-setting__input">
-                                                            <button onClick={() => { setLineHeight(pre => Number((pre - 0.1).toFixed(1))); }}><i className="fa-solid fa-minus"></i></button>
-                                                            <div>{`${lineHeight}`}</div>
-                                                            <button onClick={() => { setLineHeight(pre => Number((pre + 0.1).toFixed(1))); }}><i className="fa-solid fa-plus"></i></button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="chapter-manual__item"><Link to={`/truyen/${url}`}><i className="fa-solid fa-arrow-left"></i></Link></li>
-                            <li className="chapter-manual__item"><a><i className="fa-solid fa-comments"></i></a></li>
+                            {/* Hiển thị "Chương trước" nếu không phải chương đầu tiên */}
+                            {chapnum > 1 && (
+                                <li className="chapter-manual__item">
+                                    <Link to={`/truyen/${url}/${Number(chapnum) - 1}`} title="Chương trước">
+                                        <i className="fa-solid fa-arrow-left"></i>
+                                    </Link>
+                                </li>
+                            )}
+                            {/* Hiển thị "Chương sau" nếu không phải chương đầu tiên */}
+                            {chapnum < comic?.chapterCount && (
+                                <li className="chapter-manual__item">
+                                    <Link to={`/truyen/${url}/${Number(chapnum) + 1}`} title="Chương sau">
+                                        <i className="fa-solid fa-arrow-right"></i>
+                                    </Link>
+                                </li>
+                            )}
+                            <li className="chapter-manual__item"><Link to={`/truyen/${url}`} title="Thoát đọc truyện"><i class="fa-solid fa-arrow-right-from-bracket"></i></Link></li>
                         </ul>
                         <div className="d-lex">
                             <h1 className="chapter-name">{chapter?.tenchap}</h1>
