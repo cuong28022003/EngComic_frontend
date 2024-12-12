@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 
 function Search(props) {
   const [datas, setDatas] = useState([]);
-  const [filter, setFilter] = useState(""); // Lưu trạng thái bộ lọc
+  const [sort, setFilter] = useState(""); // Lưu trạng thái bộ lọc
   const location = useLocation();
   const query = useSelector((state) => state?.message?.query || "");
   const name = location.state?.name || "";
@@ -27,7 +27,7 @@ function Search(props) {
           name: name,
           artist: artist,
           genre: genre,
-          filter,
+          sort: sort,
         });
         if (response) {
           setDatas(response);
@@ -37,7 +37,7 @@ function Search(props) {
       }
     };
     fetchStories();
-  }, [name, filter]);
+  }, [name, sort]);
 
   return (
     <>
@@ -54,7 +54,7 @@ function Search(props) {
                     <label htmlFor="filter-select">Lọc:</label>
                     <select
                       id="filter-select"
-                      value={filter}
+                      value={sort}
                       onChange={(e) => setFilter(e.target.value)}
                     >
                       <option value="">Tất cả</option>
@@ -66,9 +66,20 @@ function Search(props) {
                 </SectionHeading>
                 <SectionBody>
                   <div className="list-story">
-                    {datas.map((data, index) => (
-                      <Story key={index} data={data} />
-                    ))}
+                    {datas.length > 0 ? (
+                      datas.map((data, index) => (
+                        <Story key={index} data={data} />
+                      ))
+                    ) : (
+                      <div className="no-stories">
+                        <i className="fas fa-book-open"></i>{" "}
+                        {/* Biểu tượng sách */}
+                        <p>
+                          Hiện tại không có truyện nào phù hợp với tiêu chí tìm
+                          kiếm.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </SectionBody>
               </Section>

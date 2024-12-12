@@ -9,3 +9,24 @@
     padding: 0.5rem;
     border-radius: 4px;
 }
+
+$icon-color: #ff6b6b;
+$text-color: #555;
+
+.no-stories {
+    text-align: center;
+    margin: 20px 0;
+
+    i {
+        font-size: 2rem;
+        color: $icon-color;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: $text-color;
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin: 10px 0 0;
+    }
+}

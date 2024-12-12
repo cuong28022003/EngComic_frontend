@@ -104,9 +104,7 @@ const Readings = ({ dispatch, user }) => {
     <div>
       {readings.map((item, i) => (
         <div key={item._id}>
-          <Reading
-            data={item}
-          />
+          <Reading data={item} />
           <hr />
         </div>
       ))}
@@ -179,26 +177,18 @@ const StoryCreate = ({ userInfo }) => {
     setEditNovel(true);
     setUrl(e.target.name);
   };
-  const onClickDeleteStory = (e) => {
+  const onClickDeleteComic = (e) => {
     console.log(e.target.name);
     if (e.target.name) {
       apiMain
-        .deleteNovel({ url: e.target.name }, user, dispatch, loginSuccess)
+        .deleteComic({ url: e.target.name }, user, dispatch, loginSuccess)
         .then((res) => {
           console.log(res);
           getComics();
-          toast.success(res.message, {
-            hideProgressBar: true,
-            autoClose: 1000,
-            pauseOnHover: false,
-          });
+          toast.success(res.data.message);
         })
         .catch((err) => {
-          toast.error(getData(err.response)?.details.message, {
-            hideProgressBar: true,
-            autoClose: 1000,
-            pauseOnHover: false,
-          });
+          toast.error("Đã xảy ra lỗi!");
         });
     }
   };
@@ -250,7 +240,7 @@ const StoryCreate = ({ userInfo }) => {
                     <a onClick={onClickUpdateStory} name={data.url}>
                       <i className="fa-solid fa-marker"></i> Sửa
                     </a>
-                    <a onClick={onClickDeleteStory} name={data.url}>
+                    <a onClick={onClickDeleteComic} name={data.url}>
                       <i className="fa-solid fa-trash"></i> Xoá
                     </a>
                   </div>
@@ -458,7 +448,9 @@ const AddChapter = ({
         <a onClick={onClickBackFromAddChap}>
           <i className="fa-solid fa-angle-left"></i> Danh sách chương
         </a>
-        <span className="fs-20 fw-6">{edit ? "Chỉnh sửa chương" : "Thêm chương"}</span>
+        <span className="fs-20 fw-6">
+          {edit ? "Chỉnh sửa chương" : "Thêm chương"}
+        </span>
       </div>
 
       <div>
