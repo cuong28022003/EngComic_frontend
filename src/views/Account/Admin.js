@@ -12,6 +12,7 @@ import Profile from './Profile';
 import Users from './Users'
 import TuTruyen from './TuTruyen';
 import CreateComic from './CreateComic';
+import DeleteComic from './DeleteComic';
 
 function Account() {
   const menu = [
@@ -31,8 +32,8 @@ function Account() {
       icon: ""
     },
     {
-      path: "add-user",
-      display: "Thêm thành viên",
+      path: "delete-truyen",
+      display: "Quản lý truyện",
       icon: ""
     },
     {
@@ -82,6 +83,7 @@ function Account() {
               <Route path='profile' element={<Profile userInfo={userInfo}/>}></Route>
               <Route path='change-password' element={<ChangePassword />}></Route>
               <Route path='users' element={<Users dispatch={dispatch}/>}></Route>
+              <Route path='delete-truyen' element={<DeleteComic dispatch={dispatch}/>}></Route>
               <Route path='tu-truyen/*' element={<TuTruyen userInfo={userInfo}/>}></Route>
               <Route path='dang-truyen' element={<CreateComic  userInfo={userInfo}  />}></Route>
             </Routes>
