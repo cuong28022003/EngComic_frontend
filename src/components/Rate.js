@@ -40,6 +40,7 @@ const Rate = (props) => {
             setAverageRating(res.averageRating);
             setTotalReviews(res.totalReviews);
             toast.success("Đánh giá thành công!");
+            window.location.reload();
         } catch (err) {
             console.error("Error rating comic:", err);
             toast.error("Đánh giá thất bại!");
@@ -57,6 +58,7 @@ const Rate = (props) => {
             console.log(response);
             setUserRating(0);
             toast.success("Xóa đánh giá thành công!");
+            window.location.reload();
         } catch (err) {
             console.error("Error deleting rating:", err);
             toast.error("Xóa đánh giá thất bại!");
