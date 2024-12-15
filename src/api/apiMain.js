@@ -222,7 +222,7 @@ const apiMain = {
   ///user
 
   getAllUser: async (user, dispatch, stateSuccess) => {
-    const url = "user/getusers";
+    const url ="admin/users";
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return getData(
       await axi.get(url, {
@@ -230,7 +230,6 @@ const apiMain = {
       })
     );
   },
-
   refreshToken: async (user) => {
     const params = { refreshToken: user.refreshToken };
     const res = await axiosClient.post("/auth/refreshtoken", params, {
@@ -268,23 +267,55 @@ const apiMain = {
   },
   activeByAdmin: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.put(`/auth/activebyadmin`, params));
+    //return getData(await axi.put(`/auth/activebyadmin`, params));
+    return getData(await axi.put(`/admin/user/active`, params));
+
   },
   inactiveByAdmin: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.put(`/auth/inactivebyadmin`, params));
+    //return getData(await axi.put(`/auth/inactivebyadmin`, params));
+    return getData(await axi.put(`/admin/user/inactive`, params));
+
   },
   updateRole: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.put("/user/updateroles", params));
+    return getData(await axi.put("/admin/role/updatetouser", params));
   },
   deleteAccount: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
+    
+    const deleteUserRequest = {
+        username: params.id, // Giả sử params.id là username
+    };
+
     return getData(
-      await axi.delete(`/user?id=${params.id}`, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      })
+        await axi.delete(`/admin/deleteuser`, {
+            headers: { Authorization: `Bearer ${user.accessToken}` },
+            data: deleteUserRequest, // Gửi dữ liệu ở đây
+        })
     );
-  },
+},
+
+//s
+getAllComics: async (user, dispatch, stateSuccess) => {
+  const axi = axiosInstance(user, dispatch, stateSuccess); // Sử dụng instance đã được cấu hình
+
+  try {
+    // Thêm token vào headers của yêu cầu
+    const response = await axi.get("/admin/comics", {
+      headers: { Authorization: `Bearer ${user.accessToken}` },
+    });
+    return response.data; // Trả về data
+  } catch (error) {
+    console.error("Error fetching comics:", error);
+    throw error; // Ném lỗi để xử lý ở phía gọi hàm
+  }
+},
+
+//e
+
+
+
+
 };
 export default apiMain;

@@ -4,9 +4,9 @@ import jwt_decode from "jwt-decode";
 import getData from "./getData";
 import { toast } from "react-toastify";
 import { logoutSuccess } from "../redux/authSlice";
-//const baseURL='https://thichtruyenchu.herokuapp.com/api'
-// const baseURL = "https://web-production-815a.up.railway.app/api";
-const baseURL = "http://localhost:8081/api";
+//const baseURL = "https://web-production-815a.up.railway.app/api";
+export const baseURL = "https://web-production-815a.up.railway.app/api";
+
 export const axiosClient = axios.create({
   baseURL: baseURL,
 
