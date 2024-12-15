@@ -182,6 +182,26 @@ const apiMain = {
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return getData(await axi.get(url));
   },
+
+  // Rating
+  getComicRating: async (params, user, dispatch, stateSuccess) => {
+    const url = `/comics/${params.url}/rating`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    const res = await axi.post(url);
+    return res.data;
+  },
+  rateComic: async (params, user, dispatch, stateSuccess) => {
+    const url = `/comics/${params.url}/rate`
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    const res = await axi.post(url, {rating: params.rating });
+    return res.data;
+  },
+  deleteComicRating: async (params, user, dispatch, stateSuccess) => {
+    const url = `/comics/${params.url}/rating`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.delete(url);
+  }, 
+
   ///Comment
 
   createComment: async (user, params, dispatch, stateSuccess) => {

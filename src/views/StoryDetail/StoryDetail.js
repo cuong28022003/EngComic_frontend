@@ -6,6 +6,7 @@ import apiMain from "../../api/apiMain";
 import Loading from "../../components/Loading";
 import LoadingData from "../../components/LoadingData";
 import Grid from "../../components/Grid";
+import Rate from "../../components/Rate";
 import Comment from "../../components/Comment";
 import Pagination from "../../components/Pagination";
 import { toast } from "react-toastify";
@@ -92,7 +93,7 @@ function StoryDetail() {
         setMain(<About key={"about"} comic={comic} />);
         break;
       case "rate":
-        setMain(<Rate key={"rate"} />);
+        setMain(<Rate key={"rate"} url={comic.url} />);
         break;
       case "chapter":
         setMain(<ListChapter key={"chapter"} url={comic.url} />);
@@ -264,7 +265,7 @@ function StoryDetail() {
                     }`}
                   ></span>
                   <span>
-                    &nbsp;{comic?.rating}/5 ({comic?.reviewCount} đánh giá)
+                    &nbsp;{comic?.rating}/5 ({comic?.ratingCount} đánh giá)
                   </span>
                 </div>
                 <div className="">
@@ -315,10 +316,6 @@ const About = (props) => {
       <p>{props.comic?.description}</p>
     </>
   );
-};
-
-const Rate = (props) => {
-  return <h1>Đánh giá</h1>;
 };
 
 export const ListChapter = (props) => {
