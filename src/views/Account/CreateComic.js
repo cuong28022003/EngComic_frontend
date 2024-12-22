@@ -10,6 +10,7 @@ import { setLoading } from '../../redux/messageSlice'
 import Loading from '../../components/Loading';
 import LoadingData from '../../components/LoadingData';
 import getData from '../../api/getData';
+import { useNavigate } from 'react-router-dom';
 
 function CreateNovel({ userInfo }) {
     const types = [
@@ -34,6 +35,7 @@ function CreateNovel({ userInfo }) {
     const loading = useSelector(state => state.message.loading)
     const [loadingUser, setLoadingUser] = useState(true)
     const dispatch = useDispatch()
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -50,8 +52,10 @@ function CreateNovel({ userInfo }) {
         try {
             apiMain.createComic(data, user, dispatch, loginSuccess)
                 .then(res => {
+                    console.log(res);
                     toast.success("Đăng truyện thành công")
                     dispatch(setLoading(false))
+                    navigate("/comic-list");
                 })
                 .catch(err => {
 
@@ -66,8 +70,10 @@ function CreateNovel({ userInfo }) {
 
     const handleCreate = async (e) => {//xử lý tạo truyện
         e.preventDefault()
-        if (image == null)
+        if (!name || !image || !artist || !description || !genre) {
+            toast.warning("Vui lòng điền đầy đủ các thông tin bắt buộc!");
             return;
+        }
         dispatch(setLoading(true))
         const url = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').filter(i => i !== '').join('-').toLowerCase()
         const storageRef = ref(storage, `/images/truyen/${url}`);

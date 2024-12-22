@@ -46,7 +46,7 @@ function ListStory() {
           <Section>
             <SectionHeading>
               <h4 className="section-title">Biên tập viên đề cử</h4>
-              <Link to="tat-ca">Xem tất cả</Link>
+              <Link to="comic-list">Xem tất cả</Link>
             </SectionHeading>
             <SectionBody>
               <div className="list-story">

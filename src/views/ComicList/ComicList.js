@@ -4,13 +4,14 @@ import Story from '../../components/Story'
 import Section, { SectionHeading, SectionBody } from '../../components/section'
 
 
-function AllStory() {
+function ComicList() {
     const [datas, setDatas] = useState([])
+    const [sort, setSort] = useState("");
 
     useEffect(() => {
         const loadData = async () => {//hàm gọi API load tất cả truyện có phân trang
             try {
-                const response = await apiMain.getStorys({ page: 0, size: 20 })
+                const response = await apiMain.getStorys({sort: sort, page: 0, size: 20 })
                 if (response) {
                     setDatas(response)
                 }
@@ -19,7 +20,7 @@ function AllStory() {
             }
         }
         loadData();
-    }, [])
+    }, [sort])
 
     //còn thiếu phần phân trang
     return (
@@ -35,6 +36,19 @@ function AllStory() {
                             <Section>
                                 <SectionHeading>
                                     <h4 className='section-title'>Tất cả</h4>
+                                    <div className="filter">
+                                        <label htmlFor="filter-select">Lọc:</label>
+                                        <select
+                                            id="filter-select"
+                                            value={sort}
+                                            onChange={(e) => setSort(e.target.value)}
+                                        >
+                                            <option value="">Tất cả</option>
+                                            <option value="views">Lượt đọc</option>
+                                            <option value="rating">Đánh giá</option>
+                                            <option value="updateAt">Mới nhất</option>
+                                        </select>
+                                    </div>
                                 </SectionHeading>
                                 <SectionBody>
                                     <div className='list-story'>
@@ -53,4 +67,4 @@ function AllStory() {
     )
 }
 
-export default AllStory
+export default ComicList

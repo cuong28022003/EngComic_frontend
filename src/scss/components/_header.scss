@@ -180,3 +180,43 @@
         margin-right: 20px;
     }
 }
+
+.navigation-menu {
+    position: relative;
+}
+
+.navigation-trigger {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+.navigation-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    z-index: 10;
+    max-height: 300px; /* Giới hạn chiều cao */
+    overflow-y: auto; /* Thêm cuộn */
+    scrollbar-width: thin; /* Tùy chỉnh thanh cuộn */
+    width: 200px;
+}
+
+.navigation-dropdown.active {
+    display: block;
+}
+
+.navigation-dropdown li {
+    list-style: none;
+    padding: 8px 16px;
+    transition: background-color 0.2s;
+}
+
+.navigation-dropdown li:hover {
+    background-color: #f0f0f0;
+}

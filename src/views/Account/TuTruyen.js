@@ -382,6 +382,7 @@ const AddChapter = ({
   const [selectedImages, setSelectedImages] = useState([]);
   const [edit, setEdit] = useState(false);
   const dispatch = useDispatch();
+  const loading = useSelector(state => state.message.loading);
 
   // Hàm xử lý chọn ảnh
   const handleFileChange = (e) => {
@@ -425,9 +426,11 @@ const AddChapter = ({
       // Gửi dữ liệu tới API
       if (edit) {
         await apiMain.updateChapter(chapnumber, formData, user);
+        dispatch(setLoading(false));
         toast.success("Cập nhật chương thành công.");
       } else {
         await apiMain.createChapter(formData, user);
+        dispatch(setLoading(false));
         toast.success("Thêm chương thành công.");
       }
 
@@ -485,6 +488,7 @@ const AddChapter = ({
         )}
 
         <button onClick={onClickAddChapter} className="btn-primary">
+          {loading ? <Loading /> : ''}
           {edit ? "Cập nhật chương" : "Thêm chương"}
         </button>
       </div>

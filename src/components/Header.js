@@ -9,6 +9,19 @@ import { authLoginActive, authRegisterActive, authInactive } from '../redux/moda
 import { handleLogout } from '../handle/handleAuth';
 import { setQuery } from '../redux/messageSlice';
 
+const genres = [
+    { title: "Hành động", href: "/the-loai/hanh-dong" },
+    { title: "Phiêu lưu", href: "/the-loai/phieu-luu" },
+    { title: "Hài hước", href: "/the-loai/hai-huoc" },
+    { title: "Siêu nhiên", href: "/the-loai/kinh-di" },
+    { title: "Thể thao", href: "/the-loai/kinh-di" },
+    { title: "Giả tưởng", href: "/the-loai/kinh-di" },
+    { title: "Mecha", href: "/the-loai/kinh-di" },
+    { title: "Khoa học viễn tưởng", href: "/the-loai/kinh-di" },
+    { title: "Tâm lý / Kịch tính", href: "/the-loai/kinh-di" },
+    { title: "Trinh thám / Bí ẩn", href: "/the-loai/kinh-di" },
+];
+
 const menu = {//menu hiển thị cho từng loại tài khoản admin và user thường
     ADMIN: [
         {
@@ -64,6 +77,7 @@ export default function Header() {
     const modalLogin = useSelector(state => state.modal.auth.login);
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     let location = useLocation();
 
@@ -108,12 +122,10 @@ export default function Header() {
         handleLogout(dispatch, navigate, location)
     }
 
-    const onClickSearch = () => {//xử lý tìm kiếm 
-        // dispatch(setQuery(search))
-        if (navigate.pathname != '/tim-kiem') {
-            navigate('/tim-kiem', {state: {name: search}})
+    const onClickSearch = () => {
+        if (navigate.pathname != '/search') {
+            navigate('/search', {state: {name: search}})
         }
-
     }
     return (
         <>
@@ -154,18 +166,34 @@ export default function Header() {
                     <div className="navbar-nav">
 
                         <ul className='navbar-nav__list'>
-                            <Link to='/'>
-                                <li className='text-bold'>
-                                    Thể loại
-                                </li>
-                            </Link>
+                            <div className="navigation-menu">
+                                <div
+                                    className="navigation-trigger"
+                                    onMouseEnter={() => setDropdownVisible(true)}
+                                    onMouseLeave={() => setDropdownVisible(false)}
+                                >
+                                    <span className="text-bold">Thể loại</span>
+                                    <ul className={`navigation-dropdown ${dropdownVisible ? "active" : ""}`}>
+                                        {genres.map((genre, index) => (
+                                            <li key={index}>
+                                                <Link to={`/search?genre=${genre.title}`}>{genre.title}</Link>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            </div>
+
                             <Link to='/truyen'>
                                 <li className='text-bold'>Bảng xếp hạng</li>
                             </Link>
                         </ul>
                         <div className='navbar-nav__list__search'>
                             <div className='form-group'>
-                                <input placeholder='Tìm truyện' onChange={e => { setSearch(e.target.value);console.log(e.target.value) }} value={search}></input>
+                                <input placeholder='Tìm truyện' onChange={e => { setSearch(e.target.value); console.log(e.target.value) }} value={search} onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        onClickSearch(); // Gọi hàm tìm kiếm khi nhấn Enter
+                                    }
+                                }}></input>
                                 <button onClick={onClickSearch}><i className="fa-solid fa-magnifying-glass"></i></button>
                             </div>
                         </div>

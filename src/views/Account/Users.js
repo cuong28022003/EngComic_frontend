@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import apiMain from '../../api/apiMain';
 import { loginSuccess } from '../../redux/authSlice';
 import { toast } from 'react-toastify';
-import './Users.css';
+import './Users.scss';
 
 function Users(props) {
   const user = useSelector((state) => state.auth.login?.user);

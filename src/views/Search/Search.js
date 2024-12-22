@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useLocation, useSearchParams } from "react-router-dom";
 import apiMain from "../../api/apiMain";
 import Story from "../../components/Story";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
-import { useLocation } from "react-router-dom";
 
-function Search(props) {
+function Search() {
   const [datas, setDatas] = useState([]);
-  const [sort, setFilter] = useState(""); // Lưu trạng thái bộ lọc
+  const [sort, setSort] = useState("");
   const location = useLocation();
-  const query = useSelector((state) => state?.message?.query || "");
   const name = location.state?.name || "";
-  const artist = location.state?.artist || "";
-  const genre = location.state?.genre || "";
-  console.log("name: " + name);
-  console.log("genre: " + genre);
-  console.log("artist: " + artist);
+  const [searchParams] = useSearchParams();
+  const artist = searchParams.get("artist");
+  const genre = searchParams.get("genre");
+
   useEffect(() => {
     const fetchStories = async () => {
       if (!name && !artist && !genre) {
@@ -24,20 +21,24 @@ function Search(props) {
       }
       try {
         const response = await apiMain.getFilteredComics({
-          name: name,
-          artist: artist,
-          genre: genre,
-          sort: sort,
+          name,
+          artist,
+          genre,
+          sort,
         });
-        if (response) {
+        if (Array.isArray(response)) {
           setDatas(response);
+        } else {
+          setDatas([]);
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching stories:", error);
+        setDatas([]);
       }
     };
+
     fetchStories();
-  }, [name, sort]);
+  }, [name, artist, genre, sort]);
 
   return (
     <>
@@ -49,13 +50,12 @@ function Search(props) {
               <Section>
                 <SectionHeading>
                   <h4 className="section-title">Kết quả</h4>
-                  {/* Bộ lọc */}
                   <div className="filter">
                     <label htmlFor="filter-select">Lọc:</label>
                     <select
                       id="filter-select"
                       value={sort}
-                      onChange={(e) => setFilter(e.target.value)}
+                      onChange={(e) => setSort(e.target.value)}
                     >
                       <option value="">Tất cả</option>
                       <option value="views">Lượt đọc</option>
@@ -72,11 +72,13 @@ function Search(props) {
                       ))
                     ) : (
                       <div className="no-stories">
-                        <i className="fas fa-book-open"></i>{" "}
-                        {/* Biểu tượng sách */}
+                        <i className="fas fa-book-open"></i>
                         <p>
-                          Hiện tại không có truyện nào phù hợp với tiêu chí tìm
-                          kiếm.
+                          {name || artist || genre ? (
+                            "Hiện tại không có truyện nào phù hợp với tiêu chí tìm kiếm."
+                          ) : (
+                            "Vui lòng nhập từ khóa để tìm kiếm truyện."
+                          )}
                         </p>
                       </div>
                     )}
