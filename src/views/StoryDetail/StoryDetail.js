@@ -151,12 +151,12 @@ function StoryDetail() {
   };
 
   const onClickArtist = async (artist) => {
-    navigate("/tim-kiem", { state: { artist: artist } });
+    navigate("/search", { state: { artist: artist } });
   };
 
   const onClickGenre = async (genre) => {
     console.log("genre: " + genre);
-    navigate("/tim-kiem", { state: { genre: genre } });
+    navigate("/search", { state: { genre: genre } });
   };
 
   const onClickReading = async () => {

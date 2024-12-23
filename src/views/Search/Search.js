@@ -10,8 +10,8 @@ function Search() {
   const location = useLocation();
   const name = location.state?.name || "";
   const [searchParams] = useSearchParams();
-  const artist = searchParams.get("artist");
-  const genre = searchParams.get("genre");
+  const artist = searchParams.get("artist") || location.state?.artist;
+  const genre = searchParams.get("genre") || location.state?.genre;
 
   useEffect(() => {
     const fetchStories = async () => {
