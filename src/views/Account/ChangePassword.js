@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginSuccess, logoutSuccess } from '../../redux/authSlice'
+import { loginSuccess } from '../../redux/authSlice'
 import Loading from '../../components/Loading'
 import { toast } from 'react-toastify'
 import { handleChangePassword } from '../../handle/handleAccount'
@@ -15,71 +15,85 @@ function ChangePassword() {
     const [valid, setValid] = useState({ new: false, cf: false });
     const user = useSelector(state => state.auth.login?.user)
     const dispatch = useDispatch();
-    const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");//regex kiểm tra mật khẩu hợp lệ
 
-    const onChangeCurrentPW = (e) => {//xử lý khi nhập mật khẩu
+    const onChangeCurrentPW = (e) => {
         setCurrentPW(e.target.value)
     }
-    const onChangeNewPW = (e) => {//xử lý khi nhập mật khẩu mới
-        setNewPW(e.target.value)
-        if (strongRegex.test(e.target.value)) {
-            setMsgNewPW("Mật khẩu hợp lý")
-            setValid(pre => { return { ...pre, new: true } })
+
+    const onChangeNewPW = (e) => {
+        const value = e.target.value;
+        setNewPW(value);
+
+        if (value.length < 8) {
+            setMsgNewPW("Mật khẩu phải có ít nhất 8 kí tự.")
+            setValid(pre => { return { ...pre, new: false } });
+        } else if (value === currentPW) {
+            setMsgNewPW("Mật khẩu mới không được trùng với mật khẩu hiện tại.")
+            setValid(pre => { return { ...pre, new: false } });
         } else {
-            setMsgNewPW("Mật khẩu phải có ít nhất 8 kí tự. Chứa kí tự thường, kí tự hoa và số")
-            setValid(pre => { return { ...pre, new: false } })
+            setMsgNewPW("Mật khẩu hợp lý")
+            setValid(pre => { return { ...pre, new: true } });
         }
     }
-    const onChangeNewCfPW = (e) => {//xử lý nhập mật khẩu xác nhận
-        setNewCfPW(e.target.value)
-        if (newPW.localeCompare(e.target.value) == 0) {
+
+    const onChangeNewCfPW = (e) => {
+        const value = e.target.value;
+        setNewCfPW(value);
+
+        if (newPW.localeCompare(value) === 0) {
             setMsgCfNewPW("Trùng khớp")
-            setValid(pre => { return { ...pre, cf: true } })
-        }
-        else {
+            setValid(pre => { return { ...pre, cf: true } });
+        } else {
             setMsgCfNewPW("Mật khẩu không trùng khớp")
-            setValid(pre => { return { ...pre, cf: false } })
+            setValid(pre => { return { ...pre, cf: false } });
         }
     }
 
-    //handle
-
-    const onClickChangePassword = async (e) => {//xử lý gọi API đổi mật khẩu
-        e.preventDefault()
-        if (valid.new && valid.cf) {//kiểm tra dữ liệu đầu vào
-            const params = {//payload
+    const onClickChangePassword = async (e) => {
+        e.preventDefault();
+        if (valid.new && valid.cf) {
+            const params = {
                 newPassword: newPW,
                 password: currentPW
             }
-            handleChangePassword(user,dispatch,loginSuccess,params);//gọi hàm xử lý
+            handleChangePassword(user, dispatch, loginSuccess, params);
+            // Clear các trường input
+            setCurrentPW("");
+            setNewPW("");
+            setNewCfPW("");
+            setMsgNewPW("");
+            setMsgCfNewPW("");
+            setValid({ new: false, cf: false });
+        } else {
+            toast.error("Vui lòng kiểm tra lại và nhập đầy đủ thông tin mật khẩu!");
         }
     }
 
-    //style
-    const labelStyle = { 'minWidth': '100px', 'display': 'inline-block' }
+    const labelStyle = { minWidth: '100px', display: 'inline-block' };
 
     return (
         <div className="profile__main">
             <form>
                 <div className="group-info">
                     <label htmlFor="" style={labelStyle}>Mật khẩu hiện tại</label>
-                    {<input type={"password"} onChange={onChangeCurrentPW} value={currentPW} />}
+                    <input type="password" onChange={onChangeCurrentPW} value={currentPW} />
                 </div>
                 <div className="group-info">
                     <label htmlFor="" style={labelStyle}>Mật khẩu mới</label>
-                    {<input type={"password"} onChange={onChangeNewPW} value={newPW}></input>}
+                    <input type="password" onChange={onChangeNewPW} value={newPW} />
                     <span>{msgNewPW}</span>
                 </div>
                 <div className="group-info">
                     <label htmlFor="" style={labelStyle}>Xác nhận mật khẩu mới</label>
-                    <input type={"password"} onChange={onChangeNewCfPW} id="birthday" value={newCfPW}></input>
+                    <input type="password" onChange={onChangeNewCfPW} value={newCfPW} />
                     <span>{msgNewCfPW}</span>
                 </div>
                 <div className="d-flex">
-                    <button onClick={onClickChangePassword}>{loading ? <Loading/> : ''} Đổi mật khẩu</button>
+                    <button onClick={onClickChangePassword}>
+                        {loading ? <Loading /> : 'Đổi mật khẩu'}
+                    </button>
                 </div>
             </form>
-
         </div>
     )
 }

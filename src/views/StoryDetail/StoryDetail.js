@@ -151,12 +151,11 @@ function StoryDetail() {
   };
 
   const onClickArtist = async (artist) => {
-    navigate("/search", { state: { artist: artist } });
+    navigate(`/search?artist=${artist}`);
   };
 
   const onClickGenre = async (genre) => {
-    console.log("genre: " + genre);
-    navigate("/search", { state: { genre: genre } });
+    navigate(`/search=${genre}`);
   };
 
   const onClickReading = async () => {

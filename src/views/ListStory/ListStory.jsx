@@ -1,44 +1,46 @@
-import { useEffect, useState } from 'react'
-import apiMain from '../../api/apiMain';
-import Reading from '../../components/Reading';
-import Section, { SectionHeading, SectionBody } from '../../components/section';
-import Story from '../../components/Story';
-import getData from '../../api/getData';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom'
-import { loginSuccess } from '../../redux/authSlice'
-import './ListStory.scss'
+import { useEffect, useState } from "react";
+import apiMain from "../../api/apiMain";
+import Reading from "../../components/Reading";
+import Section, { SectionHeading, SectionBody } from "../../components/section";
+import Story from "../../components/Story";
+import getData from "../../api/getData";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { loginSuccess } from "../../redux/authSlice";
+import "./ListStory.scss";
 
 function ListStory() {
-
   const [datas, setData] = useState([]);
-  const [readings, setReadings] = useState([])
-  const user = useSelector(state => state.auth.login.user)
-  const dispatch = useDispatch()
+  const [readings, setReadings] = useState([]);
+  const user = useSelector((state) => state.auth.login.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getReadings = async () => {//Xử lý gọi API thông tin đang đọc
+    const getReadings = async () => {
+      // Xử lý gọi API thông tin đang đọc
       if (user) {
-        apiMain.getReadings(user, dispatch, loginSuccess)
-          .then(res => {
-            setReadings(res)
+        apiMain
+          .getReadings(user, dispatch, loginSuccess)
+          .then((res) => {
+            setReadings(res);
           })
-          .catch(err => {
-            console.log(err)
-          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
-    }
-    getReadings();//gọi hàm
-  }, [])
+    };
+    getReadings(); // gọi hàm
+  }, [user, dispatch]);
 
   useEffect(() => {
-    
-    const getStory = async () => {//xử lý gọi hàm load truyện
+    const getStory = async () => {
+      // Xử lý gọi hàm load truyện
       const res = getData(await apiMain.getStorys({ size: 6 }));
       setData(res);
-    }
+    };
     getStory();
-  }, [])
+  }, []);
+
   return (
     <>
       <div className="d-flex">
@@ -50,9 +52,11 @@ function ListStory() {
             </SectionHeading>
             <SectionBody>
               <div className="list-story">
-                {datas.map((data, index) => (
-                  <Story key={index} data={data} />
-                ))}
+                {datas.length > 0 ? (
+                  datas.map((data, index) => <Story key={index} data={data} />)
+                ) : (
+                  <p>Không có truyện nào để hiển thị.</p>
+                )}
               </div>
             </SectionBody>
           </Section>
@@ -66,9 +70,11 @@ function ListStory() {
             </SectionHeading>
             <SectionBody>
               <div className="list-reading">
-                {readings.map((item, i) => (
-                  <Reading key={i} data={item} />
-                ))}
+                {readings.length > 0 ? (
+                  readings.map((item, i) => <Reading key={i} data={item} />)
+                ) : (
+                  <p>Không có truyện đang đọc.</p>
+                )}
               </div>
             </SectionBody>
           </Section>
@@ -78,4 +84,4 @@ function ListStory() {
   );
 }
 
-export default ListStory
+export default ListStory;

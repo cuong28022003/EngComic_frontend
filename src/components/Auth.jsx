@@ -248,13 +248,14 @@ const Register = props => {
           if (res.valid) {
             newValid[0] = true
             setValid(newValid)
-
+            setMsgEmail("Email hợp lệ");
           }
           else {
             newValid[0] = false
             setValid(newValid)
+            setMsgEmail("Email đã tồn tại")
           }
-          setMsgEmail(res.message)
+          // setMsgEmail(res.message)
         }).
         catch(err => {
           let newValid = [...valid]

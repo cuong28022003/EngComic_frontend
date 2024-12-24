@@ -7,11 +7,10 @@ import Section, { SectionHeading, SectionBody } from "../../components/section";
 function Search() {
   const [datas, setDatas] = useState([]);
   const [sort, setSort] = useState("");
-  const location = useLocation();
-  const name = location.state?.name || "";
   const [searchParams] = useSearchParams();
-  const artist = searchParams.get("artist") || location.state?.artist;
-  const genre = searchParams.get("genre") || location.state?.genre;
+  const name = searchParams.get("keyword") || "";
+  const artist = searchParams.get("artist") || "";
+  const genre = searchParams.get("genre") || "";
 
   useEffect(() => {
     const fetchStories = async () => {

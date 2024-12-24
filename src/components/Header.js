@@ -124,7 +124,7 @@ export default function Header() {
 
     const onClickSearch = () => {
         if (navigate.pathname != '/search') {
-            navigate('/search', {state: {name: search}})
+            navigate(`/search?keyword=${search}`)
         }
     }
     return (

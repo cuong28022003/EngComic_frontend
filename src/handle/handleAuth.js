@@ -38,7 +38,7 @@ export const handleRegister =async(params, dispatch,navigate)=>{
     const res = await apiMain.register(params) //gọi api login
     if(res.status==200){
       dispatch(setMessageRegister("")); 
-      toast.success("Đăng ký thành công. Vui lòng vào email để mở liên kết xác thực tài khoản",{autoClose: 3000,pauseOnHover: false});//hiển thị toast thông báo
+      toast.success("Đăng ký thành công.",{autoClose: 3000,pauseOnHover: false});//hiển thị toast thông báo
       dispatch(authInactive()) //hành động tắt modal register
     }
   } catch (error) {

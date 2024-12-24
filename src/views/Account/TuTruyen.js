@@ -102,12 +102,16 @@ const Readings = ({ dispatch, user }) => {
 
   return (
     <div>
-      {readings.map((item, i) => (
-        <div key={item._id}>
-          <Reading data={item} />
-          <hr />
-        </div>
-      ))}
+      {readings.length > 0 ? (
+        readings.map((item, i) => (
+          <div key={item._id}>
+            <Reading data={item} />
+            <hr />
+          </div>
+        ))
+      ) : (
+        <p>Không có truyện đang đọc.</p>
+      )}
     </div>
   );
 };
@@ -220,7 +224,7 @@ const StoryCreate = ({ userInfo }) => {
           dispatch={dispatch}
           onClickBackFromEditNovel={onClickBackFromEditNovel}
         />
-      ) : (
+      ) : comics.length > 0 ? (
         comics.map((data) => {
           return (
             <div key={data._id}>
@@ -241,7 +245,7 @@ const StoryCreate = ({ userInfo }) => {
                       <i className="fa-solid fa-marker"></i> Sửa
                     </a>
                     <a onClick={onClickDeleteComic} name={data.url}>
-                      <i className="fa-solid fa-trash"></i> Xoá
+                      <i className="fa-solid fa-trash"></i> Xóa
                     </a>
                   </div>
                 </div>
@@ -250,6 +254,8 @@ const StoryCreate = ({ userInfo }) => {
             </div>
           );
         })
+      ) : (
+        <p>Không có truyện nào để hiển thị.</p>
       )}
     </>
   );
@@ -275,12 +281,12 @@ const ListChap = ({ url, user, dispatch, onClickBackFromListChap }) => {
           loginSuccess
         )
         .then((res) => {
-          getChapter();
-          toast.success(res.message, {
+          toast.success("Xóa chương thành công", {
             hideProgressBar: true,
             autoClose: 1000,
             pauseOnHover: false,
           });
+          getChapter();
         })
         .catch((err) => {
           console.log(err);
@@ -334,37 +340,41 @@ const ListChap = ({ url, user, dispatch, onClickBackFromListChap }) => {
               Thêm chương
             </button>
           </div>
-          <Grid gap={15} col={2} snCol={1}>
-            {chapters.map((item, index) => {
-              return (
-                <div key={item.chapnumber}>
-                  <div className="d-flex">
-                    <div
-                      className="col-10 d-flex"
-                      style={{ alignItems: "center" }}
-                    >
-                      <a
-                        key={item.chapnumber}
-                        name={item.chapnumber}
-                        className="text-overflow-1-lines"
-                      >
-                        {item.tenchap}
-                      </a>
+            {chapters.length > 0 ? (
+              <Grid gap={15} col={2} snCol={1}>
+                {chapters.map((item, index) => {
+                  return (
+                    <div key={item.chapnumber}>
+                      <div className="d-flex">
+                        <div
+                          className="col-10 d-flex"
+                          style={{ alignItems: "center" }}
+                        >
+                          <a
+                            key={item.chapnumber}
+                            name={item.chapnumber}
+                            className="text-overflow-1-lines"
+                          >
+                            {item.tenchap}
+                          </a>
+                        </div>
+                        <div className="col-2">
+                          <a onClick={onClickUpdateChap} name={item.chapnumber}>
+                            <i className="fa-solid fa-marker"></i> Sửa
+                          </a>
+                          <a onClick={onClickDeleteChap} name={item.chapnumber}>
+                            <i className="fa-solid fa-trash"></i> Xóa
+                          </a>
+                        </div>
+                      </div>
+                      <hr />
                     </div>
-                    <div className="col-2">
-                      <a onClick={onClickUpdateChap} name={item.chapnumber}>
-                        <i className="fa-solid fa-marker"></i> Sửa
-                      </a>
-                      <a onClick={onClickDeleteChap} name={item.chapnumber}>
-                        <i className="fa-solid fa-trash"></i> Xoá
-                      </a>
-                    </div>
-                  </div>
-                  <hr />
-                </div>
-              );
-            })}
-          </Grid>
+                  );
+                })}
+              </Grid>
+            ) : (
+              <p>Không có chương nào để hiển thị.</p>
+            )}
         </div>
       )}
     </>
