@@ -155,7 +155,7 @@ function StoryDetail() {
   };
 
   const onClickGenre = async (genre) => {
-    navigate(`/search=${genre}`);
+    navigate(`/search?genre=${genre}`);
   };
 
   const onClickReading = async () => {
