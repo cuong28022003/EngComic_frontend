@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginSuccess } from '../../redux/authSlice'
-import Loading from '../../components/Loading'
+import { loginSuccess } from '../../redux/slice/auth'
+import Loading from '../../components/Loading/Loading'
 import { toast } from 'react-toastify'
 import { handleChangePassword } from '../../handle/handleAccount'
 

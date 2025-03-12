@@ -1,17 +1,18 @@
 import { HashRouter, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
+import Header from './components/Header/index';
 import './App.scss';
-import Home from './views/Home/Home';
+import Home from './views/Home';
 import Account from './views/Account/Account';
 import Admin from './views/Account/Admin';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PrivateRoute from './views/PrivateRoute';
-import StoryDetail from './views/StoryDetail/StoryDetail';
+import ComicDetail from './views/ComicDetail';
 import Active from './views/Active/Active';
 import Chapter from './views/Chapter/Chapter';
 import Search from './views/Search/Search';
-import ComicList from './views/ComicList/ComicList';
+import ComicList from './views/ComicList/index';
+import { userRoutes } from './Router';
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
       <Header />
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='truyen/:url' element={<StoryDetail />} />
+        <Route path='comics/:url' element={<ComicDetail />} />
         <Route element={<PrivateRoute roles={['USER']} />}>
           <Route path='/user/*' element={<Account />} />
         </Route>

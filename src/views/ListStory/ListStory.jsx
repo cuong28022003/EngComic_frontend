@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import apiMain from "../../api/apiMain";
 import Reading from "../../components/Reading";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
-import Story from "../../components/Story";
+import Comic from "../../components/Comic";
 import getData from "../../api/getData";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { loginSuccess } from "../../redux/authSlice";
+import { loginSuccess } from "../../redux/slice/auth";
 import "./ListStory.scss";
+import { getComics } from "../../api/comicApi";
+import NoData from "../../components/NoData";
+import { getReadings } from "../../api/readingApi";
 
 function ListStory() {
   const [datas, setData] = useState([]);
@@ -16,27 +19,24 @@ function ListStory() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getReadings = async () => {
-      // Xử lý gọi API thông tin đang đọc
+    const getReadingList = async () => {
       if (user) {
-        apiMain
-          .getReadings(user, dispatch, loginSuccess)
-          .then((res) => {
-            setReadings(res);
+          getReadings(user, dispatch, loginSuccess)
+            .then((res) => {
+            setReadings(res.data);
           })
           .catch((err) => {
             console.log(err);
           });
       }
     };
-    getReadings(); // gọi hàm
+    getReadingList();
   }, [user, dispatch]);
 
   useEffect(() => {
     const getStory = async () => {
-      // Xử lý gọi hàm load truyện
-      const res = getData(await apiMain.getStorys({ size: 6 }));
-      setData(res);
+      const res = await getComics({ size: 6 });
+      setData(res.content);
     };
     getStory();
   }, []);
@@ -53,9 +53,9 @@ function ListStory() {
             <SectionBody>
               <div className="list-story">
                 {datas.length > 0 ? (
-                  datas.map((data, index) => <Story key={index} data={data} />)
+                  datas.map((data, index) => <Comic key={index} data={data} />)
                 ) : (
-                  <p>Không có truyện nào để hiển thị.</p>
+                  <NoData />
                 )}
               </div>
             </SectionBody>
@@ -73,7 +73,7 @@ function ListStory() {
                 {readings.length > 0 ? (
                   readings.map((item, i) => <Reading key={i} data={item} />)
                 ) : (
-                  <p>Không có truyện đang đọc.</p>
+                  <NoData />
                 )}
               </div>
             </SectionBody>

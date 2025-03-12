@@ -6,12 +6,9 @@ import {store,persistor} from './redux/store'
 import {Provider} from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 
-import UploadChuong from './components/UploadChapter'
-import DocChuong from './components/DocChuong';
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      {/* <DocChuong chuongId="674d29d520f0b776f3387a09"/> */}
       <App/>
     </PersistGate>
     

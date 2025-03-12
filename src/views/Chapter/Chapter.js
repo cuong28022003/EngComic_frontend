@@ -4,9 +4,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import apiMain from '../../api/apiMain';
 import getData from '../../api/getData';
 import { Link } from 'react-router-dom';
-import { loginSuccess } from '../../redux/authSlice';
+import { loginSuccess } from '../../redux/slice/auth';
 import "./Chapter.scss";
-import { ListChapter } from '../StoryDetail/StoryDetail';
+import { ListChapter } from '../ComicDetail';
+import LoadingData from '../../components/Loading/LoadingData';
 
 function Chapter(props) {
     const { chapnum, url } = useParams();
@@ -17,6 +18,7 @@ function Chapter(props) {
     const [comic, setComic] = useState(null);
     const user = useSelector(state => state.auth.login?.user);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true); // Thêm state loading
 
     useEffect(() => {
         const getComic = async () => {
@@ -29,16 +31,19 @@ function Chapter(props) {
                 console.log(error);
             }
         };
-        getComic();   
+        getComic();
     }, [url])
 
     useEffect(() => { // Xử lý load dữ liệu chương truyện
         const getChapter = async () => { // Tạo hàm
             try {
+                setLoading(true); // Bắt đầu loading
                 const response = await apiMain.getChapterByNumber(url, chapnum, user, dispatch, loginSuccess);
                 setChapter(getData(response));
             } catch (error) {
                 console.error("Error fetching chapter data:", error);
+            } finally {
+                setLoading(false); // Kết thúc loading
             }
         };
         getChapter(); // Gọi hàm
@@ -51,6 +56,10 @@ function Chapter(props) {
         document.addEventListener("click", handleClick);
         return () => { document.removeEventListener("click", handleClick); };
     }, []);
+
+    if (loading) {
+        return <LoadingData />; // Hiển thị thông báo loading
+    }
 
     return (
         <>

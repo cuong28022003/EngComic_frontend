@@ -2,7 +2,7 @@ import Modal, { ModalContent } from '../../components/modal';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import apiMain from '../../api/apiMain';
-import { loginSuccess } from '../../redux/authSlice';
+import { loginSuccess } from '../../redux/slice/auth';
 import { toast } from 'react-toastify';
 import './Users.scss';
 
@@ -22,12 +22,12 @@ function Users(props) {
 
   const onClickDelete = async (username) => {
     try {
-        await apiMain.deleteAccount(user, dispatch, loginSuccess, { id: username });
-        loadUsers(); // Tải lại danh sách người dùng
-        toast.success('Xóa tài khoản thành công');
+      await apiMain.deleteAccount(user, dispatch, loginSuccess, { id: username });
+      loadUsers(); // Tải lại danh sách người dùng
+      toast.success('Xóa tài khoản thành công');
     } catch (err) {
-        console.error(err);
-        toast.error('Xóa tài khoản thất bại');
+      console.error(err);
+      toast.error('Xóa tài khoản thất bại');
     }
   };
 
@@ -36,11 +36,11 @@ function Users(props) {
 
     action(user, dispatch, loginSuccess, { username }) // Sử dụng username
       .then((res) => {
-          loadUsers();
-          toast.success(isActive ? 'Khoá tài khoản thành công' : 'Kích hoạt tài khoản thành công');
+        loadUsers();
+        toast.success(isActive ? 'Khoá tài khoản thành công' : 'Kích hoạt tài khoản thành công');
       })
       .catch((err) => {
-          toast.error(isActive ? 'Khoá tài khoản thất bại' : 'Kích hoạt tài khoản thất bại');
+        toast.error(isActive ? 'Khoá tài khoản thất bại' : 'Kích hoạt tài khoản thất bại');
       });
   };
 

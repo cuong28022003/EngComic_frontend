@@ -1,10 +1,10 @@
 
 import { Link, useLocation, Route, Routes } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import Layout from '../../layout/MainLayout';
 
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import apiMain from '../../api/apiMain';
-import { loginSuccess } from '../../redux/authSlice';
+import { loginSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux'
 import getData from '../../api/getData';
 import ChangePassword from './ChangePassword'
@@ -78,14 +78,14 @@ function Account() {
             </ul>
 
           </div>
-          <div className="col-9 " style={{'minHeight':'500px'}}>
+          <div className="col-9 " style={{ 'minHeight': '500px' }}>
             <Routes>
-              <Route path='profile' element={<Profile userInfo={userInfo}/>}></Route>
+              <Route path='profile' element={<Profile userInfo={userInfo} />}></Route>
               <Route path='change-password' element={<ChangePassword />}></Route>
-              <Route path='users' element={<Users dispatch={dispatch}/>}></Route>
-              <Route path='delete-truyen' element={<DeleteComic dispatch={dispatch}/>}></Route>
-              <Route path='tu-truyen/*' element={<TuTruyen userInfo={userInfo}/>}></Route>
-              <Route path='dang-truyen' element={<CreateComic  userInfo={userInfo}  />}></Route>
+              <Route path='users' element={<Users dispatch={dispatch} />}></Route>
+              <Route path='delete-truyen' element={<DeleteComic dispatch={dispatch} />}></Route>
+              <Route path='tu-truyen/*' element={<TuTruyen userInfo={userInfo} />}></Route>
+              <Route path='dang-truyen' element={<CreateComic userInfo={userInfo} />}></Route>
             </Routes>
           </div>
         </div>

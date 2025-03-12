@@ -1,18 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
-import Layout from "../../components/Layout";
+import Layout from "../../layout/MainLayout";
 import "./_StoryDetail.scss";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import apiMain from "../../api/apiMain";
-import Loading from "../../components/Loading";
-import LoadingData from "../../components/LoadingData";
+import Loading from "../../components/Loading/Loading";
+import LoadingData from "../../components/Loading/LoadingData";
 import Grid from "../../components/Grid";
 import Rate from "../../components/Rate";
 import Comment from "../../components/Comment";
-import Pagination from "../../components/Pagination";
+import Pagination from "../../components/Pagination/index";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/authSlice";
-import getData from "../../api/getData";
+import { loginSuccess } from "../../redux/slice/auth";
+import { getDetailComic, getChapters } from "../../api/comicApi";
+import { checkSavedComic } from "../../api/savedApi";
+import { getReading } from "../../api/readingApi";
 
 const nav = [
   //navigate
@@ -38,12 +40,11 @@ const nav = [
   },
 ];
 
-function StoryDetail() {
+function ComicDetail() {
   const user = useSelector((state) => state.auth.login.user);
   const dispatch = useDispatch();
   const { url } = useParams();
   const [comic, setComic] = useState(null);
-  const [catGiu, setCatGiu] = useState(100);
   const [main, setMain] = useState(null);
   const [tab, setTab] = useState("");
   const active = nav.findIndex((e) => e.path === tab);
@@ -52,13 +53,11 @@ function StoryDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    //load truyện
 
     const getComic = async () => {
       try {
-        let params = { url };
-        const res = await apiMain.getComic(params);
-        setComic(res);
+        const res = await getDetailComic(url);
+        setComic(res.data);
         setTab("about"); //set tab mặc định là About
         setLoadingData(false);
       } catch (error) {
@@ -67,12 +66,10 @@ function StoryDetail() {
     };
     getComic();
 
-    // check saved comic
-    const checkSavedComic = async () => {
+    const checkSaved = async () => {
       try {
-        let params = { url };
-        const res = await apiMain.checkSavedComic(
-          params,
+        const res = await checkSavedComic(
+          url,
           user,
           dispatch,
           loginSuccess
@@ -83,7 +80,7 @@ function StoryDetail() {
         console.log(error);
       }
     };
-    checkSavedComic();
+    checkSaved();
   }, [url]);
 
   useEffect(() => {
@@ -161,17 +158,17 @@ function StoryDetail() {
   const onClickReading = async () => {
     try {
       if (!user) {
-        navigate(`/truyen/${url}/1`);
+        navigate(`/comics/${url}/chapters/1`);
       } else {
-        const response = await apiMain.getReading(
-          { url: url },
+        const response = await getReading(
+          url,
           user,
           dispatch,
           loginSuccess
         );
         console.log(response);
         const reading = response
-        navigate(`/truyen/${url}/${reading.chapnumber}`);
+        navigate(`/comics/${url}/${reading.chapterNumber}`);
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -231,7 +228,7 @@ function StoryDetail() {
                   </li>
 
                   <li>
-                    <span className="fs-16 bold">{catGiu || "0"}</span>
+                    <span className="fs-16 bold">{100 || "0"}</span>
                     <br />
                     <span>Cất giữ</span>
                   </li>
@@ -239,29 +236,24 @@ function StoryDetail() {
 
                 <div className="heroSide__rate">
                   <span
-                    className={`fa fa-star ${
-                      comic?.rating >= 1 ? "checked" : ""
-                    }`}
+                    className={`fa fa-star ${comic?.rating >= 1 ? "checked" : ""
+                      }`}
                   ></span>
                   <span
-                    className={`fa fa-star ${
-                      comic?.rating >= 2 ? "checked" : ""
-                    }`}
+                    className={`fa fa-star ${comic?.rating >= 2 ? "checked" : ""
+                      }`}
                   ></span>
                   <span
-                    className={`fa fa-star ${
-                      comic?.rating >= 3 ? "checked" : ""
-                    }`}
+                    className={`fa fa-star ${comic?.rating >= 3 ? "checked" : ""
+                      }`}
                   ></span>
                   <span
-                    className={`fa fa-star ${
-                      comic?.rating >= 4 ? "checked" : ""
-                    }`}
+                    className={`fa fa-star ${comic?.rating >= 4 ? "checked" : ""
+                      }`}
                   ></span>
                   <span
-                    className={`fa fa-star ${
-                      comic?.rating >= 5 ? "checked" : ""
-                    }`}
+                    className={`fa fa-star ${comic?.rating >= 5 ? "checked" : ""
+                      }`}
                   ></span>
                   <span>
                     &nbsp;{comic?.rating}/5 ({comic?.ratingCount} đánh giá)
@@ -287,9 +279,8 @@ function StoryDetail() {
                 {nav.map((item, index) => {
                   return (
                     <a
-                      className={`navigate__tab fs-20 bold ${
-                        active === index ? "tab_active" : ""
-                      }`}
+                      className={`navigate__tab fs-20 bold ${active === index ? "tab_active" : ""
+                        }`}
                       key={index}
                       name={item.path}
                       onClick={onClickTab}
@@ -320,30 +311,30 @@ const About = (props) => {
 export const ListChapter = (props) => {
   const [chapters, setChapters] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
   const url = props.url;
   useEffect(() => {
     const loadList = async () => {
-      //xử lý gọi API danh sách truyện
       const params = {
-        //payload
-        page: currentPage - 1,
+        page: currentPage,
         size: 20,
       };
 
-      apiMain.getNameChapters(props.url, params).then((res) => {
-        setChapters(res);
+      getChapters(props.url, params).then((res) => {
+        console.log("chapters" + res.content);
+        setChapters(res?.content || []);
+        setTotalPages(res.totalPages);
         setLoadingData(false);
       });
     };
     loadList(); //gọi hàm
   }, [props.url, currentPage]);
 
-  const handleSetPage = useCallback((value) => {
-    //hàm xử lý set lại trang hiện tại trong phân trang
-    setCurrentPage(Number(value));
-  });
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  }
 
   return (
     <>
@@ -355,21 +346,21 @@ export const ListChapter = (props) => {
           {chapters.map((item, index) => {
             return (
               <Link
-                to={`/truyen/${url}/${item.chapnumber}`}
+                to={`comics/${url}/${item.chapterNumber}`}
                 key={index}
                 className="text-overflow-1-lines"
                 style={{ fontSize: `${props.fontsize || 16}px` }}
               >
-                {item.tenchap}
+                {item.name}
               </Link>
             );
           })}
         </Grid>
       )}
       <Pagination
-        totalPage={10}
+        totalPages={totalPages}
         currentPage={currentPage}
-        handleSetPage={handleSetPage}
+        onPageChange={handlePageChange}
       />
     </>
   );
@@ -378,4 +369,4 @@ export const ListChapter = (props) => {
 const Donate = (props) => {
   return <h1>Hâm mộ</h1>;
 };
-export default StoryDetail;
+export default ComicDetail;

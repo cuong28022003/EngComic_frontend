@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import apiMain from "../../api/apiMain";
-import { loginSuccess } from "../../redux/authSlice";
+import { loginSuccess } from "../../redux/slice/auth";
 import Reading from "../../components/Reading";
 import Grid from "../../components/Grid";
 import {
@@ -19,9 +19,10 @@ import avt from "../../assets/img/avt.png";
 import { storage } from "../../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { setLoading } from "../../redux/messageSlice";
-import Loading from "../../components/Loading";
-import LoadingData from "../../components/LoadingData";
+import Loading from "../../components/Loading/Loading";
+import LoadingData from "../../components/Loading/LoadingData";
 import Saved from "../../components/Saved";
+import { getComicsByUsername } from "../../api/comicApi";
 const nav = [
   {
     path: "reading",
@@ -53,9 +54,8 @@ function TuTruyen({ userInfo }) {
             <Link
               key={item.path}
               to={item.path}
-              className={`navigate__tab fs-16 bold ${
-                active === index ? "tab_active" : ""
-              }`}
+              className={`navigate__tab fs-16 bold ${active === index ? "tab_active" : ""
+                }`}
               name={item.path}
             >
               {item.display}
@@ -167,8 +167,7 @@ const StoryCreate = ({ userInfo }) => {
   }, [userInfo]);
 
   const getComics = async () => {
-    apiMain
-      .getStorysByUsername({ username: userInfo?.username })
+    getComicsByUsername({ username: userInfo?.username })
       .then((res) => {
         setComics(res);
       })
@@ -340,41 +339,41 @@ const ListChap = ({ url, user, dispatch, onClickBackFromListChap }) => {
               Thêm chương
             </button>
           </div>
-            {chapters.length > 0 ? (
-              <Grid gap={15} col={2} snCol={1}>
-                {chapters.map((item, index) => {
-                  return (
-                    <div key={item.chapnumber}>
-                      <div className="d-flex">
-                        <div
-                          className="col-10 d-flex"
-                          style={{ alignItems: "center" }}
+          {chapters.length > 0 ? (
+            <Grid gap={15} col={2} snCol={1}>
+              {chapters.map((item, index) => {
+                return (
+                  <div key={item.chapnumber}>
+                    <div className="d-flex">
+                      <div
+                        className="col-10 d-flex"
+                        style={{ alignItems: "center" }}
+                      >
+                        <a
+                          key={item.chapnumber}
+                          name={item.chapnumber}
+                          className="text-overflow-1-lines"
                         >
-                          <a
-                            key={item.chapnumber}
-                            name={item.chapnumber}
-                            className="text-overflow-1-lines"
-                          >
-                            {item.tenchap}
-                          </a>
-                        </div>
-                        <div className="col-2">
-                          <a onClick={onClickUpdateChap} name={item.chapnumber}>
-                            <i className="fa-solid fa-marker"></i> Sửa
-                          </a>
-                          <a onClick={onClickDeleteChap} name={item.chapnumber}>
-                            <i className="fa-solid fa-trash"></i> Xóa
-                          </a>
-                        </div>
+                          {item.tenchap}
+                        </a>
                       </div>
-                      <hr />
+                      <div className="col-2">
+                        <a onClick={onClickUpdateChap} name={item.chapnumber}>
+                          <i className="fa-solid fa-marker"></i> Sửa
+                        </a>
+                        <a onClick={onClickDeleteChap} name={item.chapnumber}>
+                          <i className="fa-solid fa-trash"></i> Xóa
+                        </a>
+                      </div>
                     </div>
-                  );
-                })}
-              </Grid>
-            ) : (
-              <p>Không có chương nào để hiển thị.</p>
-            )}
+                    <hr />
+                  </div>
+                );
+              })}
+            </Grid>
+          ) : (
+            <p>Không có chương nào để hiển thị.</p>
+          )}
         </div>
       )}
     </>

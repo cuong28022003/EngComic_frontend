@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import apiMain from "../api/apiMain";
 import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess } from "../redux/authSlice";
+import { loginSuccess } from "../redux/slice/auth";
 
 const Rate = (props) => {
     const url = props.url;

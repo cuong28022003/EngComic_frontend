@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react'
 
 import { Link, useLocation, Route, Routes, useNavigate } from 'react-router-dom';
-import Layout from '../../components/Layout';
+import Layout from '../../layout/MainLayout';
 
 import { useEffect, useState } from 'react';
 import apiMain from '../../api/apiMain';
-import { loginSuccess, logoutSuccess } from '../../redux/authSlice';
+import { loginSuccess, logoutSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux'
 import getData from '../../api/getData';
 import ChangePassword from './ChangePassword'
@@ -13,6 +13,7 @@ import Profile from './Profile';
 import TuTruyen from './TuTruyen';
 import { toast } from 'react-toastify';
 import CreateComic from './CreateComic';
+import LoadingData from '../../components/Loading/LoadingData';
 
 function Account() {
   const menu = [//menu dựa trên từng loại tài khoản

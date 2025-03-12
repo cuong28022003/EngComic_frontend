@@ -3,14 +3,14 @@ import queryString from "query-string";
 import jwt_decode from "jwt-decode";
 import getData from "./getData";
 import { toast } from "react-toastify";
-import { logoutSuccess } from "../redux/authSlice";
-// export const baseURL = "http://localhost:8081/api";
+import { logoutSuccess } from "../redux/slice/auth";
+import { REACT_APP_BASE_URL_API } from "../constant/env";
 
-export const baseURL = "https://web-production-815a.up.railway.app/api";
+// export const baseURL = "https://web-production-815a.up.railway.app/api";
 
 export const axiosClient = axios.create({
-  baseURL: baseURL,
-
+  baseURL: REACT_APP_BASE_URL_API,
+  timeout: 15000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,7 +30,7 @@ const refreshToken = async (user) => {
 
 export const axiosInstance = (user, dispatch, stateSuccess) => {
   const newInstance = axios.create({
-    baseURL: baseURL,
+    baseURL: REACT_APP_BASE_URL_API,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${user.accessToken}`,

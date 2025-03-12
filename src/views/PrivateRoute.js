@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import jwt_decode from 'jwt-decode'
 import { toast } from 'react-toastify';
 import apiMain from '../api/apiMain';
-import { loginSuccess } from '../redux/authSlice';
+import { loginSuccess } from '../redux/slice/auth';
 import { useEffect, useState } from 'react';
 //Component tạo một định tuyến an toàn, khi muốn truy cập các đường dẫn cần có xác thực thì phải đi qua route này
 const PrivateRoute = ({

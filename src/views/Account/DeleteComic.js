@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import axios from "axios";
+import { REACT_APP_BASE_URL_API } from "../../constant/env";
 
 const ComicList = () => {
   const [comics, setComics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.auth.login?.user);
-  const { baseURL } = require('../../api/axiosClient');
 
   // Token giả sử được lưu trong localStorage
   const token = user.accessToken; // Hoặc nơi lưu token của bạn
@@ -15,7 +15,7 @@ const ComicList = () => {
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const response = await axios.get(`${baseURL}/admin/comics`, {
+        const response = await axios.get(`${REACT_APP_BASE_URL_API}/admin/comics`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -33,7 +33,7 @@ const ComicList = () => {
 
   const handleDelete = async (url) => {
     try {
-      await axios.delete(`${baseURL}/admin/comics/${url}`, {
+      await axios.delete(`${REACT_APP_BASE_URL_API}/admin/comics/${url}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import apiMain from '../api/apiMain';
 import avt from '../assets/img/avt.png'
-import { loginSuccess } from '../redux/authSlice';
+import { loginSuccess } from '../redux/slice/auth';
 
 function Comment(props) {
     const [count, setCount] = useState(0);
@@ -49,18 +49,18 @@ function Comment(props) {
         const loadComment = async () => {
             const data = await getComments()
             console.log(data)
-            setCount(data?.length || 0) 
+            setCount(data?.length || 0)
             setComments(data)
         }
         loadComment();
     }, [comments])
 
-    
+
 
     const onClickDeleteComment = async (e) => {//xử lý xoá comment
         if (user) {//Nếu đã đăng nhập thì mới đc phép xoá
             console.log("commentId: " + e.currentTarget.dataset.id);
-            apiMain.deleteComment({ id:  e.currentTarget.dataset.id }, user, dispatch, loginSuccess)
+            apiMain.deleteComment({ id: e.currentTarget.dataset.id }, user, dispatch, loginSuccess)
                 .then(async (res) => {
                     toast.success(res.message, { hideProgressBar: true, pauseOnHover: false, autoClose: 1000 })
                     const data = await getComments()
@@ -140,7 +140,7 @@ function Comment(props) {
                                         </ul>
 
                                     </div>
-                                    </div>
+                                </div>
                                 <hr />
                             </div>)
                     })

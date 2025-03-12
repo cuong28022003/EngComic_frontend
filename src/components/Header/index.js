@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import logo from '../assets/img/logo.png';
-import Auth from './Auth';
-import Modal, { ModalContent } from './modal';
-import { authLoginActive, authRegisterActive, authInactive } from '../redux/modalSlice';
-import { handleLogout } from '../handle/handleAuth';
-import { setQuery } from '../redux/messageSlice';
+import logo from '../../assets/img/logo.png';
+import Auth from '../Auth';
+import Modal, { ModalContent } from '../modal';
+import { authLoginActive, authRegisterActive, authInactive } from '../../redux/modalSlice';
+import { handleLogout } from '../../handle/handleAuth';
+import { setQuery } from '../../redux/messageSlice';
 
 const genres = [
     { title: "Hành động", href: "/the-loai/hanh-dong" },
@@ -83,15 +83,15 @@ export default function Header() {
 
     const dispatch = useDispatch();
 
-    useEffect(()=>{//xử lý dropdown của account
-        const hideDropdown = ()=>{
+    useEffect(() => {//xử lý dropdown của account
+        const hideDropdown = () => {
             profileDropdownRef?.current?.classList.remove("active")
         }
-        document.addEventListener("click",hideDropdown)
-        return ()=>{
-            document.removeEventListener("click",hideDropdown)
+        document.addEventListener("click", hideDropdown)
+        return () => {
+            document.removeEventListener("click", hideDropdown)
         }
-    },[])
+    }, [])
 
     const handleExpand = () => {
         expandRef.current.classList.toggle('active')
@@ -203,14 +203,14 @@ export default function Header() {
                             </Link>
                             {
                                 user ? <div className='navbar-nav__profile'>
-                                    <div  onClick={handleDropdownProfile} className="navbar-nav__profile__name">
+                                    <div onClick={handleDropdownProfile} className="navbar-nav__profile__name">
                                         {user.image ?
                                             <div className='navbar-nav__avatar'><img src={user.image} alt="" /></div>
                                             : <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
                                         }
                                         <a>{user.name || user.tenhienthi || user.username}</a>
                                     </div>
-                                    <div ref={profileDropdownRef}  tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
+                                    <div ref={profileDropdownRef} tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
                                         <ul>
                                             {
                                                 menu[user?.roles[0] || 'USER'].map((item, i) => {

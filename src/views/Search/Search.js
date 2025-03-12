@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import apiMain from "../../api/apiMain";
-import Story from "../../components/Story";
+import Comic from "../../components/Comic";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
+import LoadingData from "../../components/Loading/LoadingData";
+import { searchComics } from "../../api/comicApi";
 
 function Search() {
   const [datas, setDatas] = useState([]);
   const [sort, setSort] = useState("");
+  const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
   const name = searchParams.get("keyword") || "";
   const artist = searchParams.get("artist") || "";
@@ -19,7 +21,8 @@ function Search() {
         return;
       }
       try {
-        const response = await apiMain.getFilteredComics({
+        setLoading(true);
+        const response = await searchComics({
           name,
           artist,
           genre,
@@ -33,11 +36,17 @@ function Search() {
       } catch (error) {
         console.error("Error fetching stories:", error);
         setDatas([]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchStories();
   }, [name, artist, genre, sort]);
+
+  if (loading) {
+    return <LoadingData />;
+  }
 
   return (
     <>
@@ -67,7 +76,7 @@ function Search() {
                   <div className="list-story">
                     {datas.length > 0 ? (
                       datas.map((data, index) => (
-                        <Story key={index} data={data} />
+                        <Comic key={index} data={data} />
                       ))
                     ) : (
                       <div className="no-stories">

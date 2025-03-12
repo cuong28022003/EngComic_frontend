@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { loginSuccess } from "../redux/authSlice";
+import { loginSuccess } from "../redux/slice/auth";
 import { toast } from "react-toastify";
 import apiMain from "../api/apiMain";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const Saved = (props) => {
   const user = useSelector((state) => state.auth.login.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
 
   const handleUnsaveComic = async () => {
     try {

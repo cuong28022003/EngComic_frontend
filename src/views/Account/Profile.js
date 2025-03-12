@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import apiMain from "../../api/apiMain";
-import { loginSuccess } from "../../redux/authSlice";
+import { loginSuccess } from "../../redux/slice/auth";
 import { useSelector, useDispatch } from "react-redux";
 import avt from "../../assets/img/avt.png";
 import { storage } from "../../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
 import { setLoading } from "../../redux/messageSlice";
-import Loading from "../../components/Loading";
-import LoadingData from "../../components/LoadingData";
+import Loading from "../../components/Loading/Loading";
+import LoadingData from "../../components/Loading/LoadingData";
 import getData from "../../api/getData";
 
 function Profile({ userInfo, changeUserInfo }) {
@@ -44,10 +44,10 @@ function Profile({ userInfo, changeUserInfo }) {
         loginSuccess,
         data
       );
-      
+
       // const payload = { name: response.userInfo.tenhienthi, image: response.userInfo.image };
 
-      
+
       // console.log("Update:" + JSON.stringify(response));
       // console.log("name: " + response.userInfo.tenhienthi);
       // console.log("payload: " + payload);

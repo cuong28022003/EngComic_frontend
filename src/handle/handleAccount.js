@@ -1,6 +1,6 @@
 import apiMain from "../api/apiMain"
 import { toast } from "react-toastify"
-import { getMessage } from "../lang/lang"
+import { getMessage } from "../locales/lang"
 import {setLoading} from '../redux/messageSlice'
 
 export const handleChangePassword = async (user, dispatch, loginSuccess, params) => {
