@@ -8,38 +8,8 @@ const apiMain = {
 
 
  
-  createChapter: async (data, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/chuong/create`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.post(url, data));
-  },
-  updateChapter: async (data, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/chuong/edit`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.put(url, data));
-  },
-
-  deleteChapter: async (data, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/chuong`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.delete(url, { data }));
-  },
-
-  createComic: async (params, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/create`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return (await axi.post(url, params)).data;
-  },
-  updateNovel: async (params, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/edit`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.put(url, params));
-  },
-  deleteComic: async (params, user, dispatch, stateSuccess) => {
-    const url = `/novels/novel/${params.url}`;
-    let axi = axiosInstance(user, dispatch, stateSuccess);
-    return await axi.delete(url);
-  },
+ 
+  
   // saveComic: async (data, user, dispatch, stateSuccess) => {
   //   const url = `/saved/`;
   //   let axi = axiosInstance(user, dispatch, stateSuccess);
@@ -104,14 +74,7 @@ const apiMain = {
       headers: { Authorization: `Bearer ${user.accessToken}` },
     });
   },
-  updateUserInfo: async (user, dispatch, stateSuccess, params) => {
-    const axi = await axiosInstance(user, dispatch, stateSuccess);
-    return getData(
-      await axi.put("/user/info", params, {
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-      })
-    );
-  },
+  
 
   ChangePassword: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);

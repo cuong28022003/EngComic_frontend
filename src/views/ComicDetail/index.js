@@ -12,9 +12,12 @@ import Pagination from "../../components/Pagination/index";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/auth";
-import { getDetailComic, getChapters } from "../../api/comicApi";
+import { getDetailComic } from "../../api/comicApi";
+import { getChapters } from "../../api/chapterApi";
 import { checkSavedComic } from "../../api/savedApi";
 import { getReading } from "../../api/readingApi";
+import { ChapterTab } from "./tab/ChapterTab";
+import { routeLink } from "../../routes/AppRoutes";
 
 const nav = [
   //navigate
@@ -93,7 +96,7 @@ function ComicDetail() {
         setMain(<Rate key={"rate"} url={comic.url} />);
         break;
       case "chapter":
-        setMain(<ListChapter key={"chapter"} url={comic.url} />);
+        setMain(<ChapterTab key={"chapter"} url={comic.url} />);
         break;
       case "comment":
         setMain(<Comment key={"comment"} url={comic.url} />);
@@ -158,7 +161,7 @@ function ComicDetail() {
   const onClickReading = async () => {
     try {
       if (!user) {
-        navigate(`/comics/${url}/chapters/1`);
+        navigate(routeLink.chapterDetail.replace(":url", url).replace(":chapterNumber", 1));
       } else {
         const response = await getReading(
           url,
@@ -167,8 +170,8 @@ function ComicDetail() {
           loginSuccess
         );
         console.log(response);
-        const reading = response
-        navigate(`/comics/${url}/${reading.chapterNumber}`);
+        const reading = response.data
+        navigate(routeLink.chapterDetail.replace(":url", url).replace(":chapterNumber", reading.chapterNumber));
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -184,7 +187,6 @@ function ComicDetail() {
   //style
   const liClass = "border-primary rounded-2 color-primary";
   return (
-    <Layout>
       <div className="main-content">
         {loadingData ? (
           <LoadingData />
@@ -296,7 +298,6 @@ function ComicDetail() {
           </>
         )}
       </div>
-    </Layout>
   );
 }
 
@@ -308,63 +309,7 @@ const About = (props) => {
   );
 };
 
-export const ListChapter = (props) => {
-  const [chapters, setChapters] = useState([]);
-  const [loadingData, setLoadingData] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
 
-  const url = props.url;
-  useEffect(() => {
-    const loadList = async () => {
-      const params = {
-        page: currentPage,
-        size: 20,
-      };
-
-      getChapters(props.url, params).then((res) => {
-        console.log("chapters" + res.content);
-        setChapters(res?.content || []);
-        setTotalPages(res.totalPages);
-        setLoadingData(false);
-      });
-    };
-    loadList(); //gọi hàm
-  }, [props.url, currentPage]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  }
-
-  return (
-    <>
-      <h3>Danh sách chương</h3>
-      {loadingData ? (
-        <LoadingData />
-      ) : (
-        <Grid gap={15} col={props.col || 3} snCol={1}>
-          {chapters.map((item, index) => {
-            return (
-              <Link
-                to={`comics/${url}/${item.chapterNumber}`}
-                key={index}
-                className="text-overflow-1-lines"
-                style={{ fontSize: `${props.fontsize || 16}px` }}
-              >
-                {item.name}
-              </Link>
-            );
-          })}
-        </Grid>
-      )}
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={handlePageChange}
-      />
-    </>
-  );
-};
 
 const Donate = (props) => {
   return <h1>Hâm mộ</h1>;

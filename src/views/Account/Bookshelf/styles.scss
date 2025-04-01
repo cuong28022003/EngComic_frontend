@@ -1,0 +1,45 @@
+
+@import "../../../scss/variables.scss";
+
+.navigate {
+    position: relative;
+    margin-bottom: 2rem;
+
+    &::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: rgb(235, 235, 235);
+        bottom: -5px;
+        left: 0;
+    }
+
+    &__tab {
+        display: inline-block;
+        margin-right: 20px;
+        position: relative;
+        cursor: pointer;
+
+        &::after {
+            content: "";
+            position: absolute;
+            width: 0;
+            transform: translateX(-55%);
+            height: 2px;
+            background-color: $main-color;
+            bottom: -5px;
+            left: 55%;
+            transition: width .5s ease;
+        }
+
+        &.tab_active {
+            color: $main-color;
+        }
+
+        &.tab_active::after,
+        &:hover::after {
+            width: 110%;
+        }
+    }
+}

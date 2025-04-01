@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 
-import { Link, useLocation, Route, Routes, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams, Outlet, NavLink } from 'react-router-dom';
 import Layout from '../../layout/MainLayout';
 
 import { useEffect, useState } from 'react';
@@ -9,11 +9,13 @@ import { loginSuccess, logoutSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux'
 import getData from '../../api/getData';
 import ChangePassword from './ChangePassword'
-import Profile from './Profile';
-import TuTruyen from './TuTruyen';
+import Profile from './Profile/Profile';
+import Bookshelf from './Bookshelf';
 import { toast } from 'react-toastify';
 import CreateComic from './CreateComic';
 import LoadingData from '../../components/Loading/LoadingData';
+import { routeLink } from '../../routes/AppRoutes';
+import './styles.scss';
 
 function Account() {
   const menu = [//menu dựa trên từng loại tài khoản
@@ -28,17 +30,18 @@ function Account() {
       icon: ""
     },
     {
-      path: "tu-truyen/reading",
+      path: "bookshelf",
       display: "Tủ truyện",
       icon: ""
     },
     {
-      path: "dang-truyen",
+      path: "create-comic",
       display: "Đăng truyện",
       icon: ""
     },
   ]
 
+  const navigate = useNavigate()
   const [userInfo, setUserInfo] = useState(null)
   const user = useSelector(state => state.auth.login?.user);
   const { pathname } = useLocation();
@@ -79,19 +82,14 @@ function Account() {
             <ul className="list-group">
               {
                 menu.map((item, index) => {
-                  return <li key={index} className={`list-group__item ${index === active ? 'active' : ''}`} ><Link to={item.path}>{item.display}</Link></li>
+                  return <NavLink key={index} to={`${routeLink.account}/${item.path}`} className={`list-group__item`} end={false}>{ item.display}</NavLink>
                 })
               }
             </ul>
 
           </div>
           <div className="col-9 " style={{ 'minHeight': '500px' }}>
-            <Routes>
-              <Route path='profile' element={<Profile userInfo={userInfo} changeUserInfo={changeUserInfo} />}></Route>
-              <Route path='change-password' element={<ChangePassword />}></Route>
-              <Route path='tu-truyen/*' element={<TuTruyen userInfo={userInfo} />}></Route>
-              <Route path='dang-truyen' element={<CreateComic userInfo={userInfo} />}></Route>
-            </Routes>
+              <Outlet/>
           </div>
         </div>
       </div>

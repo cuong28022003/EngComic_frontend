@@ -8,6 +8,9 @@ import Modal, { ModalContent } from '../modal';
 import { authLoginActive, authRegisterActive, authInactive } from '../../redux/modalSlice';
 import { handleLogout } from '../../handle/handleAuth';
 import { setQuery } from '../../redux/messageSlice';
+import { routeLink } from '../../routes/AppRoutes';
+import './styles.scss'
+import { ComicGenres } from '../../constant/enum';
 
 const genres = [
     { title: "Hành động", href: "/the-loai/hanh-dong" },
@@ -21,6 +24,7 @@ const genres = [
     { title: "Tâm lý / Kịch tính", href: "/the-loai/kinh-di" },
     { title: "Trinh thám / Bí ẩn", href: "/the-loai/kinh-di" },
 ];
+
 
 const menu = {//menu hiển thị cho từng loại tài khoản admin và user thường
     ADMIN: [
@@ -68,6 +72,8 @@ const menu = {//menu hiển thị cho từng loại tài khoản admin và user 
 
 }
 
+
+
 export default function Header() {
     const headerRef = useRef(null)
     const expandRef = useRef(null)
@@ -78,6 +84,19 @@ export default function Header() {
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [dropdownVisible, setDropdownVisible] = useState(false);
+
+    const menuItems = [
+        { name: "Hồ sơ", path: "/user/profile" },
+        { name: "Đổi mật khẩu", path: "/user/change-password" },
+        { name: "Tủ truyện", path: "/user/bookshelf" },
+    ];
+
+    if (user?.roles[0] === 'ADMIN') {
+        menuItems.push(
+            { name: "Người dùng", path: "/admin/users" },
+            { name: "Cài đặt", path: "/admin/setting" },
+        );
+    }
 
     let location = useLocation();
 
@@ -131,34 +150,6 @@ export default function Header() {
         <>
             <nav ref={headerRef} className="header">
                 <div className="header__wrap">
-                    <div className='collapse'>
-                        <button onClick={handleExpand} className='navbar-nav__collapse'><i className="fa-solid fa-bars"></i></button>
-                        <div className="navbar__items__expand" ref={expandRef}>
-                            <ul className='navbar-nav__list__expand'>
-                                <Link to='/'>
-                                    <li className='text-bold'>
-                                        Thể loại
-                                    </li>
-                                </Link>
-                                <Link to='/truyen'>
-                                    <li className='text-bold'>Bảng xếp hạng</li>
-                                </Link>
-                                <Link to={'/'}>
-                                    <li>Đăng truyện</li>
-                                </Link>
-                                {
-                                    user ? <Link to='/profile'>
-                                        <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
-                                        {user.tenhienthi || user.username}
-                                    </Link> :
-                                        <>
-                                            <a onClick={handleAuthLogin}><li>Đăng nhập</li></a>
-                                            <a onClick={handleAuthRegister}><li>Đăng ký</li></a>
-                                        </>
-                                }
-                            </ul>
-                        </div>
-                    </div>
 
                     <div className="logo">
                         <Link className="" to='/'><img src={logo} alt="" /></Link>
@@ -174,9 +165,14 @@ export default function Header() {
                                 >
                                     <span className="text-bold">Thể loại</span>
                                     <ul className={`navigation-dropdown ${dropdownVisible ? "active" : ""}`}>
-                                        {genres.map((genre, index) => (
+                                        {/* {genres.map((genre, index) => (
                                             <li key={index}>
                                                 <Link to={`/search?genre=${genre.title}`}>{genre.title}</Link>
+                                            </li>
+                                        ))} */}
+                                        {ComicGenres.map((genre, index) => (
+                                            <li key={index}>
+                                                <Link to={`/search?genre=${genre}`}>{genre}</Link>
                                             </li>
                                         ))}
                                     </ul>
@@ -198,7 +194,7 @@ export default function Header() {
                             </div>
                         </div>
                         <ul className='navbar-nav__list navbar-nav__list--right'>
-                            <Link to={user?.roles[0] === 'ADMIN' ? '/admin/dang-truyen' : '/user/dang-truyen'}>
+                            <Link to={user?.roles[0] === 'ADMIN' ? '/admin/dang-truyen' : routeLink.createComic}>
                                 <li><i style={{ marginRight: 4 + 'px' }} className="fa-regular fa-circle-up"></i> Đăng truyện</li>
                             </Link>
                             {
@@ -208,16 +204,13 @@ export default function Header() {
                                             <div className='navbar-nav__avatar'><img src={user.image} alt="" /></div>
                                             : <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
                                         }
-                                        <a>{user.name || user.tenhienthi || user.username}</a>
+                                        <a>{user.fullName || user.username}</a>
                                     </div>
                                     <div ref={profileDropdownRef} tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
                                         <ul>
-                                            {
-                                                menu[user?.roles[0] || 'USER'].map((item, i) => {
-                                                    return <li key={i}><Link to={item.path}>{item.display}</Link></li>
-                                                }
-                                                )
-                                            }
+                                            {menuItems.map((item, i) => {
+                                                return <li key={i}><Link to={item.path}>{item.name}</Link></li>
+                                            })}
                                             <li ><a onClick={onClickLogout}>Đăng xuất</a></li>
                                         </ul>
                                     </div>

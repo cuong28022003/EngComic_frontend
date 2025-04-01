@@ -9,64 +9,22 @@ import { toast } from 'react-toastify';
 import { setLoading } from '../../redux/messageSlice'
 import Loading from '../../components/Loading/Loading';
 import LoadingData from '../../components/Loading/LoadingData';
-import getData from '../../api/getData';
 import { useNavigate } from 'react-router-dom';
+import { ComicGenres } from '../../constant/enum';
+import { createComic } from '../../api/comicApi';
+import { routeLink } from '../../routes/AppRoutes';
 
-function CreateNovel({ userInfo }) {
-    const types = [
-        "Hành động",
-        "Phiêu lưu",
-        "Hài hước",
-        "Siêu nhiên",
-        "Thể thao",
-        "Giả tưởng",
-        "Mecha",
-        "Khoa học viễn tưởng",
-        "Tâm lý / Kịch tính",
-        "Trinh thám / Bí ẩn"
-    ];
+function CreateComic() {
     const user = useSelector(state => state.auth.login.user)
     const [image, setImage] = useState("");
     const [preview, setPreview] = useState(avt)
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [artist, setArtist] = useState("");
-    const [genre, setGenre] = useState(types[0]);
+    const [genre, setGenre] = useState(ComicGenres[0]);
     const loading = useSelector(state => state.message.loading)
-    const [loadingUser, setLoadingUser] = useState(true)
     const dispatch = useDispatch()
     const navigate = useNavigate();
-
-
-    useEffect(() => {
-        const loadUser = async () => {
-            if (userInfo) {
-                setLoadingUser(false)
-            }
-        }
-        loadUser();
-    }, [userInfo])
-
-
-    const handleCreateNovel = async (data) => {//xử lý gọi tạo truyện mới
-        try {
-            apiMain.createComic(data, user, dispatch, loginSuccess)
-                .then(res => {
-                    console.log(res);
-                    toast.success("Đăng truyện thành công")
-                    dispatch(setLoading(false))
-                    navigate("/comic-list");
-                })
-                .catch(err => {
-
-                    dispatch(setLoading(false))
-                    toast.error(getData(err.response)?.details.message)
-                })
-        } catch (error) {
-            console.log(error)
-            toast.error("Lỗi cập nhật thông tin")
-        }
-    }
 
     const handleCreate = async (e) => {//xử lý tạo truyện
         e.preventDefault()
@@ -82,16 +40,25 @@ function CreateNovel({ userInfo }) {
                 const data = {//payload
                     name: name,
                     image: urlImage,
-                    artist,
-                    description,
-                    genre,
-                    url,
-                    uploader: userInfo?._id
+                    artist: artist,
+                    description: description,
+                    genre: genre,
+                    url: url,
+                    uploader: user?._id
                 }
-                await handleCreateNovel(data)//gọi API
+                await createComic(data, user, dispatch, loginSuccess)
+                    .then(res => {
+                        // console.log(res);
+                        toast.success("Đăng truyện thành công")
+                        dispatch(setLoading(false))
+                        navigate(routeLink.comics);
+                    })
+                    .catch(err => {
+                        dispatch(setLoading(false))
+                        toast.error("Đăng truyện thất bại")
+                    })
             })
-        })
-
+        });
     }
 
     ///OnChange event
@@ -110,12 +77,12 @@ function CreateNovel({ userInfo }) {
     return (
         <>
             {
-                loadingUser ? <LoadingData />
+                !user ? <LoadingData />
                     :
                     <div className="profile__wrap d-flex">
                         <div className="col-5 profile__avt">
                             <img src={preview} alt="" />
-                            <input type={"file"} accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*" name={"avatar"} onChange={onChangeImage} />
+                            <input type={"file"} accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff, .webp|image/*" name={"avatar"} onChange={onChangeImage} />
                         </div>
                         <div className="col-7 ">
                             <div className="profile__main">
@@ -133,10 +100,14 @@ function CreateNovel({ userInfo }) {
                                         <input required onChange={e => { setArtist(e.target.value) }} value={artist}></input>
                                     </div>
                                     <div className="group-info">
-                                        <label for="types">Thể loại</label>
+                                        <label htmlFor="">Thể loại</label>
                                         <select style={labelStyle} onChange={e => { console.log(e.target.value); setGenre(e.target.value) }} value={genre} id="types" name="types">
                                             {
-                                                types.map(item => { return (<option value={item}>{item}</option>) })
+                                                ComicGenres.map(([key, value]) => (
+                                                    <option key={key} value={key}>
+                                                        {value}
+                                                    </option>
+                                                ))
                                             }
                                         </select>
                                     </div>
@@ -152,4 +123,4 @@ function CreateNovel({ userInfo }) {
     )
 }
 
-export default CreateNovel
+export default CreateComic

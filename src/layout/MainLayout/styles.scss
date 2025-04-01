@@ -1,0 +1,24 @@
+.header {
+    position: relative;
+    z-index: 1;
+}
+
+.container {
+    width: 100%;
+    max-width: 1620px;
+    padding: 0 50px;
+    margin: auto;
+    position: relative;
+    // @include tablet {
+    //     padding: 0 20px;
+    // }
+    // @include mobile {
+    //     padding: 0 10px;
+    // }
+}
+
+.main {
+    margin-top: 72px;
+    margin-bottom: 2rem;
+    min-height: 100vh;
+}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apiMain from "../../api/apiMain";
-import Reading from "../../components/Reading";
+import Reading from "../../components/Reading/Reading";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
 import Comic from "../../components/Comic";
 import getData from "../../api/getData";
@@ -11,6 +11,7 @@ import "./ListStory.scss";
 import { getComics } from "../../api/comicApi";
 import NoData from "../../components/NoData";
 import { getReadings } from "../../api/readingApi";
+import { routeLink } from "../../routes/AppRoutes";
 
 function ListStory() {
   const [datas, setData] = useState([]);
@@ -21,9 +22,10 @@ function ListStory() {
   useEffect(() => {
     const getReadingList = async () => {
       if (user) {
-          getReadings(user, dispatch, loginSuccess)
-            .then((res) => {
-            setReadings(res.data);
+        getReadings(user, dispatch, loginSuccess)
+          .then((res) => {
+            setReadings(res.data.content);
+            // console.log(res);
           })
           .catch((err) => {
             console.log(err);
@@ -48,7 +50,7 @@ function ListStory() {
           <Section>
             <SectionHeading>
               <h4 className="section-title">Biên tập viên đề cử</h4>
-              <Link to="comic-list">Xem tất cả</Link>
+              <Link to={routeLink.comics}>Xem tất cả</Link>
             </SectionHeading>
             <SectionBody>
               <div className="list-story">

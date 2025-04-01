@@ -8,9 +8,9 @@ import { loginSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux'
 import getData from '../../api/getData';
 import ChangePassword from './ChangePassword'
-import Profile from './Profile';
+import Profile from './Profile/Profile';
 import Users from './Users'
-import TuTruyen from './TuTruyen';
+import Bookshelf from './Bookshelf';
 import CreateComic from './CreateComic';
 import DeleteComic from './DeleteComic';
 
@@ -84,7 +84,7 @@ function Account() {
               <Route path='change-password' element={<ChangePassword />}></Route>
               <Route path='users' element={<Users dispatch={dispatch} />}></Route>
               <Route path='delete-truyen' element={<DeleteComic dispatch={dispatch} />}></Route>
-              <Route path='tu-truyen/*' element={<TuTruyen userInfo={userInfo} />}></Route>
+              <Route path='tu-truyen/*' element={<Bookshelf userInfo={userInfo} />}></Route>
               <Route path='dang-truyen' element={<CreateComic userInfo={userInfo} />}></Route>
             </Routes>
           </div>

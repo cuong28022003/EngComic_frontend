@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import apiMain from '../api/apiMain';
 import { loginSuccess } from '../redux/slice/auth';
 import { useEffect, useState } from 'react';
+import { verifyToken } from '../api/authApi';
 //Component tạo một định tuyến an toàn, khi muốn truy cập các đường dẫn cần có xác thực thì phải đi qua route này
 const PrivateRoute = ({
     roles,
@@ -16,7 +17,7 @@ const PrivateRoute = ({
     useEffect(() => {
         const verify = async () => {
             if (user) {
-                const veri = await apiMain.verifyToken(user, dispatch, loginSuccess)
+                const veri = await verifyToken(user, dispatch, loginSuccess)
                 console.log(veri)
                 if (veri?.status !== 200) {
                     toast.warning("Phiên làm việc của bạn đã hết. Vui lòng đăng nhập lại", { autoClose: 1000, pauseOnHover: false, hideProgressBar: true })
