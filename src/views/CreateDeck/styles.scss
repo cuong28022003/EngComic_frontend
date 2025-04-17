@@ -1,0 +1,72 @@
+.create-deck-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+    h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+}
+
+.create-deck-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    label {
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        font-size: 1rem;
+
+        span {
+            color: red;
+            margin-left: 0.25rem;
+        }
+
+        input,
+        textarea {
+            margin-top: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            resize: vertical;
+
+            &:focus {
+                outline: none;
+                border-color: #3ccfcf;
+            }
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+    }
+
+    button {
+        background: #3ccfcf;
+        color: white;
+        padding: 0.75rem;
+        border: none;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background 0.2s;
+
+        &:hover {
+            background: #2cb4b4;
+        }
+
+        &:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+    }
+}

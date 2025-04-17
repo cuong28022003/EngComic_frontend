@@ -20,6 +20,14 @@ import ChangePassword from "../views/Account/ChangePassword";
 import ReadingTab from "../views/Account/Bookshelf/tab/ReadingTab";
 import CreatedTab from "../views/Account/Bookshelf/tab/CreatedTab";
 import SavedTab from "../views/Account/Bookshelf/tab/SavedTab";
+import StudyPage from "../views/Study";
+import ResultPage from "../views/Result";
+import DeckPage from "../views/Deck";
+import { createDeck } from "../api/deckApi";
+import CreateDeckPage from "../views/CreateDeck";
+import DeckFormPage from "../views/Deck/component/AddEditDeck";
+import DeckDetailPage from "../views/DeckDetail";
+import CardFormPage from "../views/DeckDetail/component/AddEditCard";
 
 export const routeLink = {
     default: '/',
@@ -43,6 +51,15 @@ export const routeLink = {
     register: '/register',
     favorites: '/favorites',
     search: '/search',
+
+    study: '/study/:deckId',
+    result: '/result/:deckId',
+    deck: '/deck',
+    createDeck: '/deck/create', 
+    editDeck: '/deck/:deckId/edit',
+    deckDetail: '/deck/:deckId',
+    createCard: '/deck/:deckId/create-card',
+    editCard: '/deck/:deckId/edit-card/:cardId',
 };
 
 const AppRoutes = () => {
@@ -69,10 +86,19 @@ const AppRoutes = () => {
                             <Route path='bookshelf/:bookshelfTab' element={<Bookshelf />} />
                             <Route path='create-comic' element={<CreateComic />} />
                         </Route>
-                        {/* <Route path={routeLink.createComic} element={<CreateComic />} /> */}
                         <Route path={routeLink.editComic} element={<EditComic />} />
                         <Route path={routeLink.chapters} element={<ChapterList />} />
                         <Route path={routeLink.createChapter} element={<CreateChapter />} />
+
+                        <Route path={routeLink.study} element={<StudyPage />} />
+                        <Route path={routeLink.result} element={<ResultPage />} />
+                        <Route path={routeLink.deck} element={<DeckPage />} />
+                        <Route path={routeLink.createDeck} element={<DeckFormPage />} />
+                        <Route path={routeLink.editDeck} element={<DeckFormPage />} />
+
+                        <Route path={routeLink.deckDetail} element={<DeckDetailPage />} />
+                        <Route path={routeLink.createCard} element={<CardFormPage />} />
+                        <Route path={routeLink.editCard} element={<CardFormPage />} />
                     </Route>
 
                     <Route element={<PrivateRoute roles={['ADMIN']} />}>

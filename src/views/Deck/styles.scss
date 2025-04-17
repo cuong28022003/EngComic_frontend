@@ -1,0 +1,30 @@
+.container {
+    padding: 2rem;
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+}
+
+.addButton {
+    background: #3ccfcf;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    border: none;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+
+    &:hover {
+        background: #2cb4b4;
+    }
+}
+
+.deckGrid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}

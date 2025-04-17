@@ -25,55 +25,6 @@ const genres = [
     { title: "Trinh thám / Bí ẩn", href: "/the-loai/kinh-di" },
 ];
 
-
-const menu = {//menu hiển thị cho từng loại tài khoản admin và user thường
-    ADMIN: [
-        {
-            path: 'admin/profile',
-            display: 'Hồ sơ'
-        },
-        {
-            path: 'admin/change-password',
-            display: 'Đổi mật khẩu'
-        },
-        {
-            path: 'admin/users',
-            display: 'Người dùng'
-        },
-        {
-            path: 'admin/tu-truyen/reading',
-            display: 'Tủ truyện'
-        },
-        {
-            path: 'admin/setting',
-            display: 'Cài đặt'
-        }
-    ]
-
-    ,
-    USER: [
-        {
-            path: 'user/profile',
-            display: 'Hồ sơ'
-        },
-        {
-            path: 'user/change-password',
-            display: 'Đổi mật khẩu'
-        },
-        {
-            path: 'user/tu-truyen/reading',
-            display: 'Tủ truyện'
-        },
-        {
-            path: 'user/setting',
-            display: 'Cài đặt'
-        }
-    ]
-
-}
-
-
-
 export default function Header() {
     const headerRef = useRef(null)
     const expandRef = useRef(null)
@@ -89,6 +40,7 @@ export default function Header() {
         { name: "Hồ sơ", path: "/user/profile" },
         { name: "Đổi mật khẩu", path: "/user/change-password" },
         { name: "Tủ truyện", path: "/user/bookshelf" },
+        { name: "Quản lý thẻ", path: routeLink.deck },
     ];
 
     if (user?.roles[0] === 'ADMIN') {

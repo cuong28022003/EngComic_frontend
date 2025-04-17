@@ -103,9 +103,9 @@ function CreateComic() {
                                         <label htmlFor="">Thể loại</label>
                                         <select style={labelStyle} onChange={e => { console.log(e.target.value); setGenre(e.target.value) }} value={genre} id="types" name="types">
                                             {
-                                                ComicGenres.map(([key, value]) => (
-                                                    <option key={key} value={key}>
-                                                        {value}
+                                                ComicGenres.map((genre, index) => (
+                                                    <option key={index} value={genre}>
+                                                        {genre}
                                                     </option>
                                                 ))
                                             }
