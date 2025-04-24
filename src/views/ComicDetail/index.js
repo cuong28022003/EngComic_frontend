@@ -8,16 +8,16 @@ import LoadingData from "../../components/Loading/LoadingData";
 import Grid from "../../components/Grid";
 import Rate from "../../components/Rate";
 import Comment from "../../components/Comment";
-import Pagination from "../../components/Pagination/index";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/auth";
 import { getDetailComic } from "../../api/comicApi";
-import { getChapters } from "../../api/chapterApi";
 import { checkSavedComic } from "../../api/savedApi";
 import { getReading } from "../../api/readingApi";
 import { ChapterTab } from "./tab/ChapterTab";
 import { routeLink } from "../../routes/AppRoutes";
+import RatingTab from "./tab/RatingTab";
+import { saveComic, unsaveComic } from "../../api/savedApi";
 
 const nav = [
   //navigate
@@ -56,7 +56,6 @@ function ComicDetail() {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     const getComic = async () => {
       try {
         const res = await getDetailComic(url);
@@ -77,7 +76,7 @@ function ComicDetail() {
           dispatch,
           loginSuccess
         );
-        console.log(res);
+        console.log(res); 
         setIsSaved(res.saved);
       } catch (error) {
         console.log(error);
@@ -93,7 +92,7 @@ function ComicDetail() {
         setMain(<About key={"about"} comic={comic} />);
         break;
       case "rate":
-        setMain(<Rate key={"rate"} url={comic.url} />);
+        setMain(<RatingTab key={"rate"} comicId={comic.id} />);
         break;
       case "chapter":
         setMain(<ChapterTab key={"chapter"} url={comic.url} />);
@@ -114,14 +113,13 @@ function ComicDetail() {
     try {
       const payload = { url: comic?.url };
       if (user) {
-        const response = await apiMain.saveComic(
+        const response = await saveComic(
           payload,
           user,
           dispatch,
           loginSuccess
         );
         setIsSaved(true);
-        console.log(response);
         toast.success("Đánh dấu truyện thành công");
       } else {
         toast.warning("Bạn cần đăng nhập trước");
@@ -135,7 +133,7 @@ function ComicDetail() {
   const handleUnsaveComic = async () => {
     try {
       const payload = { url: comic?.url };
-      const response = await apiMain.unsaveComic(
+      const response = await unsaveComic(
         payload,
         user,
         dispatch,
@@ -187,117 +185,98 @@ function ComicDetail() {
   //style
   const liClass = "border-primary rounded-2 color-primary";
   return (
-      <div className="main-content">
-        {loadingData ? (
-          <LoadingData />
-        ) : (
-          <>
-            <div className="heroSide d-flex">
-              <div className="img-wrap">
-                <img src={comic?.image} alt="" />
-              </div>
-              <div className="heroSide__main">
-                <h2 className="mb-1">{comic?.name}</h2>
-                <ul className="">
-                  <li
-                    className={liClass}
-                    onClick={() => onClickArtist(comic?.artist)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {comic?.artist}
-                  </li>
-                  {/* <li className={liClass}>{comic?.status}</li> */}
-                  <li
-                    className={liClass}
-                    onClick={() => onClickGenre(comic?.genre)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {comic?.genre}
-                  </li>
-                </ul>
-                <ul className="heroSide__info">
-                  <li>
-                    <span className="fs-16 bold">
-                      {comic?.chapterCount || "0"}
-                    </span>
-                    <br />
-                    <span>Chương</span>
-                  </li>
-                  <li>
-                    <span className="fs-16 bold">{comic?.views || "0"}</span>
-                    <br />
-                    <span>Lượt đọc</span>
-                  </li>
-
-                  <li>
-                    <span className="fs-16 bold">{100 || "0"}</span>
-                    <br />
-                    <span>Cất giữ</span>
-                  </li>
-                </ul>
-
-                <div className="heroSide__rate">
-                  <span
-                    className={`fa fa-star ${comic?.rating >= 1 ? "checked" : ""
-                      }`}
-                  ></span>
-                  <span
-                    className={`fa fa-star ${comic?.rating >= 2 ? "checked" : ""
-                      }`}
-                  ></span>
-                  <span
-                    className={`fa fa-star ${comic?.rating >= 3 ? "checked" : ""
-                      }`}
-                  ></span>
-                  <span
-                    className={`fa fa-star ${comic?.rating >= 4 ? "checked" : ""
-                      }`}
-                  ></span>
-                  <span
-                    className={`fa fa-star ${comic?.rating >= 5 ? "checked" : ""
-                      }`}
-                  ></span>
-                  <span>
-                    &nbsp;{comic?.rating}/5 ({comic?.ratingCount} đánh giá)
+    <div className="main-content">
+      {loadingData ? (
+        <LoadingData />
+      ) : (
+        <>
+          <div className="heroSide d-flex">
+            <div className="img-wrap">
+              <img src={comic?.image} alt="" />
+            </div>
+            <div className="heroSide__main">
+              <h2 className="mb-1">{comic?.name}</h2>
+              <ul className="">
+                <li
+                  className={liClass}
+                  onClick={() => onClickArtist(comic?.artist)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {comic?.artist}
+                </li>
+                {/* <li className={liClass}>{comic?.status}</li> */}
+                <li
+                  className={liClass}
+                  onClick={() => onClickGenre(comic?.genre)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {comic?.genre}
+                </li>
+              </ul>
+              <ul className="heroSide__info">
+                <li>
+                  <span className="fs-16 bold">
+                    {comic?.chapterCount || "0"}
                   </span>
-                </div>
-                <div className="">
-                  <button className="btn-primary mr-1" onClick={onClickReading}>
-                    Đọc truyện
-                  </button>
-                  <button
-                    className={`btn-outline mr-1 ${isSaved ? "saved" : ""}`}
-                    onClick={isSaved ? handleUnsaveComic : handleSaveComic}
+                  <br />
+                  <span>Chương</span>
+                </li>
+                <li>
+                  <span className="fs-16 bold">{comic?.views || "0"}</span>
+                  <br />
+                  <span>Lượt đọc</span>
+                </li>
+
+                <li>
+                  <span className="fs-16 bold">{100 || "0"}</span>
+                  <br />
+                  <span>Cất giữ</span>
+                </li>
+              </ul>
+
+              <div className="comic-rating-summary">
+                <StarRatingDisplay rating={comic?.averageRating} />
+                <span className="score">({comic?.averageRating?.toFixed(1)} / 5)</span>
+                <span className="total">- {comic?.totalRatings} đánh giá</span>
+              </div>
+
+              <div className="">
+                <button className="btn-primary mr-1" onClick={onClickReading}>
+                  Đọc truyện
+                </button>
+                <button
+                  className={`btn-outline mr-1 ${isSaved ? "saved" : ""}`}
+                  onClick={isSaved ? handleUnsaveComic : handleSaveComic}
+                >
+                  {isSaved ? "Đã đánh dấu" : "Đánh dấu"}
+                </button>
+                <button className="btn-outline">Đề cử</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="story-detail">
+            <div className="navigate">
+              {nav.map((item, index) => {
+                return (
+                  <a
+                    className={`navigate__tab fs-20 bold ${active === index ? "tab_active" : ""
+                      }`}
+                    key={index}
+                    name={item.path}
+                    onClick={onClickTab}
                   >
-                    {isSaved ? "Đã đánh dấu" : "Đánh dấu"}
-                  </button>
-                  <button className="btn-outline">Đề cử</button>
-                </div>
-              </div>
+                    {item.display}
+                  </a>
+                );
+              })}
             </div>
+          </div>
 
-            <div className="story-detail">
-              <div className="navigate">
-                {nav.map((item, index) => {
-                  return (
-                    <a
-                      className={`navigate__tab fs-20 bold ${active === index ? "tab_active" : ""
-                        }`}
-                      key={index}
-                      name={item.path}
-                      onClick={onClickTab}
-                    >
-                      {item.display}
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="story-detail__tab__main">{main}</div>
-          </>
-        )}
-      </div>
+          <div className="story-detail__tab__main">{main}</div>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -309,7 +288,19 @@ const About = (props) => {
   );
 };
 
+const StarRatingDisplay = ({ rating }) => {
+  const fullStars = Math.floor(rating);
+  const halfStar = rating - fullStars >= 0.5;
+  const stars = [];
 
+  for (let i = 1; i <= 5; i++) {
+    if (i <= fullStars) stars.push(<span key={i} className="filled">★</span>);
+    else if (i === fullStars + 1 && halfStar) stars.push(<span key={i} className="half">★</span>);
+    else stars.push(<span key={i}>☆</span>);
+  }
+
+  return <div className="star-rating-display">{stars}</div>;
+};
 
 const Donate = (props) => {
   return <h1>Hâm mộ</h1>;

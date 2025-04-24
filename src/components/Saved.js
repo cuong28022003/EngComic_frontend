@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slice/auth";
 import { toast } from "react-toastify";
-import apiMain from "../api/apiMain";
+import { unsaveComic } from "../api/savedApi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
@@ -16,7 +16,7 @@ const Saved = (props) => {
   const handleUnsaveComic = async () => {
     try {
       const payload = { url: data.url };
-      const response = await apiMain.unsaveComic(
+      const response = await unsaveComic(
         payload,
         user,
         dispatch,

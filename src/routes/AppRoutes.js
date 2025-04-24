@@ -8,7 +8,7 @@ import Account from "../views/Account/Account";
 import Admin from "../views/Account/Admin";
 import Active from "../views/Active/Active";
 import ChapterDetail from "../views/ChapterDetail";
-import Search from "../views/Search/Search";
+import SearchPage from "../views/Search";
 import ComicList from "../views/ComicList";
 import CreateComic from "../views/Account/CreateComic";
 import Profile from "../views/Account/Profile/Profile";
@@ -33,7 +33,7 @@ export const routeLink = {
     default: '/',
     users: '/users',
     myProfile: '/users/me',
-    
+
     account: '/user',
     bookshelf: '/user/bookshelf/:bookshelfTab',
     profile: '/user/profile',
@@ -55,7 +55,7 @@ export const routeLink = {
     study: '/study/:deckId',
     result: '/result/:deckId',
     deck: '/deck',
-    createDeck: '/deck/create', 
+    createDeck: '/deck/create',
     editDeck: '/deck/:deckId/edit',
     deckDetail: '/deck/:deckId',
     createCard: '/deck/:deckId/create-card',
@@ -105,7 +105,7 @@ const AppRoutes = () => {
                         <Route path='admin/*' element={<Admin />} />
                     </Route>
                     <Route path='active/:token' element={<Active />} />
-                    <Route path='search' element={<Search />} />
+                    <Route path='search' element={<SearchPage />} />
                     <Route path={routeLink.comics} element={<ComicList />} />
 
                 </Route>

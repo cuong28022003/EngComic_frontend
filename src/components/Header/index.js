@@ -3,11 +3,10 @@ import { useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from '../../assets/img/logo.png';
-import Auth from '../Auth';
+import Auth from '../Auth/index';
 import Modal, { ModalContent } from '../modal';
 import { authLoginActive, authRegisterActive, authInactive } from '../../redux/modalSlice';
 import { handleLogout } from '../../handle/handleAuth';
-import { setQuery } from '../../redux/messageSlice';
 import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss'
 import { ComicGenres } from '../../constant/enum';
