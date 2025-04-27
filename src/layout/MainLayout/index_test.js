@@ -6,7 +6,7 @@ import "./styles.scss"
 const MainLayout = () => {
     return (
         <>  
-            <Header className="header" />
+            <Header />
             <main className="main">
                 <div className="container">
                     <Outlet /> {/* Render nội dung theo route */}

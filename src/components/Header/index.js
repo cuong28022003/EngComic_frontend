@@ -11,19 +11,6 @@ import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss'
 import { ComicGenres } from '../../constant/enum';
 
-const genres = [
-    { title: "Hành động", href: "/the-loai/hanh-dong" },
-    { title: "Phiêu lưu", href: "/the-loai/phieu-luu" },
-    { title: "Hài hước", href: "/the-loai/hai-huoc" },
-    { title: "Siêu nhiên", href: "/the-loai/kinh-di" },
-    { title: "Thể thao", href: "/the-loai/kinh-di" },
-    { title: "Giả tưởng", href: "/the-loai/kinh-di" },
-    { title: "Mecha", href: "/the-loai/kinh-di" },
-    { title: "Khoa học viễn tưởng", href: "/the-loai/kinh-di" },
-    { title: "Tâm lý / Kịch tính", href: "/the-loai/kinh-di" },
-    { title: "Trinh thám / Bí ẩn", href: "/the-loai/kinh-di" },
-];
-
 export default function Header() {
     const headerRef = useRef(null)
     const expandRef = useRef(null)
@@ -34,6 +21,8 @@ export default function Header() {
     const navigate = useNavigate();
     const [search, setSearch] = useState("");
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [categoryPopupVisible, setCategoryPopupVisible] = useState(false);
 
     const menuItems = [
         { name: "Hồ sơ", path: "/user/profile" },
@@ -97,6 +86,16 @@ export default function Header() {
             navigate(`/search?keyword=${search}`)
         }
     }
+    
+    const toggleMobileMenuOpen = () => {
+        setMobileMenuOpen(prev => !prev)
+    }
+
+    const toggleCategoryPopup = () => {
+        setMobileMenuOpen(false);   
+        setCategoryPopupVisible(prev => !prev);
+    }
+
     return (
         <>
             <nav ref={headerRef} className="header">
@@ -105,30 +104,17 @@ export default function Header() {
                     <div className="logo">
                         <Link className="" to='/'><img src={logo} alt="" /></Link>
                     </div>
+
+                    <div className="collapse">
+                        <button onClick={toggleMobileMenuOpen} className={mobileMenuOpen ? 'active' : ''}>
+                            <i className={`fa-solid ${mobileMenuOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
+                        </button>
+                    </div>
+
                     <div className="navbar-nav">
 
                         <ul className='navbar-nav__list'>
-                            <div className="navigation-menu">
-                                <div
-                                    className="navigation-trigger"
-                                    onMouseEnter={() => setDropdownVisible(true)}
-                                    onMouseLeave={() => setDropdownVisible(false)}
-                                >
-                                    <span className="text-bold">Thể loại</span>
-                                    <ul className={`navigation-dropdown ${dropdownVisible ? "active" : ""}`}>
-                                        {/* {genres.map((genre, index) => (
-                                            <li key={index}>
-                                                <Link to={`/search?genre=${genre.title}`}>{genre.title}</Link>
-                                            </li>
-                                        ))} */}
-                                        {ComicGenres.map((genre, index) => (
-                                            <li key={index}>
-                                                <Link to={`/search?genre=${genre}`}>{genre}</Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
+                            <a className="text-bold" onClick={toggleCategoryPopup}>Thể loại</a>
 
                             <Link to='/truyen'>
                                 <li className='text-bold'>Bảng xếp hạng</li>
@@ -174,9 +160,49 @@ export default function Header() {
                             }
                         </ul>
                     </div>
+
+                    <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
+                        <ul>
+                            <li><Link to="/search?genre=Action" onClick={toggleCategoryPopup}>Thể loại</Link></li>
+                            <li><Link to="/truyen">Bảng xếp hạng</Link></li>
+                            <li><Link to={user?.roles[0] === 'ADMIN' ? '/admin/dang-truyen' : routeLink.createComic}>Đăng truyện</Link></li>
+                            {user ? (
+                                <>
+                                    {menuItems.map((item, i) => (
+                                        <li key={i}><Link to={item.path}>{item.name}</Link></li>
+                                    ))}
+                                    <li><a onClick={onClickLogout}>Đăng xuất</a></li>
+                                </>
+                            ) : (
+                                <>
+                                    <li><a onClick={handleAuthLogin}>Đăng nhập</a></li>
+                                    <li><a onClick={handleAuthRegister}>Đăng ký</a></li>
+                                </>
+                            )}
+                        </ul>
+                    </div>
+
                 </div>
 
             </nav>
+
+
+            {/* Popup bảng thể loại */}
+            {categoryPopupVisible && (
+                <div className="category-popup">
+                    <div className="popup-content">
+                        <button className="close-btn" onClick={toggleCategoryPopup}><i class="fa-solid fa-xmark"></i></button>
+                        <h2>Danh sách thể loại</h2>
+                        <div className="category-list">
+                            {ComicGenres.map((genre, index) => (
+                                <div key={index} className="category-item">
+                                    <Link to={`/search?genre=${genre}`} onClick={toggleCategoryPopup}>{genre}</Link>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {modalAuth && <Modal active={modalAuth}>
                 <ModalContent onClose={closeModalAuth}>
