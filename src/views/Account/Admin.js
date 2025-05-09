@@ -72,7 +72,7 @@ function Account() {
       }
 
   return (
-    <Layout>
+
       <div className="main-content">
         <div className="d-flex">
           <div className="col-3">
@@ -103,7 +103,7 @@ function Account() {
           </div>
         </div>
       </div>
-    </Layout>
+
   );
 }
 

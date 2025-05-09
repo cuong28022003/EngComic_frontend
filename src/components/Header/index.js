@@ -33,12 +33,7 @@ export default function Header() {
         { name: "Quản lý thẻ", path: routeLink.deck },
     ];
 
-    if (user?.roles[0] === 'ADMIN') {
-        menuItems.push(
-            { name: "Người dùng", path: "/admin/users" },
-            { name: "Cài đặt", path: "/admin/setting" },
-        );
-    }
+    
 
     let location = useLocation();
 

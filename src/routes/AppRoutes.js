@@ -104,11 +104,10 @@ const AppRoutes = () => {
 
                         <Route path={routeLink.gacha} element={<GachaPage />} />
                     </Route>
-                    </Route>
+                </Route>
                     <Route path='active/:token' element={<Active />} />
                     <Route path='search' element={<SearchPage />} />
                     <Route path={routeLink.comics} element={<ComicList />} />
-                </Route>
                 <Route element={<PrivateRoute roles={['ADMIN']} />}>
                     <Route path='admin/*' element={<Admin />} />
                 </Route>
