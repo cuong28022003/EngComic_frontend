@@ -17,20 +17,37 @@ export const handleLogin = async (user, dispatch, navigate) => {
   dispatch(setLoading(true));
   login(user)
     .then(res => {
-      dispatch(loginSuccess(getData(res))); //lấy thông tin user
-      toast.success("Đăng nhập thành công", { autoClose: 1200, pauseOnHover: false, hideProgressBar: true });//hiển thị toast thông báo
-      dispatch(authInactive()) //hành động tắt modal login
-    }
-    ) //gọi api login
-    .catch(error => {
-      dispatch(loginFalse());
-      const msg = error.response?.data?.details
-      let _ = msg.username || msg.password || msg.active || msg.toString()
-      dispatch(setMessageLogin(_))
-    }).finally(() => {
-      dispatch(setLoading(false));
+      
+      
+      dispatch(loginSuccess(getData(res))); // Lấy thông tin user
+      toast.success("Đăng nhập thành công", {
+        autoClose: 1200,
+        pauseOnHover: false,
+        hideProgressBar: true,
+      }); // Hiển thị toast thông báo
+      dispatch(authInactive()); // Tắt modal login
+      
+     
+      
+      // Logic điều hướng dựa trên role
+      if (res.data.roles.includes('ADMIN')) {
+        navigate("/admin"); // Chuyển đến trang admin nếu có role ADMIN
+      } else {
+        navigate('/'); // Chuyển đến trang user nếu không có role ADMIN
+      }
     })
-}
+    .catch(error => {
+     
+      
+      dispatch(loginFalse());
+      const msg = error.response?.data?.details;
+      let _ = msg?.username || msg?.password || msg?.active || error.message || "Đăng nhập thất bại";
+      dispatch(setMessageLogin(_));
+    })
+    .finally(() => {
+      dispatch(setLoading(false));
+    });
+};
 
 export const handleRegister = async (params, dispatch, navigate) => {
   try {

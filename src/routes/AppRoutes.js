@@ -101,13 +101,14 @@ const AppRoutes = () => {
                         <Route path={routeLink.editCard} element={<CardFormPage />} />
                     </Route>
 
-                    <Route element={<PrivateRoute roles={['ADMIN']} />}>
-                        <Route path='admin/*' element={<Admin />} />
-                    </Route>
-                    <Route path='active/:token' element={<Active />} />
+                    
+                    {/* <Route path='active/:token' element={<Active />} />
                     <Route path='search' element={<Search />} />
-                    <Route path={routeLink.comics} element={<ComicList />} />
+                    <Route path={routeLink.comics} element={<ComicList />} /> */}
 
+                </Route>
+                <Route element={<PrivateRoute roles={['ADMIN']} />}>
+                    <Route path='admin/*' element={<Admin />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

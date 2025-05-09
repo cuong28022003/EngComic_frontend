@@ -222,6 +222,7 @@
     position: relative;
 }
 
+/* Cập nhật style cho dropdown Thể loại */
 .navigation-dropdown {
     position: absolute;
     top: 100%;
@@ -232,25 +233,44 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: none;
     z-index: 10;
+    padding: 15px;
+    width: 600px; /* Khung lớn hơn */
     max-height: 300px;
-    /* Giới hạn chiều cao */
     overflow-y: auto;
-    /* Thêm cuộn */
     scrollbar-width: thin;
-    /* Tùy chỉnh thanh cuộn */
-    width: 200px;
 }
 
 .navigation-dropdown.active {
-    display: block;
+    display: flex; /* Sử dụng flexbox */
+    flex-wrap: wrap; /* Cho phép xuống hàng */
+    gap: 10px; /* Khoảng cách giữa các mục */
 }
 
 .navigation-dropdown li {
+    flex: 1 0 calc(33.33% - 10px); /* 3 cột, trừ khoảng cách gap */
     list-style: none;
-    padding: 8px 16px;
+    padding: 10px;
+    text-align: center;
     transition: background-color 0.2s;
+}
+
+.navigation-dropdown li a {
+    text-decoration: none;
+    color: #333;
+    display: block;
 }
 
 .navigation-dropdown li:hover {
     background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navigation-dropdown {
+        width: 100%; /* Toàn màn hình trên mobile */
+    }
+    .navigation-dropdown li {
+        flex: 1 0 calc(50% - 10px); /* 2 cột trên mobile */
+    }
 }
