@@ -121,7 +121,7 @@ function ChapterDetail(props) {
             const formData = new FormData();
             formData.append('file', blob, 'screenshot.png');
 
-            const response = await fetch('http://localhost:5000/extract-text', {
+            const response = await fetch('https://web-production-9252.up.railway.app/extract-text', {
                 method: 'POST',
                 body: formData,
             });
