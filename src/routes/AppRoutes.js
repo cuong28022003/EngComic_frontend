@@ -2,13 +2,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../views/Home";
 import ComicDetail from "../views/ComicDetail";
 import NotFound from "../views/404";
-import MainLayout from "../layout/MainLayout/index_test";
+import MainLayout from "../layout/MainLayout";
 import PrivateRoute from "./PrivateRoute";
 import Account from "../views/Account/Account";
 import Admin from "../views/Account/Admin";
 import Active from "../views/Active/Active";
 import ChapterDetail from "../views/ChapterDetail";
-import Search from "../views/Search/Search";
+import SearchPage from "../views/Search";
 import ComicList from "../views/ComicList";
 import CreateComic from "../views/Account/CreateComic";
 import Profile from "../views/Account/Profile/Profile";
@@ -28,17 +28,21 @@ import CreateDeckPage from "../views/CreateDeck";
 import DeckFormPage from "../views/Deck/component/AddEditDeck";
 import DeckDetailPage from "../views/DeckDetail";
 import CardFormPage from "../views/DeckDetail/component/AddEditCard";
+import Rank from "../views/Account/Rank";
+import GachaPage from "../views/Gacha";
 
 export const routeLink = {
     default: '/',
     users: '/users',
     myProfile: '/users/me',
-    
+
     account: '/user',
     bookshelf: '/user/bookshelf/:bookshelfTab',
     profile: '/user/profile',
     changePassword: '/user/change-password',
     createComic: '/user/create-comic',
+    rank: '/user/rank',
+    userRank: '/user/rank/:userId',
 
     userDetail: '/users/:id',
     comics: '/comics',
@@ -55,11 +59,13 @@ export const routeLink = {
     study: '/study/:deckId',
     result: '/result/:deckId',
     deck: '/deck',
-    createDeck: '/deck/create', 
+    createDeck: '/deck/create',
     editDeck: '/deck/:deckId/edit',
     deckDetail: '/deck/:deckId',
     createCard: '/deck/:deckId/create-card',
     editCard: '/deck/:deckId/edit-card/:cardId',
+
+    gacha: '/gacha',
 };
 
 const AppRoutes = () => {
@@ -74,17 +80,12 @@ const AppRoutes = () => {
 
                     <Route element={<PrivateRoute roles={['USER']} />}>
                         <Route path={routeLink.account} element={<Account />} >
-                            <Route index element={<ChangePassword />} />
+                            <Route index element={<Profile />} />
                             <Route path='profile' element={<Profile />} />
                             <Route path='change-password' element={<ChangePassword />} />
-                            <Route path='bookshelf' element={<Bookshelf />} >
-                                <Route index element={<ReadingTab />} />
-                                <Route path='reading' element={<ReadingTab />} />
-                                <Route path='saved' element={<SavedTab />} />
-                                <Route path='created' element={<CreatedTab />} />
-                            </Route>
-                            <Route path='bookshelf/:bookshelfTab' element={<Bookshelf />} />
+                            <Route path='bookshelf' element={<Bookshelf />} />
                             <Route path='create-comic' element={<CreateComic />} />
+                            <Route path='rank' element={<Rank />} />
                         </Route>
                         <Route path={routeLink.editComic} element={<EditComic />} />
                         <Route path={routeLink.chapters} element={<ChapterList />} />
@@ -99,13 +100,14 @@ const AppRoutes = () => {
                         <Route path={routeLink.deckDetail} element={<DeckDetailPage />} />
                         <Route path={routeLink.createCard} element={<CardFormPage />} />
                         <Route path={routeLink.editCard} element={<CardFormPage />} />
+                        <Route path={routeLink.userRank} element={<Rank />} />
+
+                        <Route path={routeLink.gacha} element={<GachaPage />} />
                     </Route>
-
-                    
-                    {/* <Route path='active/:token' element={<Active />} />
-                    <Route path='search' element={<Search />} />
-                    <Route path={routeLink.comics} element={<ComicList />} /> */}
-
+                    </Route>
+                    <Route path='active/:token' element={<Active />} />
+                    <Route path='search' element={<SearchPage />} />
+                    <Route path={routeLink.comics} element={<ComicList />} />
                 </Route>
                 <Route element={<PrivateRoute roles={['ADMIN']} />}>
                     <Route path='admin/*' element={<Admin />} />

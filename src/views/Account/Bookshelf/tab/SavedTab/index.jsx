@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { loginSuccess } from '../../../../../redux/slice/auth';
 import { getSavedComics } from '../../../../../api/savedApi';
 import Saved from '../../../../../components/Saved';
+import { useDispatch, useSelector } from 'react-redux';
 
-const SavedTab = ({ user, dispatch }) => {
+const SavedTab = () => {
+    const user = useSelector((state) => state.auth.login.user);
+    const dispatch = useDispatch();
     const [savedComics, setSavedComics] = useState([]);
 
     // Lấy danh sách truyện đã lưu từ API

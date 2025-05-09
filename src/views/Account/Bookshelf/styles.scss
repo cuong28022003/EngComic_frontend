@@ -1,45 +1,55 @@
+.bookshelf {
+    padding: 20px;
 
-@import "../../../scss/variables.scss";
+    &-tabs {
+        display: flex;
+        justify-content: flex-start;
+        gap: 16px;
+        margin-bottom: 20px;
 
-.navigate {
-    position: relative;
-    margin-bottom: 2rem;
+        button {
+            padding: 10px 20px;
+            border: none;
+            background: #eee;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s;
 
-    &::after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background-color: rgb(235, 235, 235);
-        bottom: -5px;
-        left: 0;
+            &:hover {
+                background: #ccc;
+            }
+
+            &.active {
+                background: #ff6600;
+                color: white;
+            }
+        }
+
+        @media (max-width: 600px) {
+            flex-direction: column;
+            align-items: center;
+
+            button {
+                width: 100%;
+                text-align: center;
+            }
+        }
     }
 
-    &__tab {
-        display: inline-block;
-        margin-right: 20px;
-        position: relative;
-        cursor: pointer;
+    &-content {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+}
 
-        &::after {
-            content: "";
-            position: absolute;
-            width: 0;
-            transform: translateX(-55%);
-            height: 2px;
-            background-color: $main-color;
-            bottom: -5px;
-            left: 55%;
-            transition: width .5s ease;
-        }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-        &.tab_active {
-            color: $main-color;
-        }
-
-        &.tab_active::after,
-        &:hover::after {
-            width: 110%;
-        }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

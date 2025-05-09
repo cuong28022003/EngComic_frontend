@@ -35,10 +35,10 @@ function Account() {
       icon: ""
     },
     {
-      path: "create-comic",
-      display: "Đăng truyện",
+      path: "rank",
+      display: "Xếp hạng",
       icon: ""
-    },
+    }
   ]
 
   const navigate = useNavigate()
@@ -75,25 +75,23 @@ function Account() {
   })
 
   return (
-    <Layout >
       <div className="main-content">
         <div className="d-flex">
           <div className="col-3">
             <ul className="list-group">
               {
                 menu.map((item, index) => {
-                  return <NavLink key={index} to={`${routeLink.account}/${item.path}`} className={`list-group__item`} end={false}>{ item.display}</NavLink>
+                  return <NavLink key={index} to={`${routeLink.account}/${item.path}`} className={`list-group__item`} end={false}>{item.display}</NavLink>
                 })
               }
             </ul>
 
           </div>
           <div className="col-9 " style={{ 'minHeight': '500px' }}>
-              <Outlet/>
+            <Outlet />
           </div>
         </div>
       </div>
-    </Layout>
   )
 }
 

@@ -1,16 +1,19 @@
 import React from "react";
-import Layout from "../../layout/MainLayout";
 import ListStory from "../ListStory/ListStory";
-import "./Home.scss";
+import "./styles.scss";
+import Leaderboard from "./component/Leaderboard";
 
 function Home() {
   return (
     <>
-      <Layout>
+      <div className="home-page">
         <div className="main-content">
           <ListStory />
         </div>
-      </Layout>
+        <div className="sidebar">
+          <Leaderboard />
+        </div>
+      </div>
     </>
   );
 }

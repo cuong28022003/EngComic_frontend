@@ -5,6 +5,7 @@ import Grid from "../../../../components/Grid";
 import LoadingData from "../../../../components/Loading/LoadingData";   
 import Pagination from "../../../../components/Pagination/index";
 import { routeLink } from "../../../../routes/AppRoutes";
+import Chapter from "../../../../components/Chapter/index";
 
 export const ChapterTab = (props) => {
     const [chapters, setChapters] = useState([]);
@@ -47,14 +48,7 @@ export const ChapterTab = (props) => {
                 <Grid gap={15} col={props.col || 3} snCol={1}>
                     {chapters.map((item, index) => {
                         return (
-                            <Link
-                                to={routeLink.chapterDetail.replace(":url", url).replace(":chapterNumber", item.chapterNumber)}
-                                key={index}
-                                className="text-overflow-1-lines"
-                                style={{ fontSize: `${props.fontsize || 16}px` }}
-                            >
-                                {item.name}
-                            </Link>
+                            <Chapter key={index} chapter={item} />
                         );
                     })}
                 </Grid>

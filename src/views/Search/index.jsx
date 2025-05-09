@@ -4,9 +4,10 @@ import Comic from "../../components/Comic";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
 import LoadingData from "../../components/Loading/LoadingData";
 import { searchComics } from "../../api/comicApi";
+import { set } from "lodash";
 
-function Search() {
-  const [datas, setDatas] = useState([]);
+function SearchPage() {
+  const [comics, setComics] = useState([]);
   const [sort, setSort] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchParams] = useSearchParams();
@@ -15,9 +16,9 @@ function Search() {
   const genre = searchParams.get("genre") || "";
 
   useEffect(() => {
-    const fetchStories = async () => {
+    const fetchComics = async () => {
       if (!name && !artist && !genre) {
-        setDatas([]);
+        setComics([]);
         return;
       }
       try {
@@ -28,20 +29,16 @@ function Search() {
           genre,
           sort,
         });
-        if (Array.isArray(response)) {
-          setDatas(response);
-        } else {
-          setDatas([]);
-        }
+        setComics(response.content || []);
       } catch (error) {
         console.error("Error fetching stories:", error);
-        setDatas([]);
+        setComics([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStories();
+    fetchComics();
   }, [name, artist, genre, sort]);
 
   if (loading) {
@@ -74,8 +71,8 @@ function Search() {
                 </SectionHeading>
                 <SectionBody>
                   <div className="list-story">
-                    {datas.length > 0 ? (
-                      datas.map((data, index) => (
+                    {comics.length > 0 ? (
+                      comics.map((data, index) => (
                         <Comic key={index} data={data} />
                       ))
                     ) : (
@@ -101,4 +98,4 @@ function Search() {
   );
 }
 
-export default Search;
+export default SearchPage;

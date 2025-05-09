@@ -9,6 +9,7 @@ import Loading from '../../../components/Loading/Loading';
 const CreateChapter = () => {
     const { url } = useParams()
     const [name, setName] = useState("");
+    const [cover, setCover] = useState(null); // Thêm state cho ảnh bìa
     const [selectedImages, setSelectedImages] = useState([]);
     const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -18,6 +19,11 @@ const CreateChapter = () => {
     // Hàm xử lý chọn ảnh
     const handleFileChange = (e) => {
         setSelectedImages([...e.target.files]);
+    };
+
+    // Hàm xử lý chọn ảnh bìa
+    const handleCoverChange = (e) => {
+        setCover(e.target.files[0]);
     };
 
     // Load dữ liệu khi sửa chương
@@ -47,6 +53,9 @@ const CreateChapter = () => {
             const formData = new FormData();
             for (const image of selectedImages) {
                 formData.append("images", image);
+            }
+            if (cover) {
+                formData.append("cover", cover); // Thêm ảnh bìa nếu có
             }
             formData.append("name", name);
             formData.append("url", url);
@@ -91,6 +100,24 @@ const CreateChapter = () => {
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Nhập tên chương"
                 />
+
+                <label>Ảnh bìa (không bắt buộc):</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverChange}
+                />
+
+                {cover && (
+                    <div>
+                        <h4>Ảnh bìa đã chọn:</h4>
+                        <img
+                            src={URL.createObjectURL(cover)}
+                            alt="Cover Preview"
+                            style={{ width: "150px", margin: "5px" }}
+                        />
+                    </div>
+                )}
 
                 <label>Ảnh chương:</label>
                 <input
