@@ -74,7 +74,7 @@ const ComicList = () => {
                   style={{ width: "100px", height: "auto" }}
                 />
               </td>
-              <td>{comic.uploader.username}</td>
+              
               <td>{comic.artist}</td>
               <td>{comic.views}</td>
               <td>{comic.rating}</td>
