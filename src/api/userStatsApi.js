@@ -16,3 +16,8 @@ export async function addXp(payload, user, dispatch, stateSuccess) {
 export async function getLeaderboard(limit) {
     return await axiosClient.get(`${BASE_URL_API}/top-users`, { params: { limit } });
 }
+
+export async function addDiamondApi(payload, user, dispatch, stateSuccess) {
+    const axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.post(`${BASE_URL_API}/add-diamond`, payload);
+}

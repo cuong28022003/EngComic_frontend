@@ -12,6 +12,8 @@ import './styles.scss'
 import { ComicGenres } from '../../constant/enum';
 import { getUserStats } from '../../api/userStatsApi';
 import { loginSuccess } from '../../redux/slice/auth';
+import StreakRewards from './component/Streak';
+import { updateUserStats } from '../../redux/slice/userStats';
 
 export default function Header() {
     const headerRef = useRef(null)
@@ -44,9 +46,6 @@ export default function Header() {
 
     const dispatch = useDispatch();
 
-    const [currentStreak, setCurrentStreak] = useState(0);
-    const [longestStreak, setLongestStreak] = useState(0);
-
     useEffect(() => {//xử lý dropdown của account
         const hideDropdown = () => {
             profileDropdownRef?.current?.classList.remove("active")
@@ -62,8 +61,7 @@ export default function Header() {
             try {
                 const response = await getUserStats(user.id, user, dispatch, loginSuccess)
                 const data = response.data;
-                setCurrentStreak(data?.currentStreak);
-                setLongestStreak(data?.longestStreak);
+                dispatch(updateUserStats(data))
             } catch (error) {
                 console.error("Error fetching user stats:", error);
             }
@@ -156,15 +154,7 @@ export default function Header() {
                             {
                                 user ?
                                     <>
-                                        <div className="streak-container">
-                                            <div className="streak">
-                                                {currentStreak} 🔥
-                                            </div>
-                                            <div className="streak-tooltip">
-                                                <p>Chuỗi hiện tại: {currentStreak} ngày</p>
-                                                <p>Chuỗi dài nhất: {longestStreak} ngày</p>
-                                            </div>
-                                        </div>
+                                        <StreakRewards />
                                         <div className='navbar-nav__profile'>
                                             <div onClick={handleDropdownProfile} className="navbar-nav__profile__name">
                                                 {user.image ?

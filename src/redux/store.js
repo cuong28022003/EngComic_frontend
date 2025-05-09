@@ -15,8 +15,9 @@ import {
 import storage from 'redux-persist/lib/storage'
 import { PersistGate } from 'redux-persist/integration/react'
 import languageSlice from "./languageSlice"
+import userStatsReducer from "./slice/userStats"
 
-const rootReducer = combineReducers({ auth: authReducer, modal: modalReducer, message: messageReducer, lang: languageSlice })
+const rootReducer = combineReducers({ auth: authReducer, userStats: userStatsReducer, modal: modalReducer, message: messageReducer, lang: languageSlice })
 
 const persistConfig = {
   key: 'root',
