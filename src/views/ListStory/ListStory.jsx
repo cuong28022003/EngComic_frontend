@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import apiMain from "../../api/apiMain";
 import Reading from "../../components/Reading/Reading";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
 import Comic from "../../components/Comic";
-import getData from "../../api/getData";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { loginSuccess } from "../../redux/slice/auth";
@@ -12,6 +10,7 @@ import { getComics } from "../../api/comicApi";
 import NoData from "../../components/NoData";
 import { getReadings } from "../../api/readingApi";
 import { routeLink } from "../../routes/AppRoutes";
+import HeroSlider from "../Home/component/HeroSlider";
 
 function ListStory() {
   const [datas, setData] = useState([]);
@@ -25,7 +24,6 @@ function ListStory() {
         getReadings(user, dispatch, loginSuccess)
           .then((res) => {
             setReadings(res.data.content);
-            // console.log(res);
           })
           .catch((err) => {
             console.log(err);
@@ -45,6 +43,7 @@ function ListStory() {
 
   return (
     <>
+      {/* <HeroSlider topComics={datas} /> */}
       <div className="d-flex">
         <div className="col-8">
           <Section>

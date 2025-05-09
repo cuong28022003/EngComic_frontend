@@ -10,6 +10,8 @@ import { handleLogout } from '../../handle/handleAuth';
 import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss'
 import { ComicGenres } from '../../constant/enum';
+import { getUserStats } from '../../api/userStatsApi';
+import { loginSuccess } from '../../redux/slice/auth';
 
 export default function Header() {
     const headerRef = useRef(null)
@@ -42,6 +44,9 @@ export default function Header() {
 
     const dispatch = useDispatch();
 
+    const [currentStreak, setCurrentStreak] = useState(0);
+    const [longestStreak, setLongestStreak] = useState(0);
+
     useEffect(() => {//xử lý dropdown của account
         const hideDropdown = () => {
             profileDropdownRef?.current?.classList.remove("active")
@@ -50,6 +55,20 @@ export default function Header() {
         return () => {
             document.removeEventListener("click", hideDropdown)
         }
+    }, [])
+
+    useEffect(() => {
+        const fetchUserStats = async () => {
+            try {
+                const response = await getUserStats(user.id, user, dispatch, loginSuccess)
+                const data = response.data;
+                setCurrentStreak(data?.currentStreak);
+                setLongestStreak(data?.longestStreak);
+            } catch (error) {
+                console.error("Error fetching user stats:", error);
+            }
+        }
+        fetchUserStats();
     }, [])
 
     const handleExpand = () => {
@@ -86,13 +105,13 @@ export default function Header() {
             navigate(`/search?keyword=${search}`)
         }
     }
-    
+
     const toggleMobileMenuOpen = () => {
         setMobileMenuOpen(prev => !prev)
     }
 
     const toggleCategoryPopup = () => {
-        setMobileMenuOpen(false);   
+        setMobileMenuOpen(false);
         setCategoryPopupVisible(prev => !prev);
     }
 
@@ -135,23 +154,35 @@ export default function Header() {
                                 <li><i style={{ marginRight: 4 + 'px' }} className="fa-regular fa-circle-up"></i> Đăng truyện</li>
                             </Link>
                             {
-                                user ? <div className='navbar-nav__profile'>
-                                    <div onClick={handleDropdownProfile} className="navbar-nav__profile__name">
-                                        {user.image ?
-                                            <div className='navbar-nav__avatar'><img src={user.image} alt="" /></div>
-                                            : <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
-                                        }
-                                        <a>{user.fullName || user.username}</a>
-                                    </div>
-                                    <div ref={profileDropdownRef} tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
-                                        <ul>
-                                            {menuItems.map((item, i) => {
-                                                return <li key={i}><Link to={item.path}>{item.name}</Link></li>
-                                            })}
-                                            <li ><a onClick={onClickLogout}>Đăng xuất</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
+                                user ?
+                                    <>
+                                        <div className="streak-container">
+                                            <div className="streak">
+                                                {currentStreak} 🔥
+                                            </div>
+                                            <div className="streak-tooltip">
+                                                <p>Chuỗi hiện tại: {currentStreak} ngày</p>
+                                                <p>Chuỗi dài nhất: {longestStreak} ngày</p>
+                                            </div>
+                                        </div>
+                                        <div className='navbar-nav__profile'>
+                                            <div onClick={handleDropdownProfile} className="navbar-nav__profile__name">
+                                                {user.image ?
+                                                    <div className='navbar-nav__avatar'><img src={user.image} alt="" /></div>
+                                                    : <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
+                                                }
+                                                <a>{user.fullName || user.username}</a>
+                                            </div>
+                                            <div ref={profileDropdownRef} tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
+                                                <ul>
+                                                    {menuItems.map((item, i) => {
+                                                        return <li key={i}><Link to={item.path}>{item.name}</Link></li>
+                                                    })}
+                                                    <li ><a onClick={onClickLogout}>Đăng xuất</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </>
                                     :
                                     <>
                                         <a onClick={handleAuthLogin}><li>Đăng nhập</li></a>

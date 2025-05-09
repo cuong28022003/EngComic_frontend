@@ -76,7 +76,7 @@ function ComicDetail() {
           dispatch,
           loginSuccess
         );
-        console.log(res); 
+        console.log(res);
         setIsSaved(res.saved);
       } catch (error) {
         console.log(error);

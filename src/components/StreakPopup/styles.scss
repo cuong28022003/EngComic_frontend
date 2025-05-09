@@ -1,0 +1,54 @@
+.streak-popup {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff5e0;
+    border: 2px solid #ffa726;
+    padding: 1.5rem 2rem;
+    border-radius: 16px;
+    text-align: center;
+    z-index: 9999;
+    animation: fadeInUp 0.8s ease-out;
+
+    .fire {
+        font-size: 2.5rem;
+        animation: bounce 0.6s ease infinite alternate;
+    }
+
+    .streak-text {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-top: 0.5rem;
+        color: #ff7043;
+    }
+
+    .streak-count {
+        font-size: 1.8rem;
+        color: #fb8c00;
+        font-weight: bold;
+        margin-top: 0.3rem;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}

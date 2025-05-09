@@ -1,0 +1,68 @@
+.chapter-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    &__cover {
+        flex-shrink: 0;
+        width: 80px;
+        height: 100px;
+        overflow: hidden;
+        border-radius: 8px;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__info {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .chapter-card__title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 6px;
+            transition: color 0.3s;
+        }
+
+        .chapter-card__date {
+            font-size: 0.9rem;
+            color: #777;
+        }
+    }
+
+    &:hover .chapter-card__title {
+        color: #ff6600; // màu cam khi hover
+    }
+
+    @media (max-width: 768px) {
+        flex-direction: row;
+
+        &__cover {
+            width: 60px;
+            height: 80px;
+        }
+
+        .chapter-card__title {
+            font-size: 1rem;
+        }
+    }
+}
