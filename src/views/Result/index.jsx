@@ -8,6 +8,7 @@ import StreakPopup from "../../components/StreakPopup";
 import XpPopup from "../../components/XpPopup";
 import { getUserStats } from "../../api/userStatsApi";
 import { useDispatch } from "react-redux";
+import { updateUserStats } from "../../redux/slice/userStats";
 import { set } from "lodash";
 
 const ResultPage = () => {
@@ -50,48 +51,23 @@ const ResultPage = () => {
 
     const [showStreakPopup, setShowStreakPopup] = useState(true);
     const [showXpPopup, setShowXpPopup] = useState(false);
+    const dataUserStats = useSelector((state) => state.userStats?.data);
     const [oldUserStats, setOldUserStats] = useState(null);
     const [userStats, setUserStats] = useState(null);
 
     useEffect(() => {
-        const fetchOldUserStats = async () => {
-            try {
-                const response = await getUserStats(user.id, user, dispatch, loginSuccess);
-                const data = response.data;
-                setOldUserStats(data);
-
-                // Kiểm tra nếu lastStudyDate là ngày hôm nay
-                const today = new Date().toISOString().split("T")[0]; // Lấy ngày hôm nay (YYYY-MM-DD)
-                const lastStudyDate = data?.lastStudyDate?.split("T")[0]; // Lấy ngày từ lastStudyDate
-                if (lastStudyDate === today) {
-                    setShowStreakPopup(false); // Không hiển thị StreakPopup
-                    setShowXpPopup(true); // Hiển thị XpPopup ngay lập tức
-                }
-            } catch (error) {
-                console.error('Failed to fetch user stats:', error);
-            }
-        };
-
-        const fetchUpdatedUserStats = async () => {
-            try {
-                const response = await getUserStats(user.id, user, dispatch, loginSuccess);
-                const data = response.data;
-                setUserStats(data);
-            } catch (error) {
-                console.error('Failed to fetch user stats:', error);
-            }
-        };
-
         const fetchData = async () => {
-            await fetchOldUserStats();
+            setOldUserStats(dataUserStats);
             if (totalXp > 0) {
                 const payload = {
                     userId: user.id,
                     xp: totalXp,
                 };
-                await addXp(payload, user, loginSuccess);
+                const response = await addXp(payload, user, loginSuccess);
+                const newUserStats = response.data;
+                setUserStats(newUserStats);
+                dispatch(updateUserStats(newUserStats)); // Cập nhật Redux
             }
-            await fetchUpdatedUserStats();
             setLoading(false); // Dữ liệu đã được tải xong
         };
 

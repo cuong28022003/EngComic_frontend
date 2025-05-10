@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './styles.scss';
 
 const XpPopup = ({ oldUserStats, userStats, onDone }) => {
+    console.log("oldUserStats", oldUserStats);
+    console.log("userStats", userStats);
     const [currentXp, setCurrentXp] = useState(oldUserStats?.xp);
     const [currentRank, setCurrentRank] = useState(oldUserStats?.rank);
     const [targetXp] = useState(userStats?.xp);

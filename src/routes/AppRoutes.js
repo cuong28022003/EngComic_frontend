@@ -78,7 +78,7 @@ const AppRoutes = () => {
                     <Route path={routeLink.comics} element={<ComicList />} />
                     <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
 
-                    <Route element={<PrivateRoute roles={['USER']} />}>
+                    <Route element={<PrivateRoute roles={['USER', 'ADMIN']} />}>
                         <Route path={routeLink.account} element={<Account />} >
                             <Route index element={<Profile />} />
                             <Route path='profile' element={<Profile />} />
