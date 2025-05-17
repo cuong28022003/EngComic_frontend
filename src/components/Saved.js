@@ -7,6 +7,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 
 const Saved = (props) => {
+  const isReadOnly = props.isReadOnly;
   const data = props.data;
   const user = useSelector((state) => state.auth.login.user);
   const dispatch = useDispatch();
@@ -46,9 +47,11 @@ const Saved = (props) => {
           {data.name}
         </a>
         <p className="saved-item__info">Tác giả: {data.artist}</p>
-        <button className="btn-remove" onClick={() => handleUnsaveComic()}>
-          Bỏ đánh dấu
-        </button>
+        {!isReadOnly && (
+          <button className="btn-remove" onClick={() => handleUnsaveComic()}>
+            Bỏ đánh dấu
+          </button>
+        )}
       </div>
     </div>
   );

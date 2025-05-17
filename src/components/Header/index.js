@@ -54,7 +54,7 @@ export default function Header() {
     useEffect(() => {
         const fetchUserStats = async () => {
             try {
-                const response = await getUserStats(user.id, user, dispatch, loginSuccess)
+                const response = await getUserStats(user?.id, user, dispatch, loginSuccess)
                 const data = response.data;
                 dispatch(updateUserStats(data))
             } catch (error) {
@@ -62,7 +62,7 @@ export default function Header() {
             }
         }
         fetchUserStats();
-    }, [])
+    }, [user])
 
     const handleExpand = () => {
         expandRef.current.classList.toggle('active')

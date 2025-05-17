@@ -17,6 +17,7 @@
         "gh-pages": "^3.2.3",
         "jwt-decode": "^3.1.2",
         "lodash": "^4.17.21",
+        "lottie-react": "^2.4.1",
         "nodemon": "^2.0.15",
         "query-string": "^7.1.1",
         "react": "^17.0.2",

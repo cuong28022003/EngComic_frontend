@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import apiMain from "../../../api/apiMain";
 import { loginSuccess } from "../../../redux/slice/auth";
 import { useSelector, useDispatch } from "react-redux";
 import avt from "../../../assets/img/avt.png";
@@ -12,32 +11,48 @@ import LoadingData from "../../../components/Loading/LoadingData";
 import getData from "../../../api/getData";
 import { updateUserInfo } from "../../../api/userApi";
 import "./styles.scss";
+import { useOutletContext, useParams } from "react-router-dom";
+import { getUserById } from "../../../api/userApi";
 
-function Profile({ userInfo, changeUserInfo }) {
+function Profile() {
+  const { isReadOnly } = useOutletContext();
+  // console.log("isReadOnly: ", isReadOnly);
+  const { userId } = useParams();
   const user = useSelector((state) => state.auth.login?.user);
   const [uploadedImage, setUploadedImage] = useState("");
   const [preview, setPreview] = useState(user?.image || avt);
   const [fullName, setFullName] = useState(user?.fullName || "");
-  const [birthDate, setBirthDate] = useState(new Date());
+  const [birthday, setBirthday] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
   const dispatch = useDispatch();
-  // console.log("user: ", JSON.stringify(user, null, 2));
 
   useEffect(() => {
     const loadUserInfo = async () => {
-      if (user) {
-        // setImage(user?.image || "");
-        setFullName(user?.fullName || "");
-        setBirthDate(
-          user?.birthdate ? new Date(user?.birthdate) : new Date()
+      try {
+        setLoadingUser(true);
+        const response = isReadOnly
+          ? await getUserById(userId, user, dispatch, loginSuccess) // Lấy thông tin user khác nếu isReadOnly
+          : user; // Lấy thông tin user đang đăng nhập
+        const userData = isReadOnly ? response.data : user;
+        setFullName(userData?.fullName || "");
+        setBirthday(
+          userData?.birthday ? userData?.birthday : new Date()
         );
-        setPreview(user?.image);
+        console.log("birthday: ", birthday);
+        setPreview(userData?.image || avt);
         setLoadingUser(false);
+      } catch (error) {
+        console.error("Lỗi khi tải thông tin người dùng:", error);
+        toast.error("Có lỗi xảy ra khi tải thông tin người dùng.", {
+          autoClose: 1000,
+          hideProgressBar: true,
+          pauseOnHover: false,
+        });
       }
     };
     loadUserInfo();
-  }, [user]);
+  }, [userId, isReadOnly, user]);
 
   const handleSubmitSaveProfile = async (data) => {
     try {
@@ -49,8 +64,7 @@ function Profile({ userInfo, changeUserInfo }) {
         data
       );
 
-      // console.log("response: ", response);
-      userInfo = response.data.data.userInfo;
+      dispatch(loginSuccess(response.data.data.userInfo));
 
       setLoading(false);
       toast.success("Cập nhật thông tin thành công", {
@@ -58,13 +72,7 @@ function Profile({ userInfo, changeUserInfo }) {
         hideProgressBar: true,
         pauseOnHover: false,
       });
-      const newUser = {
-        ...user,
-        image: userInfo.image,
-        fullName: userInfo.fullName,
-      };
-      dispatch(loginSuccess(newUser));
-      // console.log("userNewInfo: ", user);
+
     } catch (error) {
       console.log(error);
       toast.error("Lỗi cập nhật thông tin", {
@@ -77,6 +85,8 @@ function Profile({ userInfo, changeUserInfo }) {
 
   const handleEdit = async (e) => {
     e.preventDefault();
+    if (isReadOnly) return;
+
     try {
       let imageUrl = preview; // Sử dụng ảnh cũ nếu không thay đổi
 
@@ -89,7 +99,7 @@ function Profile({ userInfo, changeUserInfo }) {
       const data = {
         fullName: fullName,
         image: imageUrl,
-        birthdate: birthDate,
+        birthday: birthday,
       };
 
       await handleSubmitSaveProfile(data);
@@ -112,12 +122,12 @@ function Profile({ userInfo, changeUserInfo }) {
         "([0-9]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))"
       );
       if (regex.test(date.toISOString().substring(0, 10))) {
-        setBirthDate(date);
+        setBirthday(date);
       } else {
-        setBirthDate(new Date());
+        setBirthday(new Date());
       }
     } catch {
-      setBirthDate(new Date());
+      setBirthday(new Date());
     }
   };
 
@@ -128,8 +138,6 @@ function Profile({ userInfo, changeUserInfo }) {
     }
   };
 
-  const labelStyle = { minWidth: "100px", display: "inline-block" };
-
   return (
     <>
       {loadingUser ? (
@@ -138,46 +146,50 @@ function Profile({ userInfo, changeUserInfo }) {
         <div className="profile__wrap d-flex">
           <div className="col-5 profile__avt">
             <img src={preview} alt="" />
-            <input
-              type="file"
-              accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
-              name="avatar"
-              onChange={onChangeImage}
-            />
+            {!isReadOnly && ( // Ẩn input tải ảnh lên nếu isReadOnly là true
+              <input
+                type="file"
+                accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                name="avatar"
+                onChange={onChangeImage}
+              />
+            )}
           </div>
           <div className="col-7">
             <div className="profile__main">
-              <form>
+              <form className="form-profile">
                 <div className="group-info">
-                  <label htmlFor="" style={labelStyle}>
-                    Tên hiển thị
-                  </label>
-                  <input onChange={onChangeFullName} value={fullName} />
+                  <label htmlFor="fullName">Tên hiển thị</label>
+                  <input
+                    id="fullName"
+                    type="text"
+                    onChange={onChangeFullName}
+                    value={fullName}
+                    readOnly={isReadOnly}
+                  />
                 </div>
                 <div className="group-info">
-                  <label htmlFor="" style={labelStyle}>
-                    Email
-                  </label>
+                  <label>Email</label>
                   <input readOnly value={user?.email || ""} />
                 </div>
                 <div className="group-info">
-                  <label htmlFor="" style={labelStyle}>
-                    Ngày sinh
-                  </label>
+                  <label htmlFor="birthday">Ngày sinh</label>
                   <input
                     onChange={onChangeBirthDate}
                     type="date"
                     id="birthday"
                     name="birthday"
-                    value={birthDate?.toISOString().substring(0, 10)}
+                    value={birthday}
+                    readOnly={isReadOnly}
                   />
                 </div>
-                <div className="d-flex">
+                {!isReadOnly && (
                   <button onClick={handleEdit}>
-                    {loading ? <Loading /> : ""} Cập nhật
+                    {loading ? <Loading /> : "Cập nhật"}
                   </button>
-                </div>
+                )}
               </form>
+
             </div>
           </div>
         </div>

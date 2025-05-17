@@ -30,6 +30,7 @@ import DeckDetailPage from "../views/DeckDetail";
 import CardFormPage from "../views/DeckDetail/component/AddEditCard";
 import Rank from "../views/Account/Rank";
 import GachaPage from "../views/Gacha";
+import GachaCollection from "../views/Account/Collection";
 
 export const routeLink = {
     default: '/',
@@ -37,12 +38,9 @@ export const routeLink = {
     myProfile: '/users/me',
 
     account: '/user',
-    bookshelf: '/user/bookshelf/:bookshelfTab',
-    profile: '/user/profile',
-    changePassword: '/user/change-password',
+    userAccount: '/user/:userId',   
+    userCollection: '/user/gacha-collection',
     createComic: '/user/create-comic',
-    rank: '/user/rank',
-    userRank: '/user/rank/:userId',
 
     userDetail: '/users/:id',
     comics: '/comics',
@@ -78,7 +76,7 @@ const AppRoutes = () => {
                     <Route path={routeLink.comics} element={<ComicList />} />
                     <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
 
-                    <Route element={<PrivateRoute roles={['USER', 'ADMIN']} />}>
+                    <Route element={<PrivateRoute roles={['USER']} />}>
                         <Route path={routeLink.account} element={<Account />} >
                             <Route index element={<Profile />} />
                             <Route path='profile' element={<Profile />} />
@@ -86,6 +84,7 @@ const AppRoutes = () => {
                             <Route path='bookshelf' element={<Bookshelf />} />
                             <Route path='create-comic' element={<CreateComic />} />
                             <Route path='rank' element={<Rank />} />
+                            <Route path='collection' element={<GachaCollection />} />
                         </Route>
                         <Route path={routeLink.editComic} element={<EditComic />} />
                         <Route path={routeLink.chapters} element={<ChapterList />} />
@@ -100,9 +99,15 @@ const AppRoutes = () => {
                         <Route path={routeLink.deckDetail} element={<DeckDetailPage />} />
                         <Route path={routeLink.createCard} element={<CardFormPage />} />
                         <Route path={routeLink.editCard} element={<CardFormPage />} />
-                        <Route path={routeLink.userRank} element={<Rank />} />
+                        <Route path={routeLink.userAccount} element={<Account />}>
+                            <Route index element={<Profile />} />
+                            <Route path='profile' element={<Profile />} />
+                            <Route path='bookshelf' element={<Bookshelf />} />
+                            <Route path='rank' element={<Rank />} />
+                        </Route>
 
                         <Route path={routeLink.gacha} element={<GachaPage />} />
+                        <Route path={routeLink.userCollection} element={<GachaCollection />} />
                     </Route>
                 </Route>
                     <Route path='active/:token' element={<Active />} />

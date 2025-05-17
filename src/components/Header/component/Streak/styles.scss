@@ -10,6 +10,10 @@
 }
 
 .streak {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     font-size: 1.2rem;
     font-weight: bold;
 }
@@ -49,4 +53,14 @@
     display: flex;
     justify-content: space-between;
     margin: 0.5rem 0;
+}
+
+.fire-animation {
+    width: 40px;
+    height: 40px;
+}
+
+.smoke-animation {
+    width: 40px;
+    height: 40px;
 }

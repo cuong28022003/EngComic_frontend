@@ -1,16 +1,33 @@
 import React, { useState } from "react";
 import "./styles.scss";
 import { rollGacha } from "../../api/gachaApi";
-import GachaPack from "./component/GachaPack";
+import GachaPack from "../../components/GachaPack";
+import { useSelector, useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/slice/auth";
+import { updateUserStats } from "../../redux/slice/userStats";
 
 const GachaPage = () => {
+    const user = useSelector((state) => state.auth.login?.user);
+    const userStats = useSelector((state) => state.userStats.data);
+    const dispatch = useDispatch();
+    console.log("userStats", userStats);
+
     const [packs, setPacks] = useState([]);
     const [opened, setOpened] = useState({});
     const [autoOpening, setAutoOpening] = useState(false);
 
+    const GACHA_COST = 100; // Số kim cương cho roll 1
+
     const summon = async (count) => {
-        const res = await rollGacha(count);
+        const totalCost = count * GACHA_COST;
+        if (userStats?.diamond < totalCost) {
+            alert("Bạn không đủ kim cương!");
+            return;
+        }
+        const res = await rollGacha(count, user, dispatch, loginSuccess);
         const data = await res.data;
+    
+        dispatch(updateUserStats({ ...userStats, diamond: userStats.diamond - totalCost }));
 
         // Reset trạng thái opened để kích hoạt lại hiệu ứng
         setOpened({});
@@ -40,8 +57,8 @@ const GachaPage = () => {
             <div className="controls">
                 {!packs.length || allOpened ? (
                     <>
-                        <button onClick={() => summon(1)}>Mở 1</button>
-                        <button onClick={() => summon(10)}>Mở 10</button>
+                        <button onClick={() => summon(1)}>Mở 1 ({GACHA_COST}💎)</button>
+                        <button onClick={() => summon(10)}>Mở 10 ({GACHA_COST * 10}💎)</button>
                     </>
                 ) : (
                     !autoOpening &&
@@ -55,7 +72,8 @@ const GachaPage = () => {
                 {packs.map((pack, index) => (
                     <GachaPack
                         key={index}
-                        data={pack}
+                        pack={pack.pack}
+                        character={pack.character}
                         opened={opened[index]}
                         onOpen={() => openPack(index)}
                     />

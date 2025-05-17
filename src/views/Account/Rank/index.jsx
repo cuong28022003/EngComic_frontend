@@ -1,47 +1,102 @@
 import { useEffect, useState } from 'react';
 import { getUserStats } from '../../../api/userStatsApi';
+import { getAllRanks } from '../../../api/rankApi';
 import './styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '../../../redux/slice/auth';
+import { useParams } from 'react-router-dom';
+import GachaCard from '../../../components/GachaCard';
 
 const Rank = () => {
+    const { userId } = useParams();
     const user = useSelector(state => state.auth.login?.user);
     const dispatch = useDispatch();
-    const [stats, setStats] = useState(null);
-    const [rank, setRank] = useState(null);
+    const stats = useSelector(state => state.userStats.data);
+    const [ranks, setRanks] = useState([]);
+    const [selectedRank, setSelectedRank] = useState(null);
     const xp = stats?.xp || 0;
-    const current = xp - rank?.minXp;
-    const total = rank?.maxXp - rank?.minXp;
-    const percent = Math.floor((current / total) * 100);
+    let percent = 0;
+    let progressText = '';
+
+    if (xp > selectedRank?.maxXp) {
+        percent = 100;
+        progressText = '✅ Đã đạt';
+    } else if (xp < selectedRank?.minXp) {
+        percent = 0;
+        progressText = '❌ Chưa đạt';
+    } else {
+        const current = xp - selectedRank?.minXp;
+        const total = selectedRank?.maxXp - selectedRank?.minXp;
+        percent = Math.floor((current / total) * 100);
+        progressText = `${current} / ${total} XP to next rank`;
+    }
+
 
 
     useEffect(() => {
-        const fetchUserStats = async () => {
+        const fetchRanks = async () => {
             try {
-                const response = await getUserStats(user.id, user, dispatch, loginSuccess);
+                const response = await getAllRanks();
                 const data = response.data;
-                setStats(data);
-                setRank(data.rank);
+                setRanks(data);
             } catch (error) {
-                console.error("Error fetching user stats:", error);
+                console.error("Error fetching ranks:", error);
             }
         }
-        fetchUserStats();
+        fetchRanks();
     }, [user]);
 
-    if (!stats) return <p>Loading rank...</p>;
+    // Khi đã có stats và ranks, tự động chọn rank phù hợp với xp
+    useEffect(() => {
+        if (!stats || !ranks.length) return;
+        const xp = stats.xp || 0;
+        // Tìm rank phù hợp với xp
+        const foundRank = ranks.find(
+            r => xp >= r.minXp && xp <= r.maxXp
+        );
+        if (foundRank) setSelectedRank(foundRank);
+    }, [stats, ranks]);
+
+    if (!stats || !ranks.length || !selectedRank) return <p>Loading rank...</p>;
 
     return (
-        <div className="rank-container">
-            <img src={rank?.badge} alt="badge" className="badge" />
-            <div className="info">
-                <h3>{rank?.name}</h3>
-                <div className="progress-bar">
-                    <div className="fill" style={{ width: `${percent}%` }}></div>
+        <div className="rank-wrapper">
+            <div className="rank-detail">
+                <img src={selectedRank?.badge} alt="badge" className="badge" />
+                <div className="info">
+                    <h3>{selectedRank?.name}</h3>
+                    <p className="xp-info">
+                        XP: {xp} / {selectedRank.minXp}
+                    </p>
+                    <div className="progress-bar">
+                        <div className="fill" style={{ width: `${percent}%` }}></div>
+                    </div>
+                    <p>{progressText}</p>
                 </div>
-                <p>{current} / {total} XP to next rank</p>
+                <div className="rank-rewards">
+                    <p>💎 {selectedRank?.rewardDiamond}</p>
+                    <div>
+                        <GachaCard
+                            pack={selectedRank?.rewardCharacter?.pack}
+                            character={selectedRank?.rewardCharacter}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="rank-list">
+                {ranks.map(r => (
+                    <div
+                        key={r.id}
+                        className={`rank-item ${selectedRank?.id === r.id ? 'active' : ''}`}
+                        onClick={() => setSelectedRank(r)}
+                    >
+                        <img src={r.badge} alt="badge" className="rank-item-badge" />
+                        <span>{r.name}</span>
+                    </div>
+                ))}
             </div>
         </div>
+
     );
 };
 

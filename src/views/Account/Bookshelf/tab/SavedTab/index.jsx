@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { loginSuccess } from '../../../../../redux/slice/auth';
-import { getSavedComics } from '../../../../../api/savedApi';
+import { getSavedComics as getSavedComicsByUserId } from '../../../../../api/savedApi';
 import Saved from '../../../../../components/Saved';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-const SavedTab = () => {
+const SavedTab = ({ isReadOnly }) => {
+    const { userId } = useParams();
     const user = useSelector((state) => state.auth.login.user);
     const dispatch = useDispatch();
     const [savedComics, setSavedComics] = useState([]);
@@ -14,7 +16,8 @@ const SavedTab = () => {
         if (user) {
             const fetchSavedComics = async () => {
                 try {
-                    const response = await getSavedComics(
+                    const response = await getSavedComicsByUserId(
+                        userId || user.id,
                         user,
                         dispatch,
                         loginSuccess
@@ -27,14 +30,14 @@ const SavedTab = () => {
             };
             fetchSavedComics();
         }
-    }, [user]);
+    }, [userId, user]);
 
     return (
         <div className="saved-list">
             {savedComics.length > 0 ? (
                 savedComics.map((comic) => (
                     <div key={comic.id}>
-                        <Saved data={comic} />
+                        <Saved data={comic} isReadOnly={isReadOnly} />
                         <hr />
                     </div>
                 ))

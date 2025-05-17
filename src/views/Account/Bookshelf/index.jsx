@@ -3,18 +3,21 @@ import './styles.scss';
 import ReadingTab from './tab/ReadingTab';
 import SavedTab from './tab/SavedTab';
 import CreatedTab from './tab/CreatedTab';
+import { useOutletContext } from 'react-router-dom';
 
 const Bookshelf = () => {
+    const { isReadOnly } = useOutletContext();
+
     const [activeTab, setActiveTab] = useState('reading');
 
     const renderTab = () => {
         switch (activeTab) {
             case 'reading':
-                return <ReadingTab />;
+                return <ReadingTab isReadOnly={isReadOnly} />;
             case 'bookmark':
-                return <SavedTab />;
+                return <SavedTab isReadOnly={isReadOnly} />;
             case 'created':
-                return <CreatedTab />;
+                return <CreatedTab isReadOnly={isReadOnly} />;
             default:
                 return null;
         }

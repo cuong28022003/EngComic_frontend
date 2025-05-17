@@ -20,7 +20,7 @@ const DeckPage = () => {
         const fetchDecks = async () => {
             try {
                 const response = await getDecksByUserId(user.id, user, dispatch, loginSuccess);
-                setDecks(response.data.content);
+                setDecks(response.data.content || []);
             } catch (error) {
                 console.error("Error fetching decks:", error);
             }

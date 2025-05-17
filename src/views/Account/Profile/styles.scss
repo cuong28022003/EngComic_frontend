@@ -2,33 +2,102 @@
 
 .profile {
     &__wrap {
-        min-height: 500px;
+        display: flex;
+        flex-direction: row;
+        padding: 2rem;
+        border-radius: 16px;
         box-shadow: $box-shadow;
-    }
-
-    &__main {
-        border: 1px solid #eee;
-        border-top: none;
-        border-bottom: none;
+        background-color: #fff;
+        gap: 2rem;
+        align-items: flex-start;
     }
 
     &__avt {
+        flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        align-items: center;
+        gap: 1rem;
 
         & img {
             border-radius: 50%;
-            width: 50%;
-            margin: 20px auto;
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+            border: 4px solid #ddd;
+            transition: 0.3s ease;
+        }
+
+        & img:hover {
+            transform: scale(1.05);
+        }
+
+        & input[type="file"] {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            border: none;
         }
     }
 
     &__main {
-        height: 100%;
+        flex: 2;
+        padding: 1rem 2rem;
+        border-left: 1px solid #eee;
 
-        & .group-info {
-            padding-bottom: 10px;
+        & form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+
+            .group-info {
+                display: flex;
+                flex-direction: column;
+                gap: 0.5rem;
+
+                label {
+                    font-weight: 600;
+                    color: #444;
+                }
+
+                input {
+                    padding: 0.5rem 1rem;
+                    font-size: 1rem;
+                    border-radius: 8px;
+                    border: 1px solid #ccc;
+                    transition: border 0.2s;
+
+                    &:focus {
+                        outline: none;
+                        border-color: $main-color;
+                    }
+
+                    &[readOnly] {
+                        background-color: #f9f9f9;
+                        color: #888;
+                    }
+                }
+            }
+
+            button {
+                align-self: flex-start;
+                padding: 0.6rem 1.5rem;
+                border: none;
+                border-radius: 8px;
+                background-color: $main-color;
+                color: #fff;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.3s;
+
+                &:hover {
+                    background-color: darken($main-color, 10%);
+                }
+
+                &:disabled {
+                    background-color: #ccc;
+                    cursor: not-allowed;
+                }
+            }
         }
     }
 }

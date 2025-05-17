@@ -18,7 +18,7 @@ export async function checkSavedComic(url, user, dispatch, stateSuccess) {
     return getData(await axi.get(`${BASE_URL_API}/${url}`));
 }
 
-export async function getSavedComics(user, dispatch, stateSuccess) {
+export async function getSavedComics(userId, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
-    return getData(await axi.get(`${BASE_URL_API}/savedbyuser`));
+    return getData(await axi.get(`${BASE_URL_API}/user/${userId}`));
 }
