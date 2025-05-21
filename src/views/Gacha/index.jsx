@@ -73,7 +73,7 @@ const GachaPage = () => {
                     <GachaPack
                         key={index}
                         pack={pack.pack}
-                        character={pack.character}
+                        character={pack}
                         opened={opened[index]}
                         onOpen={() => openPack(index)}
                     />

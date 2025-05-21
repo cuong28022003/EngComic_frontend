@@ -3,21 +3,28 @@ import React, { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import Modal from '../Modal/index.jsx';
 
-const GachaCard = ({ pack, character }) => {
+const GachaCard = ({ character, mode = "default", selected = false, onSelect, disabled = false }) => {
     const [isOpen, setIsOpen] = useState(false);
+    console.log("mode: ", mode);
 
     useEffect(() => {
-        if (pack && character && character?.rarity === 'SSR') {
+        if (character && character?.rarity === 'SSR') {
             confetti();
         }
     }, [character]);
 
-    if (!character && !pack) {
-        return null; // Hoặc có thể hiển thị một thông báo nào đó
+    if (!character) {
+        return null;
     }
 
     const handleCardClick = () => {
-        setIsOpen(true);
+        if (mode === 'selection') {
+            if (!disabled && onSelect) {
+                onSelect(character);
+            }
+        } else {
+            setIsOpen(true);
+        }
     };
 
     const handleClose = (e) => {
@@ -33,8 +40,8 @@ const GachaCard = ({ pack, character }) => {
 
     return (
         <>
-            <div className={`gacha-card rarity-${character.rarity}`} onClick={handleCardClick}>
-                {character.rarity === 'C' ? (
+            <div className={`gacha-card rarity-${character.rarity} ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}`} onClick={handleCardClick}>
+                {character.rarity === 'SSR' ? (
                     <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
                 ) : (
                     <img src={character.imageUrl} alt={character.name} />
@@ -42,7 +49,7 @@ const GachaCard = ({ pack, character }) => {
                 <div className="name">{character.name}</div>
             </div>
 
-            {isOpen && (
+            {mode === "default" && isOpen && (
                 <Modal>
                     <div className="card-overlay" onClick={handleClose}>
                         <div className="card-detail">
@@ -57,8 +64,8 @@ const GachaCard = ({ pack, character }) => {
                                 <h2>{character.name}</h2>
                                 <p>{character.description}</p>
                                 <div className="pack-info">
-                                    <img src={pack.imageUrl} alt={pack.name} />
-                                    <span>{pack.name}</span>
+                                    <img src={character?.pack.imageUrl} alt={character?.pack.name} />
+                                    <span>{character?.pack.name}</span>
                                 </div>
                                 <div className={`rarity-tag rarity-${character.rarity}`}>
                                     {character.rarity}

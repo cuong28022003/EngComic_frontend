@@ -33,6 +33,7 @@ export default function Header() {
         { name: "Đổi mật khẩu", path: "/user/change-password" },
         { name: "Tủ truyện", path: "/user/bookshelf" },
         { name: "Quản lý thẻ", path: routeLink.deck },
+        { name: "Xếp hạng", path: routeLink.rank },
     ];
 
     

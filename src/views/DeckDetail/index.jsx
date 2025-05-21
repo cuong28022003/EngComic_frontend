@@ -7,6 +7,8 @@ import { loginSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux';
 import { routeLink } from '../../routes/AppRoutes';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import CompanionSelector from './component/CompanionSelector';
+import { setSelectedCharacters } from '../../redux/slice/characterSelection';
 
 const DeckDetailPage = () => {
     const { deckId } = useParams();
@@ -18,6 +20,11 @@ const DeckDetailPage = () => {
 
     const [deck, setDeck] = useState(null);
     const [cards, setCards] = useState([]);
+    const [companions, setCompanions] = useState([null, null, null]);
+
+    useEffect(() => {
+        dispatch(setSelectedCharacters(companions));
+    }, [companions])
 
     useEffect(() => {
         getDeckById(deckId, user, dispatch, loginSuccess)
@@ -71,6 +78,13 @@ const DeckDetailPage = () => {
                     🚀 Bắt đầu học
                 </button>
             </div>
+
+            <h2>Đồng hành</h2>
+            <CompanionSelector
+                selectedCharacters={companions}
+                onChange={setCompanions}
+            />
+
 
             <div className={"cardList"}>
                 {cards.map(card => (

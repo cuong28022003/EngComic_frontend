@@ -30,10 +30,10 @@ import DeckDetailPage from "../views/DeckDetail";
 import CardFormPage from "../views/DeckDetail/component/AddEditCard";
 import Rank from "../views/Account/Rank";
 import GachaPage from "../views/Gacha";
-import GachaCollection from "../views/Account/Collection";
+import GachaCollection from "../components/Collection";
 
 export const routeLink = {
-    default: '/',
+    home: '/',
     users: '/users',
     myProfile: '/users/me',
 
@@ -41,6 +41,7 @@ export const routeLink = {
     userAccount: '/user/:userId',   
     userCollection: '/user/gacha-collection',
     createComic: '/user/create-comic',
+    rank: '/user/rank',
 
     userDetail: '/users/:id',
     comics: '/comics',
@@ -71,7 +72,7 @@ const AppRoutes = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<MainLayout />}>
-                    <Route path={routeLink.default} element={<Home />} />
+                    <Route path={routeLink.home} element={<Home />} />
                     <Route path={routeLink.comicDetail} element={<ComicDetail />} />
                     <Route path={routeLink.comics} element={<ComicList />} />
                     <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />

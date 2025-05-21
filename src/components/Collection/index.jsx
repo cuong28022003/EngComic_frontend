@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './styles.scss';
-import { getAllCharactersByUserId, getCharactersByUserId } from '../../../api/characterApi';
+import { getAllCharactersByUserId, getCharactersByUserId } from '../../api/characterApi';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { loginSuccess } from '../../../redux/slice/auth';
-import GachaCard from '../../../components/GachaCard';
-import Pagination from '../../../components/Pagination/index';
+import { loginSuccess } from '../../redux/slice/auth';
+import GachaCard from '../GachaCard';
+import Pagination from '../Pagination/index';
 
-const GachaCollection = () => {
+const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
     const user = useSelector((state) => state.auth.login?.user);
     const dispatch = useDispatch();
     
@@ -20,8 +20,8 @@ const GachaCollection = () => {
 
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    console.log('searchTerm: ', searchTerm);
-    console.log("totalPages: ", totalPages)
+    // console.log('searchTerm: ', searchTerm);
+    // console.log("totalPages: ", totalPages)
 
     const rarities = ['SSR', 'SR', 'R', 'C'];
     const rarityColors = {
@@ -60,7 +60,7 @@ const GachaCollection = () => {
     }, [searchTerm, rarityFilter, sortBy, sortDirection, currentPage]);
 
     const countByRarity = rarities.reduce((acc, rarity) => {
-        acc[rarity] = allCharacters.filter(c => c.character.rarity === rarity).length;
+        acc[rarity] = allCharacters.filter(c => c.rarity === rarity).length;
         return acc;
     }, {});
 
@@ -117,7 +117,15 @@ const GachaCollection = () => {
 
             <div className="card-grid">
                 {characters.map((char, index) => (
-                    <GachaCard key={index} pack={char.pack} character={char.character} />
+                    
+                    <GachaCard
+                        key={index}
+                        character={char}
+                        mode={mode}
+                        selected={selectedIds.includes(char?.id)}
+                        disabled={selectedIds.includes(char?.id) || char?.skillExpired}
+                        onSelect={onCardClick}
+                    />
                 ))}
             </div>
 

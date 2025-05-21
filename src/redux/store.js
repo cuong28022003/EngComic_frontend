@@ -17,8 +17,17 @@ import { PersistGate } from 'redux-persist/integration/react'
 import languageSlice from "./languageSlice"
 import userStatsReducer from "./slice/userStats"
 import rewardReducer from "./slice/reward"
+import characterSelectionReducer from "./slice/characterSelection"
 
-const rootReducer = combineReducers({ auth: authReducer, userStats: userStatsReducer, reward: rewardReducer, modal: modalReducer, message: messageReducer, lang: languageSlice })
+const rootReducer = combineReducers({
+  auth: authReducer,
+  userStats: userStatsReducer,
+  reward: rewardReducer,
+  characterSelection: characterSelectionReducer,
+  modal: modalReducer,
+  message: messageReducer,
+  lang: languageSlice
+})
 
 const persistConfig = {
   key: 'root',

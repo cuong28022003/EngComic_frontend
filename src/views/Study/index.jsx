@@ -8,8 +8,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../redux/slice/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import { routeLink } from "../../routes/AppRoutes";
+import { v4 as uuidv4 } from 'uuid';
 
 const StudyPage = () => {
+    const [sessionId] = useState(uuidv4());
     const [showAnswer, setShowAnswer] = useState(false);
     const [answer, setAnswer] = useState("");
     const [showReview, setShowReview] = useState(false);
@@ -127,7 +129,12 @@ const StudyPage = () => {
         if (currentIndex < cards.length - 1) {
             setCurrentIndex(currentIndex + 1);
         } else {
-            navigate(routeLink.result.replace(':deckId', deckId), { state: { reviewResults: reviewResultsRef.current } });
+            navigate(routeLink.result.replace(':deckId', deckId), {
+                state: {
+                    reviewResults: reviewResultsRef.current,
+                    sessionId: sessionId,
+                }
+            });
         }
     };
 

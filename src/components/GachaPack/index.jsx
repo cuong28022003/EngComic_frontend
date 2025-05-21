@@ -11,7 +11,7 @@ const GachaPack = ({ pack, character, opened, onOpen }) => {
                     alt="pack"
                 />
             ) : (
-                <GachaCard pack={pack} character={character} />
+                <GachaCard character={character} />
             )}
         </div>
     );

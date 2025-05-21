@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux"
 import { Navigate, useNavigate } from 'react-router-dom'
 import { login, register } from "../api/authApi"
+import { getUserStats } from "../api/userStatsApi"
+import { useEffect } from "react"
+import { updateUserStats } from "../redux/slice/userStats"
 
 const publicPath = [
   '/ddd/', '/truyen/'
@@ -17,8 +20,8 @@ export const handleLogin = async (user, dispatch, navigate) => {
   dispatch(setLoading(true));
   login(user)
     .then(res => {
-      
-      
+
+
       dispatch(loginSuccess(getData(res))); // Lấy thông tin user
       toast.success("Đăng nhập thành công", {
         autoClose: 1200,
@@ -26,19 +29,34 @@ export const handleLogin = async (user, dispatch, navigate) => {
         hideProgressBar: true,
       }); // Hiển thị toast thông báo
       dispatch(authInactive()); // Tắt modal login
-      
-     
-      
+
+      window.location.reload(); // Tải lại trang
+
+      useEffect(() => {
+        const fetchUserStats = async () => {
+          try {
+            const response = await getUserStats(user?.id, user, dispatch, loginSuccess)
+            const data = response.data;
+            dispatch(updateUserStats(data))
+          } catch (error) {
+            console.error("Error fetching user stats:", error);
+          }
+        }
+        fetchUserStats();
+      }, [user])
+
       // Logic điều hướng dựa trên role
       if (res.data.roles.includes('ADMIN')) {
         navigate("/admin"); // Chuyển đến trang admin nếu có role ADMIN
+        window.location.reload(); 
       } else {
         navigate('/'); // Chuyển đến trang user nếu không có role ADMIN
+        window.location.reload();
       }
     })
     .catch(error => {
-     
-      
+
+
       dispatch(loginFalse());
       const msg = error.response?.data?.details;
       let _ = msg?.username || msg?.password || msg?.active || error.message || "Đăng nhập thất bại";
