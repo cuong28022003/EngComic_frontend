@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import Modal from '../Modal/index.jsx';
 
-const GachaCard = ({ character, mode = "default", selected = false, onSelect, disabled = false }) => {
+const GachaCard = ({ character, mode = "default", selected = false, onSelect, disabled = false, size}) => {
     const [isOpen, setIsOpen] = useState(false);
     console.log("mode: ", mode);
 
@@ -40,7 +40,11 @@ const GachaCard = ({ character, mode = "default", selected = false, onSelect, di
 
     return (
         <>
-            <div className={`gacha-card rarity-${character.rarity} ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}`} onClick={handleCardClick}>
+            <div className={`gacha-card rarity-${character.rarity} 
+                ${selected ? 'selected' : ''} 
+                ${disabled ? 'disabled' : ''}
+                ${size === 'small' ? 'small' : ''}`}
+                onClick={handleCardClick}>
                 {character.rarity === 'SSR' ? (
                     <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
                 ) : (

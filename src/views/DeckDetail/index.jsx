@@ -8,7 +8,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { routeLink } from '../../routes/AppRoutes';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import CompanionSelector from './component/CompanionSelector';
-import { setSelectedCharacters } from '../../redux/slice/characterSelection';
+import { setSelectedCharacters, setActiveSkills } from '../../redux/slice/character';
+import { checkCanUseSkill } from '../../api/characterUsageApi';
 
 const DeckDetailPage = () => {
     const { deckId } = useParams();
@@ -22,8 +23,73 @@ const DeckDetailPage = () => {
     const [cards, setCards] = useState([]);
     const [companions, setCompanions] = useState([null, null, null]);
 
+
+
     useEffect(() => {
         dispatch(setSelectedCharacters(companions));
+        const createActiveSkills = async () => {
+
+            // Lấy ngày hôm nay theo định dạng yyyy-MM-dd
+            const today = new Date().toISOString().slice(0, 10);
+
+            // Đảm bảo mỗi skill chỉ được kích hoạt 1 lần
+            let activeSkills = [];
+
+            for (const char of companions) {
+                if (!char) continue; // Bỏ qua nếu char là null hoặc undefined
+
+                if (char.skillsUsagePerDay &&
+                    char.skillsUsagePerDay["DOUBLE_XP"] &&
+                    !activeSkills.some(s => s.skill === "DOUBLE_XP")) {
+                    const payload = {
+                        userId: user.id,
+                        characterId: char.id,
+                        skill: "DOUBLE_XP",
+                        date: today,
+                    }
+                    const canUse = await checkCanUseSkill(payload, user, dispatch, loginSuccess); // true or false
+                    if (canUse) {
+                        activeSkills.push({ skill: "DOUBLE_XP", character: char });
+                    }
+                }
+
+                if (char.skillsUsagePerDay &&
+                    char.skillsUsagePerDay["BONUS_DIAMOND"] &&
+                    char.rarity === "SSR" &&
+                    !activeSkills.some(s => s.skill === "BONUS_DIAMOND")) {
+                    const payload = {
+                        userId: user.id,
+                        characterId: char.id,
+                        skill: "BONUS_DIAMOND",
+                        date: today,
+                    }
+                    const canUse = await checkCanUseSkill(payload, user, dispatch, loginSuccess); // true or false
+                    if (canUse) {
+                        activeSkills.push({ skill: "BONUS_DIAMOND", character: char });
+                    }
+                }
+
+                if (
+                    char.skillsUsagePerDay &&
+                    char.skillsUsagePerDay["SHOW_ANSWER"] &&
+                    !activeSkills.some(s => s.skill === "SHOW_ANSWER")
+                ) {
+                    const payload = {
+                        userId: user.id,
+                        characterId: char.id,
+                        skill: "SHOW_ANSWER",
+                        date: today,
+                    };
+                    const canUse = await checkCanUseSkill(payload, user, dispatch, loginSuccess);
+                    if (canUse) {
+                        activeSkills.push({ skill: "SHOW_ANSWER", character: char });
+                    }
+                }
+            }
+            dispatch(setActiveSkills(activeSkills));
+            console.log("Active Skills:", activeSkills);
+        };
+        createActiveSkills();
     }, [companions])
 
     useEffect(() => {

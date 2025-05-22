@@ -16,8 +16,10 @@ const ResultPage = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.login?.user);
-    const selectedCharacters = useSelector((state) => state.characterSelection.selectedCharacters);
-    console.log("Selected Characters:", selectedCharacters);
+    const selectedCharacters = useSelector((state) => state.character.selectedCharacters);
+    // console.log("Selected Characters:", selectedCharacters);
+    const activeSkills = useSelector((state) => state.character.activeSkills);
+    console.log("Active Skills:", activeSkills);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
 
@@ -34,7 +36,6 @@ const ResultPage = () => {
 
     const [baseXp, setBaseXp] = useState(0);
     const [bonusXpFromSessionLength, setBonusXpFromSessionLength] = useState(0);
-    const [usedSkillsDetail, setUsedSkillsDetail] = useState([]); // [{skill, character}]
     const [bonusXpFromCharacters, setBonusXpFromCharacters] = useState(0);
     const [isDoubleXp, setIsDoubleXp] = useState(false);
     const [bonusDiamond, setBonusDiamond] = useState(0);
@@ -60,21 +61,17 @@ const ResultPage = () => {
         let bonusXpFromCharacters = 0;
         let isDoubleXp = false;
         let bonusDiamond = 0;
-        let usedSkillsDetail = [];
 
         // Lấy ngày hôm nay theo định dạng yyyy-MM-dd
         const today = new Date().toISOString().slice(0, 10);
 
-        // Đảm bảo mỗi skill chỉ được kích hoạt 1 lần
-        const usedSkills = new Set();
-
-        for (const char of selectedCharacters) {
+        for (const skillObj of activeSkills) {
+            const skill = skillObj.skill;
+            const char = skillObj.character;
             if (!char) continue; // Bỏ qua nếu char là null hoặc undefined
             bonusXpFromCharacters += char.bonusXp;
 
-            if (char.skillsUsagePerDay &&
-                char.skillsUsagePerDay["DOUBLE_XP"] &&
-                !usedSkills.has("DOUBLE_XP")) {
+            if (skill === "DOUBLE_XP") {
                 const payload = {
                     userId: user.id,
                     characterId: char.id,
@@ -82,18 +79,10 @@ const ResultPage = () => {
                     date: today,
                 }
                 const response = await checkAndUseSkill(payload, user, dispatch, loginSuccess);
-                const data = response.data;
-                if (data.canUse) {
-                    usedSkills.add("DOUBLE_XP");
-                    isDoubleXp = true;
-                    usedSkillsDetail.push({ skill: "DOUBLE_XP", character: char });
-                }
+                isDoubleXp = true;
             }
 
-            if (char.skillsUsagePerDay &&
-                char.skillsUsagePerDay["BONUS_DIAMOND"] &&
-                char.rarity === "SSR" &&
-                !usedSkills.has("BONUS_DIAMOND")) {
+            if (skill === "BONUS_DIAMOND" && char.rarity === "SSR") {
                 const payload = {
                     userId: user.id,
                     characterId: char.id,
@@ -101,12 +90,17 @@ const ResultPage = () => {
                     date: today,
                 }
                 const response = await checkAndUseSkill(payload, user, dispatch, loginSuccess);
-                const data = response.data;
-                if (data.canUse) {
-                    usedSkills.add("BONUS_DIAMOND");
-                    bonusDiamond += char.bonusDiamond || 0; // hoặc giá trị mặc định
-                    usedSkillsDetail.push({ skill: "BONUS_DIAMOND", character: char });
+                bonusDiamond += char.bonusDiamond || 0; // hoặc giá trị mặc định
+            }
+
+            if (skill === "SHOW_ANSWER") {
+                const payload = {
+                    userId: user.id,
+                    characterId: char.id,
+                    skill: "SHOW_ANSWER",
+                    date: today,
                 }
+                const response = await checkAndUseSkill(payload, user, dispatch, loginSuccess);
             }
         }
 
@@ -115,7 +109,6 @@ const ResultPage = () => {
         setBonusXpFromCharacters(bonusXpFromCharacters);
         setIsDoubleXp(isDoubleXp);
         setBonusDiamond(bonusDiamond);
-        setUsedSkillsDetail(usedSkillsDetail);
 
         let totalXp = baseXp + bonusXpFromSessionLength + bonusXpFromCharacters;
         if (isDoubleXp) totalXp *= 2;
@@ -127,8 +120,7 @@ const ResultPage = () => {
             bonusXpFromCharacters,
             isDoubleXp,
             bonusDiamond,
-            totalXp,
-            usedSkillsDetail
+            totalXp
         };
     };
 
@@ -176,7 +168,6 @@ const ResultPage = () => {
                 isDoubleXp,
                 bonusDiamond,
                 totalXp,
-                usedSkillsDetail
             } = await calculateTotalXpWithCharacterBonus(); // sửa hàm này trả về object
 
             // Cập nhật state sau khi đã có dữ liệu
@@ -185,7 +176,6 @@ const ResultPage = () => {
             setBonusXpFromCharacters(bonusXpFromCharacters);
             setIsDoubleXp(isDoubleXp);
             setBonusDiamond(bonusDiamond);
-            setUsedSkillsDetail(usedSkillsDetail);
             setTotalXp(totalXp);
 
             if (totalXp > 0) {
@@ -240,11 +230,11 @@ const ResultPage = () => {
                     </p>
                     {bonusDiamond > 0 && <p className="bonus-diamond">💎 Bonus Diamonds: <strong>{bonusDiamond}</strong></p>}
                 </div>
-                {usedSkillsDetail.length > 0 && (
+                {activeSkills.length > 0 && (
                     <div className="skills-used">
                         <h4>Skills Used:</h4>
                         <ul>
-                            {usedSkillsDetail.map((item, idx) => (
+                            {activeSkills.map((item, idx) => (
                                 <li key={idx}>
                                     <strong>{item.skill}</strong> - Character: <strong>{item.character.name}</strong>
                                 </li>
