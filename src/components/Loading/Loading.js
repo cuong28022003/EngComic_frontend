@@ -1,5 +1,11 @@
-function Loading() {//component loading khi thực hiện thao tác (submit, handle)
-  return (<i style={{"marginRight":'10px'}} className="fa fa-spinner fa-spin"></i> )
+import './Loading.scss'
+function Loading() {
+  return (
+    <div className="loading-overlay">
+      <div className="spinner"></div>
+      <p>Đang xử lý...</p>
+    </div>
+  );
 }
 
 export default Loading

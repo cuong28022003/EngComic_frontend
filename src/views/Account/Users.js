@@ -5,25 +5,51 @@ import apiMain from '../../api/apiMain';
 import { loginSuccess } from '../../redux/slice/auth';
 import { toast } from 'react-toastify';
 import './Users.scss';
+import Pagination from "../../components/Pagination/index";
 
 function Users(props) {
   const user = useSelector((state) => state.auth.login?.user);
   const [listUser, setListUser] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // State cho danh sách người dùng đã lọc
   const [roles, setRoles] = useState([]);
-  const [username, setUsername] = useState(''); // Đổi từ id sang username
+  const [username, setUsername] = useState('');
   const [modalRole, setModalRole] = useState(false);
+  const [searchTerm, setSearchTerm] = useState(''); // State cho giá trị tìm kiếm
+  
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(7);
   const dispatch = useDispatch();
+
+  // Tính toán phân trang dựa trên danh sách đã lọc
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+  // Hàm lọc người dùng dựa trên searchTerm
+  useEffect(() => {
+    const filtered = listUser.filter((item) =>
+      item.username.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+    setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
+  }, [searchTerm, listUser]);
+
+  // Xử lý thay đổi input tìm kiếm
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   const onClickRole = (username, userRoles) => {
     setModalRole(true);
     setRoles(userRoles.length === 0 ? [] : userRoles.split(', '));
-    setUsername(username); // Lưu username vào state
+    setUsername(username);
   };
 
   const onClickDelete = async (username) => {
     try {
       await apiMain.deleteAccount(user, dispatch, loginSuccess, { id: username });
-      loadUsers(); // Tải lại danh sách người dùng
+      loadUsers();
       toast.success('Xóa tài khoản thành công');
     } catch (err) {
       console.error(err);
@@ -34,7 +60,7 @@ function Users(props) {
   const onClickToggleActive = async (userId, isActive, username) => {
     const action = isActive ? apiMain.inactiveByAdmin : apiMain.activeByAdmin;
 
-    action(user, dispatch, loginSuccess, { username }) // Sử dụng username
+    action(user, dispatch, loginSuccess, { username })
       .then((res) => {
         loadUsers();
         toast.success(isActive ? 'Khoá tài khoản thành công' : 'Kích hoạt tài khoản thành công');
@@ -46,7 +72,7 @@ function Users(props) {
 
   const closeModalRole = useCallback(() => {
     setModalRole(false);
-  });
+  }, []);
 
   useEffect(() => {
     loadUsers();
@@ -63,9 +89,25 @@ function Users(props) {
       });
   };
 
+  const handleRoleUpdated = useCallback(() => {
+    loadUsers();
+    setModalRole(false);
+  }, []);
+
   return (
     <>
-      <h1>Danh sách tài khoản</h1>
+      <div className="users-header">
+        <h1>Danh sách tài khoản</h1>
+        <div className="search-bar" style={{ marginLeft: 'auto' }}>
+          <input
+            type="text"
+            placeholder="Điền tên đăng nhập cần tìm..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            style={{ padding: '8px', width: '250px' }}
+          />
+        </div>
+      </div>
 
       <table className="user-table" style={{ width: '90%' }}>
         <thead>
@@ -80,7 +122,7 @@ function Users(props) {
           </tr>
         </thead>
         <tbody>
-          {listUser.map((item) => (
+          {currentItems.map((item) => (
             <tr key={item._id}>
               <td>{item.username}</td>
               <td>{item.email}</td>
@@ -107,10 +149,23 @@ function Users(props) {
           ))}
         </tbody>
       </table>
+      {filteredUsers.length > itemsPerPage && (
+        <div style={{ marginTop: '0px', display: 'flex', justifyContent: 'center' }}>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
       {modalRole && (
         <Modal active={modalRole}>
           <ModalContent onClose={closeModalRole}>
-            <ChooseRoles roles={roles} username={username} /> {/* Truyền username */}
+            <ChooseRoles 
+              roles={roles} 
+              username={username}
+              onSuccess={handleRoleUpdated}
+            />
           </ModalContent>
         </Modal>
       )}
@@ -127,7 +182,7 @@ const ChooseRoles = (props) => {
 
   const onClickUpdateRole = async (e) => {
     e.preventDefault();
-    const params = { roles, username: props.username }; // Sử dụng username
+    const params = { roles, username: props.username };
     apiMain
       .updateRole(user, dispatch, loginSuccess, params)
       .then(() => {
@@ -136,7 +191,7 @@ const ChooseRoles = (props) => {
           autoClose: 1200,
           pauseOnHover: false,
         });
-        window.location.reload();
+        props.onSuccess();
       })
       .catch((err) => {
         toast.error(err.response?.details?.message || 'Cập nhật quyền thất bại', {

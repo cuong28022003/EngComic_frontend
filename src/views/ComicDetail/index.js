@@ -18,7 +18,7 @@ import { ChapterTab } from "./tab/ChapterTab";
 import { routeLink } from "../../routes/AppRoutes";
 import RatingTab from "./tab/RatingTab";
 import { saveComic, unsaveComic } from "../../api/savedApi";
-
+import ReportModal from "../../components/ReportModal";
 const nav = [
   //navigate
   {
@@ -54,7 +54,15 @@ function ComicDetail() {
   const [loadingData, setLoadingData] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const navigate = useNavigate();
+  const [showReportModal, setShowReportModal] = useState(false);
 
+  const handleOpenReport = () => {
+    if (!user) {
+      toast.warning("Bạn cần đăng nhập để báo cáo");
+      return;
+    }
+    setShowReportModal(true);
+  };
   useEffect(() => {
     const getComic = async () => {
       try {
@@ -251,6 +259,12 @@ function ComicDetail() {
                   {isSaved ? "Đã đánh dấu" : "Đánh dấu"}
                 </button>
                 <button className="btn-outline">Đề cử</button>
+                <button 
+                    className="btn-outline" 
+                    onClick={handleOpenReport}
+                  >
+                    Báo cáo
+                  </button>
               </div>
             </div>
           </div>
@@ -275,6 +289,12 @@ function ComicDetail() {
 
           <div className="story-detail__tab__main">{main}</div>
         </>
+      )}
+      {showReportModal && (
+        <ReportModal
+          comicId={comic?.id}
+          onClose={() => setShowReportModal(false)}
+        />
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
+import {  } from "react-toastify";
 export const authSlice = createSlice({
     name: "auth",
     initialState: {
