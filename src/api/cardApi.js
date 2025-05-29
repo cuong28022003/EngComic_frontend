@@ -3,9 +3,9 @@ import { axiosClient, axiosInstance } from "./config";
 const BASE_URL_API = '/card';
 
 
-export async function getCardsByDeckId(deckId, user, dispatch, stateSuccess) {
+export async function getCardsByDeckId(deckId, params, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
-    return await axi.get(`${BASE_URL_API}/deck/${deckId}`);
+    return await axi.get(`${BASE_URL_API}/deck/${deckId}`, { params });
 }
 
 export async function getCardById(id, user, dispatch, stateSuccess) {

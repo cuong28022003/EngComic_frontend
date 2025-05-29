@@ -18,9 +18,8 @@ export async function searchComics(params) {
     return getData(res);
 }
 
-export async function getComicsByUsername(params) {
-    const res = await axiosClient.get(`${BASE_URL_API}/created`, { params: params });
-    return getData(res);
+export async function getComicsByUploaderId(userId) {
+    return await axiosClient.get(`${BASE_URL_API}/uploader/${userId}`);
 }
 
 export async function getDetailComic(url) {

@@ -6,9 +6,11 @@ import { createCard, getCardById, updateCardById } from '../../../../api/cardApi
 import { loginSuccess } from '../../../../redux/slice/auth';
 import { routeLink } from '../../../../routes/AppRoutes';
 import { useDispatch, useSelector } from 'react-redux';
+import Modal from '../../../../components/Modal/index.jsx';
+import { toast } from 'react-toastify';
 
-const CardFormPage = () => {
-    const { deckId, cardId } = useParams();
+const CardFormModal = ({ onClose, onCardChanged, cardId }) => {
+    const { deckId } = useParams();
     const user = useSelector(state => state.auth.login?.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -16,6 +18,7 @@ const CardFormPage = () => {
 
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
+    const [ipa, setIpa] = useState('');
 
     useEffect(() => {
         if (isEdit) {
@@ -23,6 +26,7 @@ const CardFormPage = () => {
                 .then(res => {
                     setFront(res.data.front);
                     setBack(res.data.back);
+                    setIpa(res.data.ipa || '');
                 })
                 .catch(err => console.error(err));
         }
@@ -35,34 +39,47 @@ const CardFormPage = () => {
                 deckId: deckId,
                 front: front,
                 back: back,
+                ipa: ipa,
             }
             if (isEdit) {
                 await updateCardById(cardId, data, user, dispatch, loginSuccess);
+                toast.success('Cập nhật thẻ thành công!');
             } else {
                 await createCard(data, user, dispatch, loginSuccess);
+                toast.success('Tạo thẻ mới thành công!');
             }
-            navigate(routeLink.deckDetail.replace(':deckId', deckId));
+            if (onCardChanged) {
+                onCardChanged();
+            }
+            onClose();
         } catch (err) {
+            toast.error('Có lỗi xảy ra!');
             console.error(err);
         }
     };
 
     return (
-        <div className={"card-form-container"}>
-            <h2>{isEdit ? 'Sửa Card' : 'Tạo Card Mới'}</h2>
-            <form onSubmit={handleSubmit}>
-                <label>
-                    Front:
-                    <textarea value={front} onChange={(e) => setFront(e.target.value)} />
-                </label>
-                <label>
-                    Back:
-                    <textarea value={back} onChange={(e) => setBack(e.target.value)} />
-                </label>
-                <button type="submit">Lưu</button>
-            </form>
-        </div>
+        <Modal onClose={onClose}>
+            <div className={"card-form-container"}>
+                <h2>{isEdit ? 'Sửa Card' : 'Tạo Card Mới'}</h2>
+                <form onSubmit={handleSubmit}>
+                    <label>
+                        Front:
+                        <textarea value={front} onChange={(e) => setFront(e.target.value)} />
+                    </label>
+                    <label>
+                        Back:
+                        <textarea value={back} onChange={(e) => setBack(e.target.value)} />
+                    </label>
+                    <label>
+                        IPA:
+                        <textarea value={ipa} onChange={(e) => setIpa(e.target.value)} />
+                    </label>
+                    <button type="submit">Lưu</button>
+                </form>
+            </div>
+        </Modal>
     );
 };
 
-export default CardFormPage;
+export default CardFormModal;

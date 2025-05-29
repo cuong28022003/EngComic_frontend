@@ -1,0 +1,41 @@
+.image-page {
+    position: relative;
+
+    .snip-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        cursor: crosshair;
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .selection-box {
+        position: absolute;
+        border: 2px dashed #2563eb;
+        background-color: transparent;
+        pointer-events: none;
+    }
+
+    button {
+        margin: 1rem;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        background-color: #2563eb;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #1e40af;
+        }
+    }
+
+    .content-to-capture {
+        padding: 2rem;
+        text-align: center;
+    }
+}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import apiMain from '../api/apiMain';
-import avt from '../assets/img/avt.png'
+import avt from '../assets/image/avt.png'
 import { loginSuccess } from '../redux/slice/auth';
 
 function Comment(props) {

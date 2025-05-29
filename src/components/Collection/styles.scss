@@ -1,0 +1,107 @@
+.gacha-collection-page {
+    padding: 24px;
+
+    h2 {
+        margin-bottom: 16px;
+        color: #fff;
+    }
+
+    .control-bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+        align-items: center;
+    }
+
+    .search-bar {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        flex: 1;
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 8px;
+
+        .rarity-btn {
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 2px solid;
+            background-color: transparent;
+            color: #000000;
+            cursor: pointer;
+            transition: 0.2s;
+
+            &.active {
+                color: whitesmoke;
+                background-color: black;
+            }
+        }
+    }
+
+    .sort-options {
+        display: flex;
+        gap: 8px;
+        width: 300px;
+
+        select {
+            padding: 6px 10px;
+            border-radius: 8px;
+            background-color: #111;
+            color: #fff;
+            border: 1px solid #555;
+        }
+    }
+
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 20px;
+    }
+
+    .character-card {
+        background: #222;
+        border-radius: 12px;
+        overflow: hidden;
+        padding: 10px;
+        text-align: center;
+        transition: transform 0.3s;
+
+        img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .info {
+            margin-top: 8px;
+            color: #fff;
+
+            .obtained-date {
+                font-size: 0.8rem;
+                color: #aaa;
+            }
+        }
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        &.rarity-ssr {
+            box-shadow: 0 0 10px red;
+        }
+
+        &.rarity-sr {
+            box-shadow: 0 0 10px gold;
+        }
+
+        &.rarity-r {
+            box-shadow: 0 0 10px purple;
+        }
+
+        &.rarity-c {
+            box-shadow: 0 0 10px blue;
+        }
+    }
+}

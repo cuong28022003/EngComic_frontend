@@ -1,0 +1,66 @@
+// PremiumPage/PremiumPage.scss
+.premium-container {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(to right, #2c2c54, #474787);
+    min-height: 100vh;
+}
+
+.premium-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+}
+
+.premium-title {
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #ffcc00;
+
+    .icon {
+        margin-right: 0.5rem;
+    }
+}
+
+.plan-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.benefits {
+    h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    ul {
+        padding-left: 1.2rem;
+
+        li {
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+        }
+    }
+}
+
+.premium-remaining {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    color: #222;
+    padding: 0.75rem 1rem;
+    display: inline-block;
+    font-weight: 500;
+
+    strong {
+        color: #ff9900;
+    }
+}

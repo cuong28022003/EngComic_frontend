@@ -5,22 +5,24 @@ import { loginSuccess } from '../../redux/slice/auth';
 import { ChapterTab } from '../ComicDetail/tab/ChapterTab';
 import LoadingData from '../../components/Loading/LoadingData';
 import { routeLink } from '../../routes/AppRoutes';
-import { getChapter } from '../../api/chapterApi';
+import { getChapter, getChapters } from '../../api/chapterApi';
 import { setReading } from '../../api/readingApi';
 import { getDecksByUserId } from '../../api/deckApi';
 import { createCard } from '../../api/cardApi';
 import './Chapter.scss';
-import domtoimage from 'dom-to-image';
-import DeckFormPage from '../Deck/component/AddEditDeck/index';
-import { toast } from 'react-toastify'; 
+import DeckFormModal from '../Deck/component/AddEditDeck/index';
+import { toast } from 'react-toastify';
+import Modal from '../../components/Modal/index';
+import html2canvas from 'html2canvas';
+import Chapter from '../../components/Chapter';
+
 function ChapterDetail(props) {
+    const userStats = useSelector((state) => state.userStats.data);
     const { chapterNumber, url } = useParams();
     const [chapter, setChapter] = useState({});
-    const [manual, setManual] = useState('');
+    const [manual, setManual] = useState(''); // '' | 'list-chap' | 'add-card' | 'screenshot'
     const [loading, setLoading] = useState(true);
     const [totalChapters, setTotalChapters] = useState(0);
-    const [isScreenshotMode, setIsScreenshotMode] = useState(false);
-    const [selection, setSelection] = useState(null);
     const [ocrResult, setOcrResult] = useState({
         text: '',
         pronunciation: '',
@@ -30,7 +32,18 @@ function ChapterDetail(props) {
     const [decks, setDecks] = useState([]);
     const [loadingDecks, setLoadingDecks] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const [start, setStart] = useState(null);
+    const [box, setBox] = useState(null);
     const chapterContentRef = useRef(null);
+
+    const [chapters, setChapters] = useState([]);
+    const [page, setPage] = useState(0);
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const size = 2;
+
+
+
     const user = useSelector((state) => state.auth.login?.user);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -41,6 +54,7 @@ function ChapterDetail(props) {
             try {
                 const response = await getDecksByUserId(user.id, user, dispatch, loginSuccess);
                 setDecks(response.data.content || []);
+                console.log('Decks fetched:', response.data.content);
             } catch (error) {
                 console.error('Error fetching decks:', error);
                 alert('Không thể tải danh sách bộ thẻ. Vui lòng thử lại.');
@@ -50,70 +64,118 @@ function ChapterDetail(props) {
         }
     };
 
+    const fetchChapterList = async () => {
+        try {
+            const params = {
+                url: url,
+                page: page,
+                size: size,
+            };
+            const res = await getChapters(params);
+            // console.log("res: ", res);  
+            if (res.data.content) {
+                const newChapters = res.data.content;
+                setChapters(prev => [...prev, ...newChapters]);
+                setHasNextPage(!res.data.last); // dùng `last` từ Page<Chapter>
+                setPage(prev => prev + 1);
+            }
+        } catch (error) {
+            console.error("Failed to fetch chapters: ", error);
+        }
+    }
+
+
     useEffect(() => {
         fetchDecks();
+        fetchChapterList();
     }, [user, dispatch]);
 
-    const toggleScreenshotMode = (e) => {
-        e.stopPropagation();
-        setIsScreenshotMode(!isScreenshotMode);
-        setSelection(null);
-        if (!isScreenshotMode) {
-            setOcrResult({
-                text: '',
-                pronunciation: '',
-                translation: '',
-            });
+    const handleAddCard = async () => {
+        try {
+            const selectedDeck = document.getElementById('deckSelect').value;
+            if (!selectedDeck) {
+                toast.warning('Vui lòng chọn một bộ thẻ trước khi thêm!');
+                return;
+            }
+
+            const cardData = {
+                front: ocrResult.translation || '',
+                back: ocrResult.text || '',
+                ipa: ocrResult.pronunciation || '',
+                deckId: selectedDeck,
+                tags: ['ocr'],
+            };
+
+            await createCard(
+                cardData,
+                user,
+                dispatch,
+                loginSuccess
+            );
+            toast.success('Thêm thẻ thành công!');
+            document.getElementById('deckSelect').value = ''; // Reset dropdown
+            setOcrResult({ text: '', pronunciation: '', translation: '' });
+            setManual(''); // Reset manual mode
+        } catch (error) {
+            console.error('Lỗi khi tạo thẻ:', error);
+            toast.error('Có lỗi xảy ra khi thêm thẻ. Vui lòng thử lại.');
         }
-    };
+    }
 
     const handleMouseDown = (e) => {
-        if (!isScreenshotMode) return;
+        if (manual != 'screenshot') return;
         e.preventDefault();
-        const rect = chapterContentRef.current.getBoundingClientRect();
-        setSelection({
-            startX: e.clientX - rect.left,
-            startY: e.clientY - rect.top,
-            endX: e.clientX - rect.left,
-            endY: e.clientY - rect.top,
-        });
+        setStart({ x: e.clientX, y: e.clientY });
+        setManual('screenshot');
+        setBox(null);
     };
 
     const handleMouseMove = (e) => {
-        if (!isScreenshotMode || !selection) return;
+        if (manual != 'screenshot' || !start) return;
         e.preventDefault();
-        const rect = chapterContentRef.current.getBoundingClientRect();
-        setSelection((prev) => ({
-            ...prev,
-            endX: e.clientX - rect.left,
-            endY: e.clientY - rect.top,
-        }));
+        const x1 = Math.min(start.x, e.clientX);
+        const y1 = Math.min(start.y, e.clientY);
+        const x2 = Math.max(start.x, e.clientX);
+        const y2 = Math.max(start.y, e.clientY);
+
+        setBox({
+            left: x1,
+            top: y1,
+            width: x2 - x1,
+            height: y2 - y1,
+        });
     };
 
     const handleMouseUp = async () => {
-        if (!isScreenshotMode || !selection) return;
-        const width = Math.abs(selection.endX - selection.startX);
-        const height = Math.abs(selection.endY - selection.startY);
-        if (width < 10 || height < 10) {
-            setSelection(null);
-            setIsScreenshotMode(false);
-            return;
-        }
-
+        setManual('add-card'); // Reset manual mode
+        if (!box) return;
         setIsProcessing(true);
-        setIsScreenshotMode(false);
-        setSelection(null);
         try {
-            const left = Math.min(selection.startX, selection.endX);
-            const top = Math.min(selection.startY, selection.endY);
+            const rootEl = document.getElementById('root');
+            const contentRect = chapterContentRef.current.getBoundingClientRect();
+            console.log('Content Rect:', contentRect);
+            console.log('Box:', box);
 
-            const dataUrl = await domtoimage.toPng(chapterContentRef.current, {
-                width: width,
-                height: height,
-                style: {
-                    transform: `translate(${-left}px, ${-top}px)`,
-                },
+            const cropX = box.left - contentRect.left;
+            const cropY = box.top - contentRect.top;
+
+            const canvas = await html2canvas(chapterContentRef.current, {
+                x: box.left + window.scrollX,
+                y: box.top + window.scrollY,
+                width: box.width,
+                height: box.height,
+                scrollX: window.scrollX,
+                scrollY: window.scrollY,
+                windowWidth: document.documentElement.scrollWidth,
+                windowHeight: document.documentElement.scrollHeight,
+                useCORS: true,
             });
+
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `screenshot-${Date.now()}.png`;
+            link.click();
 
             if (!dataUrl) throw new Error('Không có nội dung trong vùng chọn.');
 
@@ -181,247 +243,270 @@ function ChapterDetail(props) {
         updateReading();
     }, [chapterNumber, url, user, dispatch]);
 
-    useEffect(() => {
-        const handleClickOutside = () => setManual('');
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
-
     const handleDeckCreated = () => {
         fetchDecks();
         setIsModalOpen(false);
     };
 
+    const handleScreenshotClick = () => {
+        if (!userStats?.premium) {
+            toast.warning('Chức năng này chỉ dành cho tài khoản Premium!');
+            return;
+        }
+        setManual(manual === 'screenshot' ? '' : 'screenshot');
+        setStart(null);     // reset điểm bắt đầu
+        setBox(null);       // reset box chọn cũ
+        setOcrResult({ text: '', pronunciation: '', translation: '' });
+    }
+
     if (loading) return <LoadingData />;
 
     return (
-        <div className="chapter-reader">
-            <div className="chapter-container">
+        <div className="chapter-reader"
+            ref={chapterContentRef}
+        >
+            {manual === 'screenshot' && (
                 <div
-                    className={`main-content ${isScreenshotMode ? 'screenshot-mode' : ''}`}
-                    ref={chapterContentRef}
+                    className="snip-overlay"
                     onMouseDown={handleMouseDown}
                     onMouseMove={handleMouseMove}
                     onMouseUp={handleMouseUp}
                 >
-                    <ul className="chapter-manual fs-24">
-                        <li
-                            className={`chapter-manual__item ${manual === 'list-chap' ? 'active' : ''}`}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setManual((prev) => (prev === 'list-chap' ? '' : 'list-chap'));
-                            }}
-                        >
-                            <a>
-                                <i className="fa-solid fa-bars"></i>
-                            </a>
-                            <div className="chapter-manual__popup">
-                                <div className="list-chapter">
-                                    <ChapterTab url={url} col={2} fontsize={15} />
-                                </div>
-                            </div>
-                        </li>
-                        {chapterNumber > 1 && (
-                            <li className="chapter-manual__item">
-                                <Link
-                                    to={routeLink.chapterDetail
-                                        .replace(':url', url)
-                                        .replace(':chapterNumber', Number(chapterNumber) - 1)}
-                                >
-                                    <i className="fa-solid fa-arrow-left"></i>
-                                </Link>
-                            </li>
-                        )}
-                        {chapterNumber < totalChapters && (
-                            <li className="chapter-manual__item">
-                                <Link
-                                    to={routeLink.chapterDetail
-                                        .replace(':url', url)
-                                        .replace(':chapterNumber', Number(chapterNumber) + 1)}
-                                >
-                                    <i className="fa-solid fa-arrow-right"></i>
-                                </Link>
-                            </li>
-                        )}
-                        <li className="chapter-manual__item">
-                            <Link to={routeLink.comicDetail.replace(':url', url)}>
-                                <i className="fa-solid fa-arrow-right-from-bracket"></i>
-                            </Link>
-                        </li>
-                        <li
-                            className={`chapter-manual__item ${isScreenshotMode ? 'active' : ''}`}
-                            onClick={toggleScreenshotMode}
-                        >
-                            <a>
-                                <i className="fa-solid fa-camera"></i>
-                            </a>
-                        </li>
-                    </ul>
-
-                    {selection && (
+                    {box && (
                         <div
-                            className="selection-area"
+                            className="selection-box"
                             style={{
-                                left: Math.min(selection.startX, selection.endX),
-                                top: Math.min(selection.startY, selection.endY),
-                                width: Math.abs(selection.endX - selection.startX),
-                                height: Math.abs(selection.endY - selection.startY),
+                                left: box.left,
+                                top: box.top,
+                                width: box.width,
+                                height: box.height,
                             }}
                         />
                     )}
-
-                    <div className="chapter-content">
-                        <h1 className="chapter-name">{chapter?.name}</h1>
-                        <div className="image-list">
-                            {chapter?.images?.map((imageUrl, index) => (
-                                <img
-                                    key={index}
-                                    src={imageUrl}
-                                    alt={`Page ${index + 1}`}
-                                    className="chapter-image"
-                                />
-                            ))}
-                        </div>
-                    </div>
                 </div>
+            )}
 
-                {(ocrResult.text || isProcessing) && (
-                    <div className="ocr-result-container">
-                        <div className="ocr-result-panel">
-                            <div className="ocr-result-panel-header">
-                                <h3>Kết quả OCR</h3>
-                                <button
-                                    onClick={() =>
-                                        setOcrResult({ text: '', pronunciation: '', translation: '' })
-                                    }
-                                    className="close-ocr-btn"
-                                >
-                                    <i className="fa-solid fa-times"></i>
-                                </button>
-                            </div>
-                            <div className="ocr-result-content">
-                                {isProcessing ? (
-                                    <div className="ocr-loading">
-                                        <div className="spinner"></div>
-                                        <p>Đang xử lý ảnh...</p>
-                                    </div>
-                                ) : (
-                                    <div className="ocr-details">
-                                        <div className="ocr-section">
-                                            <h4>Văn bản:</h4>
-                                            <p className="ocr-text">{ocrResult.text}</p>
-                                        </div>
-                                        {ocrResult.pronunciation && (
-                                            <div className="ocr-section">
-                                                <h4>Phiên âm:</h4>
-                                                <p className="ocr-pronunciation">
-                                                    {ocrResult.pronunciation}
-                                                </p>
-                                            </div>
-                                        )}
-                                        {ocrResult.translation && (
-                                            <div className="ocr-section">
-                                                <h4>Bản dịch:</h4>
-                                                <p className="ocr-translation">{ocrResult.translation}</p>
-                                            </div>
-                                        )}
+            <div className="chapter-container">
 
-                                        <div className="create-card-section">
-                                            <h4>Tạo thẻ học</h4>
-                                            <div className="form-group">
-                                                <label>Chọn bộ thẻ (Deck)</label>
-                                                <div className="deck-selection">
-                                                    <select className="form-control" id="deckSelect">
-                                                        <option value="">-- Chọn bộ thẻ --</option>
-                                                        {loadingDecks ? (
-                                                            <option disabled>Đang tải bộ thẻ...</option>
-                                                        ) : decks.length > 0 ? (
-                                                            decks.map((deck) => (
-                                                                <option key={deck.id} value={deck.id}>
-                                                                    {deck.name}
-                                                                </option>
-                                                            ))
-                                                        ) : (
-                                                            <option disabled>Không có bộ thẻ nào</option>
-                                                        )}
-                                                    </select>
-                                                    <button
-                                                        className="btn btn-secondary add-deck-btn"
-                                                        onClick={() => setIsModalOpen(true)}
-                                                    >
-                                                        Thêm bộ thẻ
-                                                    </button>
-                                                </div>
-                                            </div>
+                <ul className="chapter-manual fs-24">
+                    <li
+                        className={`chapter-manual__item ${manual === 'list-chap' ? 'active' : ''}`}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setManual((prev) => (prev === 'list-chap' ? '' : 'list-chap'));
+                        }}
+                    >
+                        <a>
+                            <i className="fa-solid fa-bars"></i>
+                        </a>
+                        <div
+                            className="chapter-manual__popup"
+                            onClick={e => e.stopPropagation()} // Ngăn đóng khi click vào popup
+                        >
+                            <div className="list-chapter">
+                                {chapters.map((chap, index) => (
+                                    <Chapter
+                                        key={index}
+                                        chapter={chap}
+                                        isActive={chapterNumber == chap.chapterNumber}
+                                    />
+                                ))}
 
-                                            <div className="button-group">
-                                                <button
-                                                    className="btn btn-primary"
-                                                    onClick={async () => {
-                                                        try {
-                                                            const selectedDeck = document.getElementById('deckSelect').value;
-                                                            if (!selectedDeck) {
-                                                                alert('Vui lòng chọn một bộ thẻ trước khi thêm!');
-                                                                return;
-                                                            }
-
-                                                            const cardData = {
-                                                                front: ocrResult.translation || '',
-                                                                back: ocrResult.text || '',
-                                                                ipa: ocrResult.pronunciation || '',
-                                                                deckId: selectedDeck,
-                                                                tags: ['ocr'],
-                                                            };
-
-                                                            await createCard(
-                                                                cardData,
-                                                                user,
-                                                                dispatch,
-                                                                loginSuccess
-                                                            );
-                                                            toast.success('Thêm thẻ thành công!');                                                   
-                                                            document.getElementById('deckSelect').value = ''; // Reset dropdown
-                                                        } catch (error) {
-                                                            console.error('Lỗi khi tạo thẻ:', error);
-                                                            toast.error('Có lỗi xảy ra khi thêm thẻ. Vui lòng thử lại.');
-                                                        }
-                                                    }}
-                                                >
-                                                    Thêm thẻ
-                                                </button>
-                                                <button
-                                                    className="btn btn-secondary"
-                                                    onClick={() =>
-                                                        setOcrResult({
-                                                            text: '',
-                                                            pronunciation: '',
-                                                            translation: '',
-                                                        })
-                                                    }
-                                                >
-                                                    Hủy bỏ
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                {hasNextPage && (
+                                    <button onClick={fetchChapterList} className="load-more-btn">
+                                        Tải thêm chương
+                                    </button>
                                 )}
                             </div>
                         </div>
+                    </li>
+                    {chapterNumber > 1 && (
+                        <li className="chapter-manual__item">
+                            <Link
+                                to={routeLink.chapterDetail
+                                    .replace(':url', url)
+                                    .replace(':chapterNumber', Number(chapterNumber) - 1)}
+                            >
+                                <i className="fa-solid fa-arrow-left"></i>
+                            </Link>
+                        </li>
+                    )}
+                    {chapterNumber < totalChapters && (
+                        <li className="chapter-manual__item">
+                            <Link
+                                to={routeLink.chapterDetail
+                                    .replace(':url', url)
+                                    .replace(':chapterNumber', Number(chapterNumber) + 1)}
+                            >
+                                <i className="fa-solid fa-arrow-right"></i>
+                            </Link>
+                        </li>
+                    )}
+
+                    <li
+                        className={`chapter-manual__item ${manual === 'screenshot' ? 'active' : ''}`}
+                        onClick={() => {
+                            handleScreenshotClick();
+                        }}
+                    >
+                        <a>
+                            <i className="fa-solid fa-camera"></i>
+                            <span className="premium-badge">
+                                <i className="fa-solid fa-crown" title="Tính năng Premium"></i>
+                            </span>
+                        </a>
+                    </li>
+
+                    <li
+                        className={`chapter-manual__item ${manual === 'add-card' ? 'active' : ''}`}
+                        onClick={() => {
+                            setManual(manual === 'add-card' ? '' : 'add-card');
+                            setOcrResult({ text: '', pronunciation: '', translation: '' });
+                        }}
+                    >
+                        <a>
+                            <i className="fa-solid fa-plus"></i>
+                        </a>
+                        {manual === 'add-card' && (
+                            <div
+                                className="chapter-manual__popup"
+                                onClick={e => e.stopPropagation()} // Ngăn đóng khi click vào popup
+                            >
+                                <div className="ocr-result-panel">
+                                    <div className="ocr-result-panel-header">
+                                        <h3>{'Thêm thẻ mới'}</h3>
+                                    </div>
+                                    <div className="ocr-result-content">
+                                        {isProcessing ? (
+                                            <div className="ocr-loading">
+                                                <div className="spinner"></div>
+                                                <p>Đang xử lý ảnh...</p>
+                                            </div>
+                                        ) : (
+                                            <div className="ocr-details">
+                                                <div className="ocr-section">
+                                                    <h4>Văn bản:</h4>
+                                                    <textarea
+                                                        className="ocr-text"
+                                                        value={ocrResult.text}
+                                                        onChange={e =>
+                                                            setOcrResult(prev => ({ ...prev, text: e.target.value }))
+                                                        }
+                                                        rows={3}
+                                                    />
+                                                </div>
+                                                <div className="ocr-section">
+                                                    <h4>Phiên âm:</h4>
+                                                    <textarea
+                                                        className="ocr-text"
+                                                        value={ocrResult.pronunciation}
+                                                        onChange={e =>
+                                                            setOcrResult(prev => ({ ...prev, pronunciation: e.target.value }))
+                                                        }
+                                                    />
+                                                </div>
+
+                                                <div className="ocr-section">
+                                                    <h4>Bản dịch:</h4>
+                                                    <textarea
+                                                        className="ocr-text"
+                                                        value={ocrResult.translation}
+                                                        onChange={e =>
+                                                            setOcrResult(prev => ({ ...prev, translation: e.target.value }))
+                                                        }
+                                                        rows={2}
+                                                    />
+                                                </div>
+
+                                                <div className="create-card-section">
+                                                    <h4>Tạo thẻ học</h4>
+                                                    <div className="form-group">
+                                                        <label>Chọn bộ thẻ (Deck)</label>
+                                                        <div className="deck-selection">
+                                                            <select className="form-control" id="deckSelect">
+                                                                <option value="">-- Chọn bộ thẻ --</option>
+                                                                {loadingDecks ? (
+                                                                    <option disabled>Đang tải bộ thẻ...</option>
+                                                                ) : decks.length > 0 ? (
+                                                                    decks.map((deck) => (
+                                                                        <option key={deck.id} value={deck.id}>
+                                                                            {deck.name}
+                                                                        </option>
+                                                                    ))
+                                                                ) : (
+                                                                    <option disabled>Không có bộ thẻ nào</option>
+                                                                )}
+                                                            </select>
+                                                            <button
+                                                                className="btn-primary btn-sm"
+                                                                onClick={() => setIsModalOpen(true)}
+                                                            >
+                                                                Thêm Deck
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="button-group">
+                                                        <button
+                                                            className="btn btn-primary"
+                                                            onClick={handleAddCard}
+                                                        >
+                                                            Thêm thẻ
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-secondary"
+                                                            onClick={() => {
+                                                                setOcrResult({
+                                                                    text: '',
+                                                                    pronunciation: '',
+                                                                    translation: '',
+                                                                })
+                                                                setManual('');
+                                                            }}
+                                                        >
+                                                            Hủy bỏ
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </li>
+                    <li className="chapter-manual__item">
+                        <Link to={routeLink.comicDetail.replace(':url', url)}>
+                            <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                        </Link>
+                    </li>
+                </ul>
+
+                <div className={`chapter-content ${manual != 'list-chap' && manual != 'add-card' ? 'center-content' : ''}`}>
+                    <h1 className="chapter-name">{chapter?.name}</h1>
+                    <div className="image-list">
+                        {chapter?.images?.map((imageUrl, index) => (
+                            <img
+                                key={index}
+                                src={imageUrl}
+                                alt={`Page ${index + 1}`}
+                                className="chapter-image"
+                            />
+                        ))}
                     </div>
-                )}
+                </div>
+
+
+
 
                 {isModalOpen && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <DeckFormPage
-                                onDeckCreated={handleDeckCreated}
-                                onClose={() => setIsModalOpen(false)}
-                            />
-                        </div>
-                    </div>
+                    <DeckFormModal
+                        onDeckCreated={handleDeckCreated}
+                        onClose={() => setIsModalOpen(false)}
+                    />
                 )}
 
-                {isScreenshotMode && (
+                {manual === 'screenshot' && (
                     <div className="screenshot-instruction">Kéo chuột để chọn vùng cần chụp</div>
                 )}
             </div>

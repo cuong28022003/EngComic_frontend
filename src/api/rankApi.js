@@ -1,3 +1,4 @@
+
 // src/api/rank.js
 import { axiosInstance } from "./config";
 
@@ -94,3 +95,4 @@ export const rankApi = {
     }
   }
 };
+

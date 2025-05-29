@@ -16,19 +16,51 @@ import CreateComic from './CreateComic';
 import LoadingData from '../../components/Loading/LoadingData';
 import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss';
+import { getUserById } from '../../api/userApi';
+import { getUserStats } from '../../api/userStatsApi';
 
 function Account() {
+  const { userId } = useParams(); 
+  const user = useSelector(state => state.auth.login?.user);
+  const dispatch = useDispatch();
+  const isReadOnly = userId && userId !== user?.id || false;
+  console.log("isReadOnly: ", isReadOnly)
+
+  const [viewedUser, setViewedUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [viewedUserStats, setViewedUserStats] = useState(null);
+
+  useEffect(() => {
+    if (userId && userId !== user?.id) {
+      setLoadingUser(true);
+      getUserById(userId, user, dispatch, loginSuccess)
+        .then(res => setViewedUser(res.data))
+        .catch(() => setViewedUser(null))
+      
+      getUserStats(userId, user, dispatch, loginSuccess)
+        .then(res => setViewedUserStats(res.data))
+        .catch(() => setViewedUserStats(null));
+      
+      setLoadingUser(false);
+    } else {
+      setViewedUser(null);
+      setViewedUserStats(null);
+    }
+  }, [userId]);
+  
   const menu = [//menu dựa trên từng loại tài khoản
     {
       path: "profile",
       display: "Hồ sơ",
       icon: ""
     },
-    {
-      path: "change-password",
-      display: "Đổi mật khẩu",
-      icon: ""
-    },
+    ...(isReadOnly ? [] : [ // Ẩn mục "Đổi mật khẩu" nếu đang xem tài khoản của người khác
+      {
+        path: "change-password",
+        display: "Đổi mật khẩu",
+        icon: ""
+      }
+    ]),
     {
       path: "bookshelf",
       display: "Tủ truyện",
@@ -38,58 +70,50 @@ function Account() {
       path: "rank",
       display: "Xếp hạng",
       icon: ""
+    },
+    {
+      path: "collection",
+      display: "Bộ sưu tập",
+      icon: ""
     }
   ]
 
-  const navigate = useNavigate()
-  const [userInfo, setUserInfo] = useState(null)
-  const user = useSelector(state => state.auth.login?.user);
-  const { pathname } = useLocation();
-  const dispatch = useDispatch();
-  const active = menu.findIndex(e => e.path === pathname.split('/')[2]);
 
-  useEffect(() => {
-    const getUser = async () => {//xử lý load thông tin user
-      try {
-        const res = getData(await apiMain.getUserInfo(user, dispatch, loginSuccess));
-        setUserInfo(res.userInfo)
-      } catch (err) {
-        if (err.response.status === 403 || err.response.status === 401) {
-          //toast.warning("Phiên đăng nhập của bạn đã hết. Vui lòng đăng nhập lại",
-          //  {autoClose: 800,pauseOnHover: false,hideProgressBar: true})
-          dispatch(logoutSuccess())
-          //navigate('/')
-        }
-        else {
-          toast.error("Lỗi thông tin",
-            { autoClose: 800, pauseOnHover: false, hideProgressBar: true })
-        }
-      }
-
-    }
-    getUser()
-  }, [])
-
-  const changeUserInfo = useCallback((data) => {
-    setUserInfo(data)
-  })
 
   return (
       <div className="main-content">
         <div className="d-flex">
           <div className="col-3">
             <ul className="list-group">
-              {
-                menu.map((item, index) => {
-                  return <NavLink key={index} to={`${routeLink.account}/${item.path}`} className={`list-group__item`} end={false}>{item.display}</NavLink>
-                })
-              }
+            {
+              menu.map((item) => {
+                // console.log("isReadOnly: ", isReadOnly)
+                const path = isReadOnly
+                  ? `${routeLink.userAccount.replace(':userId', userId)}/${item.path}` // Đường dẫn cho chế độ chỉ xem
+                  : `${routeLink.account}/${item.path}`; // Đường dẫn mặc định
+
+                return (
+                  <NavLink
+                    key={item.path}
+                    to={path}
+                    className={`list-group__item`}
+                    end={false}
+                  >
+                    {item.display}
+                  </NavLink>
+                );
+              })
+            }
             </ul>
 
           </div>
-          <div className="col-9 " style={{ 'minHeight': '500px' }}>
-            <Outlet />
-          </div>
+        <div className="col-9 " style={{ 'minHeight': '500px' }}>
+          {loadingUser ? (
+            <LoadingData />
+          ) : (
+            <Outlet context={{ isReadOnly, viewedUser, viewedUserStats }} />
+          )}
+        </div>
         </div>
       </div>
   )

@@ -10,6 +10,11 @@
     transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
 
+    &.active {
+        border: 2px solid #007bff;
+        background-color: #eef6ff;
+    }
+
     &:hover {
         transform: translateY(-4px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -64,5 +69,22 @@
         .chapter-card__title {
             font-size: 1rem;
         }
+    }
+}
+
+.load-more-btn {
+    margin: 1rem auto;
+    display: block;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+        background-color: #2980b9;
     }
 }

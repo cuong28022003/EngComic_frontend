@@ -15,7 +15,7 @@ const Leaderboard = () => {
     }, []);
 
     const handleUserClick = (userId) => {
-        navigate(routeLink.userRank.replace(":userId", userId)); // Chuyển hướng đến trang Rank của người dùng
+        navigate(routeLink.userAccount.replace(":userId", userId)); // Chuyển hướng đến trang Rank của người dùng
     };
 
     return (

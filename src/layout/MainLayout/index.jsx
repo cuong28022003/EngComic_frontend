@@ -12,12 +12,7 @@ const MainLayout = () => {
                     <Outlet /> {/* Render nội dung theo route */}
                 </div>
             </main>
-            <ToastContainer autoClose={1000}
-                hideProgressBar
-                newestOnTop={false}
-                closeOnClick
-                pauseOnFocusLoss
-                pauseOnHover={false} />
+
         </>
     );
 };

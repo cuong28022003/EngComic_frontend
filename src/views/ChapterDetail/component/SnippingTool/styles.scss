@@ -1,0 +1,31 @@
+.snipping-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    cursor: crosshair;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.snipping-selection-box {
+    position: absolute;
+    border: 2px dashed red;
+    background-color: rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+}
+
+.snipping-button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+
+    &:hover {
+        background-color: #1e40af;
+    }
+}
