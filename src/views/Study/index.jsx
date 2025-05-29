@@ -36,7 +36,10 @@ const StudyPage = () => {
     useEffect(() => {
         const fetchCards = async () => {
             try {
-                const response = await getCardsByDeckId(deckId, user, dispatch, loginSuccess);
+                const params = {
+                    size: 100
+                }
+                const response = await getCardsByDeckId(deckId,params, user, dispatch, loginSuccess);
                 // console.log("Cards:", response); 
                 setCards(response?.data?.content || []);
                 setLoading(false);

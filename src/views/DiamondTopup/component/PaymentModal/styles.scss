@@ -1,0 +1,68 @@
+// PaymentModal/PaymentModal.scss
+.payment-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.payment-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+
+    h3 {
+        margin-bottom: 0.5rem;
+    }
+
+    .qr-section {
+        margin: 1rem 0;
+
+        img {
+            width: 220px;
+            height: 220px;
+        }
+    }
+
+    .instructions {
+        margin-bottom: 1rem;
+
+        code {
+            display: block;
+            margin: 0.5rem auto;
+            background: #f1f1f1;
+            padding: 0.5rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+    }
+
+    .confirm-btn {
+        background: #00c853;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+}

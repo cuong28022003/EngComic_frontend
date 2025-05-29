@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import apiMain from '../../api/apiMain';
 import { loginSuccess } from '../../redux/slice/auth';
 import { useSelector, useDispatch } from 'react-redux'
-import avt from '../../assets/img/avt.png'
+import avt from '../../assets/image/avt.png'
 import { storage } from '../../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { toast } from 'react-toastify';

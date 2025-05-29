@@ -3,6 +3,7 @@ import getData from "./getData";
 
 const BASE_URL_API = '/character';
 
+//return list of characters
 export async function getAllCharactersByUserId(userId, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return await axi.get(`${BASE_URL_API}/user/${userId}/all`);

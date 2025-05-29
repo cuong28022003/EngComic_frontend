@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { loginSuccess } from "../../../redux/slice/auth";
 import { useSelector, useDispatch } from "react-redux";
-import avt from "../../../assets/img/avt.png";
+import avt from "../../../assets/image/avt.png";
 import { storage } from "../../../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-toastify";
@@ -13,103 +13,47 @@ import { updateUserInfo } from "../../../api/userApi";
 import "./styles.scss";
 import { useOutletContext, useParams } from "react-router-dom";
 import { getUserById } from "../../../api/userApi";
+import Avatar from "../../../components/Avatar";
+import { updateUser } from "../../../redux/slice/auth";
 
 function Profile() {
   const { isReadOnly } = useOutletContext();
-  // console.log("isReadOnly: ", isReadOnly);
+  const { viewedUser } = useOutletContext();
+  const { viewedUserStats } = useOutletContext();
   const { userId } = useParams();
-  const user = useSelector((state) => state.auth.login?.user);
-  const [uploadedImage, setUploadedImage] = useState("");
-  const [preview, setPreview] = useState(user?.image || avt);
+  const loggedUser = useSelector((state) => state.auth.login?.user);
+  const user = isReadOnly ? viewedUser : loggedUser; // Lấy thông tin user đang đăng nhập hoặc người dùng khác nếu isReadOnly
+  const userStats = useSelector((state) => state.userStats.data);
+  const [uploadedImage, setUploadedImage] = useState(null);
+  const [preview, setPreview] = useState(user?.imageUrl || avt);
   const [fullName, setFullName] = useState(user?.fullName || "");
-  const [birthday, setBirthday] = useState(new Date());
+  const [birthday, setBirthday] = useState(user?.birthday || new Date().toISOString().substring(0, 10));
   const [loading, setLoading] = useState(false);
-  const [loadingUser, setLoadingUser] = useState(true);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      try {
-        setLoadingUser(true);
-        const response = isReadOnly
-          ? await getUserById(userId, user, dispatch, loginSuccess) // Lấy thông tin user khác nếu isReadOnly
-          : user; // Lấy thông tin user đang đăng nhập
-        const userData = isReadOnly ? response.data : user;
-        setFullName(userData?.fullName || "");
-        setBirthday(
-          userData?.birthday ? userData?.birthday : new Date()
-        );
-        console.log("birthday: ", birthday);
-        setPreview(userData?.image || avt);
-        setLoadingUser(false);
-      } catch (error) {
-        console.error("Lỗi khi tải thông tin người dùng:", error);
-        toast.error("Có lỗi xảy ra khi tải thông tin người dùng.", {
-          autoClose: 1000,
-          hideProgressBar: true,
-          pauseOnHover: false,
-        });
-      }
-    };
-    loadUserInfo();
-  }, [userId, isReadOnly, user]);
-
-  const handleSubmitSaveProfile = async (data) => {
-    try {
-      setLoading(true);
-      const response = await updateUserInfo(
-        user,
-        dispatch,
-        loginSuccess,
-        data
-      );
-
-      dispatch(loginSuccess(response.data.data.userInfo));
-
-      setLoading(false);
-      toast.success("Cập nhật thông tin thành công", {
-        autoClose: 1000,
-        hideProgressBar: true,
-        pauseOnHover: false,
-      });
-
-    } catch (error) {
-      console.log(error);
-      toast.error("Lỗi cập nhật thông tin", {
-        autoClose: 1000,
-        hideProgressBar: true,
-        pauseOnHover: false,
-      });
-    }
-  };
 
   const handleEdit = async (e) => {
     e.preventDefault();
-    if (isReadOnly) return;
-
+    setLoading(true);
     try {
-      let imageUrl = preview; // Sử dụng ảnh cũ nếu không thay đổi
+      const formData = new FormData();
+      formData.append("fullName", fullName);
+      formData.append("birthday", birthday);
+      formData.append("image", uploadedImage);
 
-      if (uploadedImage) {
-        const storageRef = ref(storage, `/images/${user?.username}`);
-        const result = await uploadBytes(storageRef, uploadedImage);
-        imageUrl = await getDownloadURL(result.ref); // Lấy URL mới nếu có upload
-      }
-
-      const data = {
-        fullName: fullName,
-        image: imageUrl,
-        birthday: birthday,
-      };
-
-      await handleSubmitSaveProfile(data);
+      const response = await updateUserInfo(
+        user.id,
+        formData,
+        user,
+        dispatch,
+        loginSuccess,
+      );
+      dispatch(updateUser(response.data));
+      toast.success("Cập nhật thành công!");
+      // Có thể reload lại user nếu cần
     } catch (error) {
-      console.error("Lỗi khi upload ảnh hoặc cập nhật thông tin:", error);
-      toast.error("Có lỗi xảy ra khi cập nhật thông tin.", {
-        autoClose: 1000,
-        hideProgressBar: true,
-        pauseOnHover: false,
-      });
+      toast.error("Cập nhật thất bại!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,20 +84,20 @@ function Profile() {
 
   return (
     <>
-      {loadingUser ? (
-        <LoadingData />
-      ) : (
         <div className="profile__wrap d-flex">
-          <div className="col-5 profile__avt">
-            <img src={preview} alt="" />
-            {!isReadOnly && ( // Ẩn input tải ảnh lên nếu isReadOnly là true
-              <input
-                type="file"
-                accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
-                name="avatar"
-                onChange={onChangeImage}
-              />
-            )}
+          <div className="col-5">
+            <div className="profile__avatar">
+              <Avatar src={preview} userStats={isReadOnly ? viewedUserStats: userStats} size={180} />
+
+              {!isReadOnly && ( // Ẩn input tải ảnh lên nếu isReadOnly là true
+                <input
+                  type="file"
+                  accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
+                  name="avatar"
+                  onChange={onChangeImage}
+                />
+              )}
+            </div>
           </div>
           <div className="col-7">
             <div className="profile__main">
@@ -193,7 +137,6 @@ function Profile() {
             </div>
           </div>
         </div>
-      )}
     </>
   );
 }

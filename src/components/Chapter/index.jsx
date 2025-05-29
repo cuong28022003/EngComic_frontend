@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './styles.scss';
 import { routeLink } from '../../routes/AppRoutes';
 
-export default function Chapter({ chapter }) {
+export default function Chapter({ chapter, isActive }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -11,7 +11,10 @@ export default function Chapter({ chapter }) {
     };
 
     return (
-        <div className="chapter-card" onClick={handleClick}>
+        <div
+            className={`chapter-card ${isActive ? 'active' : ''}`}
+            onClick={handleClick}
+        >
             <div className="chapter-card__cover">
                 <img src={chapter.cover} alt="Chapter Cover" />
             </div>

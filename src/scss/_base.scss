@@ -50,6 +50,38 @@ $val in $colors {
     }
 }
 
+@each $name, $bg in $button-colors {
+    .btn-#{$name} {
+        min-width: 120px;
+        margin: 10px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 20px;
+        cursor: pointer;
+        background-color: $bg;
+        color: map-get($button-text-colors, $name);
+        border: if($bg ==transparent, 0.5px solid #444, 0.5px solid rgba(0, 0, 0, 0.1));
+
+        &:hover {
+            @if $name !=disabled {
+                background-color: darken($bg, 5%);
+            }
+        }
+
+        @if $name ==disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    }
+}
+
+@each $size, $attrs in $button-sizes {
+    .btn-#{$size} {
+        padding: map-get($attrs, padding);
+        font-size: map-get($attrs, font-size);
+    } }
+
 .container {
     width: 100%;
     max-width: 1620px;
@@ -93,22 +125,22 @@ form {
     }
 }
 
-.btn-primary {
-    min-width: 120px;
-    margin: 10px auto;
-    padding: 10px 20px;
-    margin: auto;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    border: .5px solid rgba(248, 170, 106, 0.514);
-    border-radius: 20px;
-    background-color: $main-color;
-    cursor: pointer;
-    &:hover {
-        background-color: $main-color-hover;
-    }
-}
+// .btn-primary {
+//     min-width: 120px;
+//     margin: 10px auto;
+//     padding: 10px 20px;
+//     margin: auto;
+//     color: #fff;
+//     font-size: 16px;
+//     font-weight: 600;
+//     border: .5px solid rgba(248, 170, 106, 0.514);
+//     border-radius: 20px;
+//     background-color: $main-color;
+//     cursor: pointer;
+//     &:hover {
+//         background-color: $main-color-hover;
+//     }
+// }
 
 .btn-outline {
     min-width: 120px;

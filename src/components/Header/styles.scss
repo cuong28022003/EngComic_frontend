@@ -119,13 +119,6 @@
                 }
             }
         }
-
-        &__avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
     }
 
     &__nav {
@@ -365,5 +358,26 @@
 
     &:hover .streak-tooltip {
         display: block;
+    }
+}
+
+.premium-btn {
+    background-color: #ffd700; // Vàng kim
+    color: #000;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color 0.3s ease;
+
+    i {
+        color: #c79a00;
+    }
+
+    &:hover {
+        background-color: #ffcc00;
+        cursor: pointer;
     }
 }

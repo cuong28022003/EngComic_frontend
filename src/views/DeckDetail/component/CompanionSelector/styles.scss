@@ -1,4 +1,9 @@
 .companion-selector {
+    .companion-selector-modal{
+        display: flex;
+        flex-direction: column;
+    }
+
     .slots {
         display: flex;
         gap: 1rem;

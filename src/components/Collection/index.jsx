@@ -6,11 +6,15 @@ import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../../redux/slice/auth';
 import GachaCard from '../GachaCard';
 import Pagination from '../Pagination/index';
+import { useOutletContext } from 'react-router-dom';
 
-const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
-    const user = useSelector((state) => state.auth.login?.user);
+const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) => {
+    const outletContext = useOutletContext() || {};
+    const { isReadOnly = false, viewedUser = null } = outletContext;
+    const loggedUser = useSelector((state) => state.auth.login?.user);
+    const user = isReadOnly ? viewedUser : loggedUser;
     const dispatch = useDispatch();
-    
+
     const [allCharacters, setAllCharacters] = useState([]);
     const [characters, setCharacters] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -33,7 +37,7 @@ const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
 
     useEffect(() => {
         const fetchAllCharacters = async () => {
-            try { 
+            try {
                 const response = await getAllCharactersByUserId(user.id, user, dispatch, loginSuccess);
                 const data = response.data;
                 setAllCharacters(data);
@@ -44,11 +48,11 @@ const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
         }
 
         fetchAllCharacters();
-    },[user]);
+    }, [user]);
 
     const fetchCharacters = async () => {
         const res = await getCharactersByUserId(user.id,
-            { searchTerm, rarity: rarityFilter, sortBy, sortDirection, page: currentPage-1, size: 5 }
+            { searchTerm, rarity: rarityFilter, sortBy, sortDirection, page: currentPage - 1, size: 5 }
             , user, dispatch, loginSuccess);
         const data = res.data.content;
         setCharacters(data);
@@ -58,6 +62,22 @@ const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
     useEffect(() => {
         fetchCharacters();
     }, [searchTerm, rarityFilter, sortBy, sortDirection, currentPage]);
+
+    const checkDisabled = (char) => {
+        if (mode == 'selection') {
+            return selectedIds.includes(char?.id) ||
+                (
+                    char.skillsUsagePerDay &&
+                    Object.entries(char.skillsUsagePerDay).every(
+                        ([skill, max]) => (char.usedSkills?.[skill] || 0) >= max
+                    )
+                )
+
+        } else {
+            return false; // Không có điều kiện disabled trong chế độ xem chi tiết
+        }
+    }
+
 
     const countByRarity = rarities.reduce((acc, rarity) => {
         acc[rarity] = allCharacters.filter(c => c.rarity === rarity).length;
@@ -117,13 +137,13 @@ const GachaCollection = ({mode = "default", onCardClick, selectedIds = []}) => {
 
             <div className="card-grid">
                 {characters.map((char, index) => (
-                    
+
                     <GachaCard
                         key={index}
                         character={char}
                         mode={mode}
                         selected={selectedIds.includes(char?.id)}
-                        disabled={selectedIds.includes(char?.id) || char?.skillExpired}
+                        disabled={checkDisabled(char)}
                         onSelect={onCardClick}
                     />
                 ))}

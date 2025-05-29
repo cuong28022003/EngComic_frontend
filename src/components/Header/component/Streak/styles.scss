@@ -34,25 +34,100 @@
     padding: 1rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.streak-popover h3 {
-    margin: 0 0 0.5rem;
-    font-size: 1.2rem;
-    text-align: center;
+.streak-popover-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
 }
 
-.streak-popover ul {
+.streak-popover-icon {
+    font-size: 1.6rem;
+}
+
+.streak-popover-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    gap: 1.5rem;
+
+    div {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        span {
+            color: #888;
+            font-size: 0.95rem;
+        }
+
+        strong {
+            color: #ff9900;
+            font-size: 1.1rem;
+        }
+    }
+}
+
+.streak-popover-rewards {
     list-style: none;
     padding: 0;
     margin: 0;
-}
+    width: 250px;
 
-.streak-popover li {
-    display: flex;
-    justify-content: space-between;
-    margin: 0.5rem 0;
+    li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        gap: 0.5rem;
+
+        .reward-streak {
+            font-weight: 500;
+        }
+
+        .reward-claimed {
+            color: #4caf50;
+            font-weight: 500;
+            font-size: 0.98rem;
+        }
+
+        .reward-claim-btn {
+            background: #ffcc00;
+            border: none;
+            border-radius: 6px;
+            padding: 0.3rem 0.8rem;
+            color: #222;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover:enabled {
+                background: #ff9900;
+                color: #fff;
+            }
+
+            &.disabled,
+            &:disabled {
+                background: #e0e0e0;
+                color: #aaa;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+        }
+    }
+
+    .reward-not-reached {
+        color: #aaa;
+        font-size: 0.97rem;
+        font-style: italic;
+    }
 }
 
 .fire-animation {

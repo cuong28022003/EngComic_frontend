@@ -195,6 +195,61 @@
                 color: white;
             }
         }
+
+        .bonus-info {
+            margin: 10px 0;
+            display: flex;
+            gap: 12px;
+
+            .bonus-xp {
+                background: #e0f7fa;
+                color: #00796b;
+                padding: 3px 10px;
+                border-radius: 8px;
+                font-weight: bold;
+            }
+
+            .bonus-diamond {
+                background: #fff3e0;
+                color: #f57c00;
+                padding: 3px 10px;
+                border-radius: 8px;
+                font-weight: bold;
+            }
+        }
+
+        .skills-info {
+            margin-top: 12px;
+
+            h4 {
+                margin-bottom: 6px;
+                font-size: 1rem;
+                color: #333;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 4px 0;
+
+                    .skill-name {
+                        font-weight: 500;
+                        color: #1976d2;
+                    }
+
+                    .skill-usage {
+                        font-size: 0.95em;
+                        color: #555;
+                    }
+                }
+            }
+        }
     }
 }
 

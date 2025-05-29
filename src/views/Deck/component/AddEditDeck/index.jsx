@@ -4,8 +4,9 @@ import { useParams, useLocation } from 'react-router-dom';
 import { createDeck, updateDeckById } from '../../../../api/deckApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess } from '../../../../redux/slice/auth';
+import Modal from '../../../../components/Modal/index.jsx';
 
-const DeckFormPage = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
+const DeckFormModal = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
     const { deckId: paramDeckId } = useParams();
     const location = useLocation();
     const user = useSelector((state) => state.auth.login?.user);
@@ -44,36 +45,38 @@ const DeckFormPage = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
     };
 
     return (
-        <div className="deck-form-container">
-            <h2>{isEdit ? 'Edit Deck' : 'Create Deck'}</h2>
-            <form onSubmit={handleSubmit} className="deck-form">
-                <label>
-                    Deck Name <span>*</span>
-                    <input
-                        type="text"
-                        required
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </label>
+        <Modal onClose={onClose}>
+            <div className="deck-form-container">
+                <h2>{isEdit ? 'Edit Deck' : 'Create Deck'}</h2>
+                <form onSubmit={handleSubmit} className="deck-form">
+                    <label>
+                        Deck Name <span>*</span>
+                        <input
+                            type="text"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+                    </label>
 
-                <label>
-                    Description:
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </label>
+                    <label>
+                        Description:
+                        <textarea
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </label>
 
-                <div className="deck-form-buttons">
-                    <button type="submit">{isEdit ? 'Update Deck' : 'Create Deck'}</button>
-                    <button type="button" onClick={onClose}>
-                        Cancel
-                    </button>
-                </div>
-            </form>
-        </div>
+                    <div className="deck-form-buttons">
+                        <button type="submit">{isEdit ? 'Update Deck' : 'Create Deck'}</button>
+                        <button type="button" onClick={onClose}>
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </Modal>
     );
 };
 
-export default DeckFormPage;
+export default DeckFormModal;

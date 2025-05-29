@@ -6,12 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '../../../redux/slice/auth';
 import { useParams } from 'react-router-dom';
 import GachaCard from '../../../components/GachaCard';
+import { useOutletContext } from 'react-router-dom';
 
 const Rank = () => {
+    const { isReadOnly } = useOutletContext();
+    const { viewedUserStats } = useOutletContext();
     const { userId } = useParams();
     const user = useSelector(state => state.auth.login?.user);
     const dispatch = useDispatch();
-    const stats = useSelector(state => state.userStats.data);
+
+    const reduxUserStats = useSelector(state => state.userStats.data);
+    const stats = isReadOnly ? viewedUserStats : reduxUserStats;
     const [ranks, setRanks] = useState([]);
     const [selectedRank, setSelectedRank] = useState(null);
     const xp = stats?.xp || 0;

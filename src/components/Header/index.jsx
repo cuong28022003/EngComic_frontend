@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useRef } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import logo from '../../assets/img/logo.png';
+import logo from '../../assets/image/logo.png';
 import Auth from '../Auth/index';
 import Modal, { ModalContent } from '../modal';
 import { authLoginActive, authRegisterActive, authInactive } from '../../redux/modalSlice';
@@ -14,12 +14,16 @@ import { getUserStats } from '../../api/userStatsApi';
 import { loginSuccess } from '../../redux/slice/auth';
 import StreakRewards from './component/Streak';
 import { updateUserStats } from '../../redux/slice/userStats';
+import Diamond from './component/Diamond';
+import Avatar from '../Avatar';
+import defaultAvatar from '../../assets/image/avt.png';
 
 export default function Header() {
     const headerRef = useRef(null)
     const expandRef = useRef(null)
     const profileDropdownRef = useRef(null)
     const user = useSelector(state => state.auth.login?.user);
+    const userStats = useSelector(state => state.userStats.data);
     const modalAuth = useSelector(state => state.modal.auth.active);
     const modalLogin = useSelector(state => state.modal.auth.login);
     const navigate = useNavigate();
@@ -36,7 +40,7 @@ export default function Header() {
         { name: "Xếp hạng", path: routeLink.rank },
     ];
 
-    
+
 
     let location = useLocation();
 
@@ -51,19 +55,6 @@ export default function Header() {
             document.removeEventListener("click", hideDropdown)
         }
     }, [])
-
-    useEffect(() => {
-        const fetchUserStats = async () => {
-            try {
-                const response = await getUserStats(user?.id, user, dispatch, loginSuccess)
-                const data = response.data;
-                dispatch(updateUserStats(data))
-            } catch (error) {
-                console.error("Error fetching user stats:", error);
-            }
-        }
-        fetchUserStats();
-    }, [user])
 
     const handleExpand = () => {
         expandRef.current.classList.toggle('active')
@@ -144,19 +135,26 @@ export default function Header() {
                             </div>
                         </div>
                         <ul className='navbar-nav__list navbar-nav__list--right'>
-                            <Link to={user?.roles[0] === 'ADMIN' ? '/admin/dang-truyen' : routeLink.createComic}>
+                            <Link to={routeLink.premium}>
+                                <li className="premium-btn"><i className="fa-solid fa-crown"></i> Premium</li>
+                            </Link>
+
+                            <Link to={routeLink.createComic}>
                                 <li><i style={{ marginRight: 4 + 'px' }} className="fa-regular fa-circle-up"></i> Đăng truyện</li>
                             </Link>
                             {
                                 user ?
                                     <>
                                         <StreakRewards />
+                                        <Diamond />
                                         <div className='navbar-nav__profile'>
                                             <div onClick={handleDropdownProfile} className="navbar-nav__profile__name">
-                                                {user.image ?
-                                                    <div className='navbar-nav__avatar'><img src={user.image} alt="" /></div>
-                                                    : <i style={{ marginRight: 4 + 'px' }} className="fa-solid fa-user"></i>
-                                                }
+                                                <Avatar
+                                                    src={user?.imageUrl || defaultAvatar}
+                                                    userStats={userStats}
+                                                    size={60}
+                                                />
+
                                                 <a>{user.fullName || user.username}</a>
                                             </div>
                                             <div ref={profileDropdownRef} tabIndex={"1"} onBlur={hideProfileDropdown} className="navbar-nav__profile__menu">
@@ -182,7 +180,11 @@ export default function Header() {
                         <ul>
                             <li><Link to="/search?genre=Action" onClick={toggleCategoryPopup}>Thể loại</Link></li>
                             <li><Link to="/truyen">Bảng xếp hạng</Link></li>
-                            <li><Link to={user?.roles[0] === 'ADMIN' ? '/admin/dang-truyen' : routeLink.createComic}>Đăng truyện</Link></li>
+                            <li>
+                                <Link to={routeLink.premium}><i className="fa-solid fa-crown"></i> Premium</Link>
+                            </li>
+
+                            <li><Link to={routeLink.createComic}>Đăng truyện</Link></li>
                             {user ? (
                                 <>
                                     {menuItems.map((item, i) => (

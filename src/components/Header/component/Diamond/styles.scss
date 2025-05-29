@@ -1,0 +1,60 @@
+// src/components/Header/component/Diamond.scss
+.diamond-container {
+    position: relative;
+    margin: 0 10px;
+    cursor: pointer;
+
+    .diamond-display {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        color: #4CAF50;
+
+        .diamond-count {
+            font-size: 16px;
+        }
+    }
+
+    .diamond-popover {
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+        width: 200px;
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+
+            li {
+                padding: 8px 0;
+
+                button {
+                    background: none;
+                    border: none;
+                    font-size: 14px;
+                    color: #333;
+                    width: 100%;
+                    text-align: left;
+                    cursor: pointer;
+
+                    &:hover {
+                        color: #ff5722;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.diamond-animation {
+    width: 40px;
+    height: 40px;
+}

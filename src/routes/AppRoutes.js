@@ -25,12 +25,16 @@ import ResultPage from "../views/Result";
 import DeckPage from "../views/Deck";
 import { createDeck } from "../api/deckApi";
 import CreateDeckPage from "../views/CreateDeck";
-import DeckFormPage from "../views/Deck/component/AddEditDeck";
+import DeckFormModal from "../views/Deck/component/AddEditDeck";
 import DeckDetailPage from "../views/DeckDetail";
-import CardFormPage from "../views/DeckDetail/component/AddEditCard";
+import CardFormModal from "../views/DeckDetail/component/AddEditCard";
 import Rank from "../views/Account/Rank";
 import GachaPage from "../views/Gacha";
 import GachaCollection from "../components/Collection";
+import PremiumPage from "../views/Premium";
+import DiamondTopupPage from "../views/DiamondTopup";
+import TopupHistoryPage from "../views/Account/TopupHistory";
+import ImagePage from "../views/ChapterDetail/component/imagePage";
 
 export const routeLink = {
     home: '/',
@@ -38,7 +42,7 @@ export const routeLink = {
     myProfile: '/users/me',
 
     account: '/user',
-    userAccount: '/user/:userId',   
+    userAccount: '/user/:userId',
     userCollection: '/user/gacha-collection',
     createComic: '/user/create-comic',
     rank: '/user/rank',
@@ -65,6 +69,10 @@ export const routeLink = {
     editCard: '/deck/:deckId/edit-card/:cardId',
 
     gacha: '/gacha',
+
+    premium: '/upgrade-premium',
+    diamondTopup: '/diamond-topup',
+    topupHistory: '/topup-history',
 };
 
 const AppRoutes = () => {
@@ -75,7 +83,6 @@ const AppRoutes = () => {
                     <Route path={routeLink.home} element={<Home />} />
                     <Route path={routeLink.comicDetail} element={<ComicDetail />} />
                     <Route path={routeLink.comics} element={<ComicList />} />
-                    <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
 
                     <Route element={<PrivateRoute roles={['USER']} />}>
                         <Route path={routeLink.account} element={<Account />} >
@@ -94,26 +101,33 @@ const AppRoutes = () => {
                         <Route path={routeLink.study} element={<StudyPage />} />
                         <Route path={routeLink.result} element={<ResultPage />} />
                         <Route path={routeLink.deck} element={<DeckPage />} />
-                        <Route path={routeLink.createDeck} element={<DeckFormPage />} />
-                        <Route path={routeLink.editDeck} element={<DeckFormPage />} />
+                        <Route path={routeLink.createDeck} element={<DeckFormModal />} />
+                        <Route path={routeLink.editDeck} element={<DeckFormModal />} />
 
                         <Route path={routeLink.deckDetail} element={<DeckDetailPage />} />
-                        <Route path={routeLink.createCard} element={<CardFormPage />} />
-                        <Route path={routeLink.editCard} element={<CardFormPage />} />
+                        <Route path={routeLink.createCard} element={<CardFormModal />} />
+                        <Route path={routeLink.editCard} element={<CardFormModal />} />
                         <Route path={routeLink.userAccount} element={<Account />}>
                             <Route index element={<Profile />} />
                             <Route path='profile' element={<Profile />} />
                             <Route path='bookshelf' element={<Bookshelf />} />
                             <Route path='rank' element={<Rank />} />
+                            <Route path='collection' element={<GachaCollection />} />
                         </Route>
 
                         <Route path={routeLink.gacha} element={<GachaPage />} />
-                        <Route path={routeLink.userCollection} element={<GachaCollection />} />
+                        <Route path={routeLink.premium} element={<PremiumPage />} />
+                        <Route path={routeLink.diamondTopup} element={<DiamondTopupPage />} />
+                        <Route path={routeLink.topupHistory} element={<TopupHistoryPage />} />
+                        <Route path="/snipping" element={<ImagePage />} />
+
                     </Route>
                 </Route>
-                    <Route path='active/:token' element={<Active />} />
-                    <Route path='search' element={<SearchPage />} />
-                    <Route path={routeLink.comics} element={<ComicList />} />
+                <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
+
+                <Route path='active/:token' element={<Active />} />
+                <Route path='search' element={<SearchPage />} />
+                <Route path={routeLink.comics} element={<ComicList />} />
                 <Route element={<PrivateRoute roles={['ADMIN']} />}>
                     <Route path='admin/*' element={<Admin />} />
                 </Route>

@@ -41,7 +41,7 @@ const CompanionSelector = ({ selectedCharacters, onChange }) => {
                             onMouseLeave={(e) => e.currentTarget.classList.remove('hover')}
                         >
                             {selected ? (
-                                <>  
+                                <>
                                     <GachaCard character={selected} />
                                     <div className="actions">
                                         <button onClick={(e) => { e.stopPropagation(); handleOpenModal(index); }}>Đổi thẻ</button>
@@ -57,16 +57,17 @@ const CompanionSelector = ({ selectedCharacters, onChange }) => {
             </div>
 
             {modalOpen && (
-                <Modal>
-                    <h4>Chọn đồng hành</h4>
-                    <GachaCollection
-                        mode="selection"
-                        selectedIds={selectedCharacters.map((c) => c?.id)}
-                        onCardClick={(char) => {
-                            handleSelectCharacter(char);
-                        }}
-                    />
-                    <button className="close-btn" onClick={() => setModalOpen(false)}>Đóng</button>
+                <Modal onClose={() => setModalOpen(false)}>
+                    <div className="companion-selector-modal">
+                        <h4>Chọn đồng hành</h4>
+                        <GachaCollection
+                            mode="selection"
+                            selectedIds={selectedCharacters.map((c) => c?.id)}
+                            onCardClick={(char) => {
+                                handleSelectCharacter(char);
+                            }}
+                        />
+                    </div>
                 </Modal>
             )}
         </div>
