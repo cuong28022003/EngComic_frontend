@@ -47,7 +47,7 @@ const CreateChapter = () => {
             toast.warning("Vui lòng chọn ít nhất một ảnh.");
             return;
         }
-
+        setLoading(true);
         try {
             // Chuẩn bị dữ liệu để gửi API
             const formData = new FormData();

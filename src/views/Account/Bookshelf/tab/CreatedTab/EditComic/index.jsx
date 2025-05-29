@@ -25,7 +25,8 @@ function EditComic() {
     const [loadingStory, setLoadingStory] = useState(true);
     const url = location.state?.url;
     // console.log("url: " + url);
-
+    const [isUploading, setIsUploading] = useState(false);
+    
     useEffect(async () => {
         if (url) {
             await getComic(url).then((res) => {

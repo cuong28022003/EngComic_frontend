@@ -2,38 +2,9 @@ import { logoutSuccess } from "../redux/slice/auth";
 import ChangePassword from "../views/Account/ChangePassword";
 import { axiosClient, axiosInstance } from "./config";
 import getData from "./getData";
+
 const apiMain = {
-
-
-
-
- 
- 
-  
-  // saveComic: async (data, user, dispatch, stateSuccess) => {
-  //   const url = `/saved/`;
-  //   let axi = axiosInstance(user, dispatch, stateSuccess);
-  //   return await axi.post(url, data);
-  // },
-  // unsaveComic: async (data, user, dispatch, stateSuccess) => {
-  //   const url = `/saved/`;
-  //   let axi = axiosInstance(user, dispatch, stateSuccess);
-  //   return await axi.delete(url, { data: data });
-  // },
-  // checkSavedComic: async (params, user, dispatch, stateSuccess) => {
-  //   let axi = axiosInstance(user, dispatch, stateSuccess);
-  //   return getData(await axi.get(`/saved/${params.url}`));
-  // },
-  // getSavedComics: async (user, dispatch, stateSuccess) => {
-  //   const url = `/saved/savedbyuser`;
-  //   let axi = axiosInstance(user, dispatch, stateSuccess);
-  //   return getData(await axi.get(url));
-  // },
-
-  
-
   ///Comment
-
   createComment: async (user, params, dispatch, stateSuccess) => {
     const url = `/comment`;
     let axi = axiosInstance(user, dispatch, stateSuccess);
@@ -50,7 +21,6 @@ const apiMain = {
   },
 
   ///user
-
   getAllUser: async (user, dispatch, stateSuccess) => {
     const url = "admin/users";
     let axi = axiosInstance(user, dispatch, stateSuccess);
@@ -67,15 +37,12 @@ const apiMain = {
     });
     return res.data;
   },
-
   getUserInfo: async (user, dispatch, stateSuccess) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
     return await axi.get("/user/info", {
       headers: { Authorization: `Bearer ${user.accessToken}` },
     });
   },
-  
-
   ChangePassword: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
     return getData(
@@ -90,15 +57,11 @@ const apiMain = {
   },
   activeByAdmin: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-    //return getData(await axi.put(`/auth/activebyadmin`, params));
     return getData(await axi.put(`/admin/user/active`, params));
-
   },
   inactiveByAdmin: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-    //return getData(await axi.put(`/auth/inactivebyadmin`, params));
     return getData(await axi.put(`/admin/user/inactive`, params));
-
   },
   updateRole: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
@@ -106,39 +69,93 @@ const apiMain = {
   },
   deleteAccount: async (user, dispatch, stateSuccess, params) => {
     const axi = await axiosInstance(user, dispatch, stateSuccess);
-
     const deleteUserRequest = {
-      username: params.id, // Giả sử params.id là username
+      username: params.id,
     };
-
     return getData(
       await axi.delete(`/admin/deleteuser`, {
         headers: { Authorization: `Bearer ${user.accessToken}` },
-        data: deleteUserRequest, // Gửi dữ liệu ở đây
+        data: deleteUserRequest,
       })
     );
   },
 
-  //s
+  ///comics
   getAllComics: async (user, dispatch, stateSuccess) => {
-    const axi = axiosInstance(user, dispatch, stateSuccess); // Sử dụng instance đã được cấu hình
-
+    const axi = axiosInstance(user, dispatch, stateSuccess);
     try {
-      // Thêm token vào headers của yêu cầu
       const response = await axi.get("/admin/comics", {
         headers: { Authorization: `Bearer ${user.accessToken}` },
       });
-      return response.data; // Trả về data
+      return response.data;
     } catch (error) {
       console.error("Error fetching comics:", error);
-      throw error; // Ném lỗi để xử lý ở phía gọi hàm
+      throw error;
     }
   },
+  updateComicStatus: async (comicId, status, user, dispatch, stateSuccess) => {
+    
+      if (!comicId || typeof comicId !== 'string') {
+        throw new Error(`Invalid comicId: ${comicId}`);
+      }
+      if (!user?.accessToken) {
+        throw new Error('No access token provided');
+      }
 
-  //e
+      const axi = axiosInstance(user, dispatch, stateSuccess);
+      const response = await axi.put(
+        `/comic/${comicId}/status`,
+        { status },
+        {
+          headers: { Authorization: `Bearer ${user.accessToken}` }
+        }
+      );
 
-
-
-
+      return response.data;
+    },
+  ///report
+  createReport: async (user, params, dispatch, stateSuccess) => {
+    const url = "/report";
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.post(url, params, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
+  getAllReports: async (user, dispatch, stateSuccess, page = 0, size = 10) => {
+    const url = `/report/all?page=${page}&size=${size}`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.get(url, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
+  getReportsByComic: async (comicId, user, dispatch, stateSuccess) => {
+    const url = `/report/comic/${comicId}`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.get(url, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
+  updateReportStatus: async (reportId, status, user, dispatch, stateSuccess) => {
+    const url = `/report/${reportId}/status?status=${status}`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.put(url, null, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
+  getReportSummary: async (comicId, user, dispatch, stateSuccess) => {
+    const url = `/report/summary/${comicId}`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.get(url, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
+  getReportsByStatus: async (status, user, dispatch, stateSuccess) => {
+    const url = `/report/status?status=${status}`;
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return getData(await axi.get(url, {
+      headers: { Authorization: `Bearer ${user.accessToken}` }
+    }));
+  },
 };
+
 export default apiMain;

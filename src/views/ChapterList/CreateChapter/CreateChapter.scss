@@ -1,0 +1,75 @@
+$primary-color: #007bff;
+$white: #fff;
+$black: #000;
+
+.btn-primary {
+  background-color: $primary-color;
+  color: $white;
+  padding: 10px 20px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: opacity 0.3s ease;
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid $white;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.d-flex {
+  display: flex;
+}
+
+.input-field {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.image-preview {
+  margin: 10px 0;
+  h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  img {
+    margin: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+}
