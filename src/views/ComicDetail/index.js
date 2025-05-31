@@ -2,23 +2,20 @@ import { useCallback, useEffect, useState } from "react";
 import Layout from "../../layout/MainLayout";
 import "./_StoryDetail.scss";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import apiMain from "../../api/apiMain";
 import Loading from "../../components/Loading/Loading";
 import LoadingData from "../../components/Loading/LoadingData";
-import Grid from "../../components/Grid";
-import Rate from "../../components/Rate";
-import Comment from "../../components/Comment";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/auth";
-import { getDetailComic } from "../../api/comicApi";
+import { getDetailComic, incrementViews } from "../../api/comicApi";
 import { checkSavedComic } from "../../api/savedApi";
 import { getReading } from "../../api/readingApi";
 import { ChapterTab } from "./tab/ChapterTab";
 import { routeLink } from "../../routes/AppRoutes";
 import RatingTab from "./tab/RatingTab";
 import { saveComic, unsaveComic } from "../../api/savedApi";
-import ReportModal from "../../components/ReportModal";
+import ReportModal from "./tab/ReportModal/index.jsx";
+
 const nav = [
   //navigate
   {
@@ -32,10 +29,6 @@ const nav = [
   {
     path: "chapter",
     display: "Ds Chương",
-  },
-  {
-    path: "comment",
-    display: "Bình luận",
   },
   {
     path: "donate",
@@ -53,6 +46,7 @@ function ComicDetail() {
   const active = nav.findIndex((e) => e.path === tab);
   const [loadingData, setLoadingData] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [saved, setSaved] = useState(null);
   const navigate = useNavigate();
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -63,35 +57,45 @@ function ComicDetail() {
     }
     setShowReportModal(true);
   };
-  useEffect(() => {
-    const getComic = async () => {
-      try {
-        const res = await getDetailComic(url);
-        setComic(res.data);
-        setTab("about"); //set tab mặc định là About
-        setLoadingData(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getComic();
 
-    const checkSaved = async () => {
-      try {
-        const res = await checkSavedComic(
-          url,
-          user,
-          dispatch,
-          loginSuccess
-        );
-        console.log(res);
-        setIsSaved(res.saved);
-      } catch (error) {
-        console.log(error);
+  const getComic = async () => {
+    try {
+      const res = await getDetailComic(url);
+      setComic(res.data);
+      setTab("about"); //set tab mặc định là About
+      setLoadingData(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const checkSaved = async () => {
+    try {
+      const params = {
+        userId: user?.id,
+        comicId: comic?.id,
       }
-    };
-    checkSaved();
+      const res = await checkSavedComic(
+        params,
+        user,
+        dispatch,
+        loginSuccess
+      );
+      setSaved(res.data || null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (user && comic) {
+      checkSaved();
+    }
+  }, [user, comic]);
+
+  useEffect(() => {
+    getComic();
   }, [url]);
+  
 
   useEffect(() => {
     //xử lý đổi tab
@@ -105,9 +109,6 @@ function ComicDetail() {
       case "chapter":
         setMain(<ChapterTab key={"chapter"} url={comic.url} />);
         break;
-      case "comment":
-        setMain(<Comment key={"comment"} url={comic.url} />);
-        break;
       default:
         setMain(<Donate key={"donate"} />);
     }
@@ -119,7 +120,7 @@ function ComicDetail() {
 
   const handleSaveComic = async () => {
     try {
-      const payload = { url: comic?.url };
+      const payload = { userId: user?.id, comicId: comic?.id };
       if (user) {
         const response = await saveComic(
           payload,
@@ -140,15 +141,13 @@ function ComicDetail() {
 
   const handleUnsaveComic = async () => {
     try {
-      const payload = { url: comic?.url };
       const response = await unsaveComic(
-        payload,
+        saved?.id,
         user,
         dispatch,
         loginSuccess
       );
-      setIsSaved(false);
-      console.log(response);
+      setSaved(null);
       toast.success("Bỏ đánh dấu truyện thành công");
     } catch (error) {
       console.error("Error:", error);
@@ -183,11 +182,11 @@ function ComicDetail() {
       console.log("Error: " + error);
     }
 
-    try {
-      await apiMain.incrementViews(url);
-    } catch (error) {
-      console.error("Error incrementing views:", error);
-    }
+    // try {
+    //   await incrementViews(url);
+    // } catch (error) {
+    //   console.error("Error incrementing views:", error);
+    // }
   };
 
   //style
@@ -253,18 +252,17 @@ function ComicDetail() {
                   Đọc truyện
                 </button>
                 <button
-                  className={`btn-outline mr-1 ${isSaved ? "saved" : ""}`}
-                  onClick={isSaved ? handleUnsaveComic : handleSaveComic}
+                  className={`btn-outline mr-1 ${saved ? "saved" : ""}`}
+                  onClick={saved ? handleUnsaveComic : handleSaveComic}
                 >
-                  {isSaved ? "Đã đánh dấu" : "Đánh dấu"}
+                  {saved ? "Đã đánh dấu" : "Đánh dấu"}
                 </button>
-                <button className="btn-outline">Đề cử</button>
-                <button 
-                    className="btn-outline" 
-                    onClick={handleOpenReport}
-                  >
-                    Báo cáo
-                  </button>
+                <button
+                  className="btn-outline"
+                  onClick={handleOpenReport}
+                >
+                  Báo cáo
+                </button>
               </div>
             </div>
           </div>

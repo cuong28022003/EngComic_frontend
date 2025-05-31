@@ -2,27 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { loginSuccess } from '../../../../../redux/slice/auth';
 import Reading from '../../../../../components/Reading/Reading';
 import { getReadings } from '../../../../../api/readingApi';
+import { useSelector, useDispatch } from 'react-redux';
+import Pagination from '../../../../../components/Pagination/index.jsx';
 
-const ReadingTab = ({ dispatch, user }) => {
+const ReadingTab = () => {
+    const user = useSelector((state) => state.auth.login.user);
+    const dispatch = useDispatch();
     const [readings, setReadings] = useState([]);
-    useEffect(async () => {
-        if (user) {
-            getReadings(user, dispatch, loginSuccess)
-                .then((res) => {
-                    console.log(res);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+
+    useEffect(() => {
+        const fetchReadings = async () => {
+            if (user) {
+                try {
+                    const params = {
+                        page: currentPage-1,
+                        size: 2, // Số lượng truyện mỗi trang
+                    }
+                    const res = await getReadings(params, user, dispatch, loginSuccess);
                     setReadings(res.data.content);
-                })
-                .catch((err) => {
+                    setTotalPages(res.data.totalPages);
+                } catch (err) {
                     console.log(err);
-                });
-        }
-    }, []);
+                }
+            }
+        };
+        fetchReadings();
+    }, [user, dispatch, currentPage]);
 
     return (
         <div>
             {readings.length > 0 ? (
-                readings.map((item, i) => (
-                    <div key={item._id}>
+                readings.map((item, index) => (
+                    <div key={index}>
                         <Reading data={item} />
                         <hr />
                     </div>
@@ -30,6 +43,12 @@ const ReadingTab = ({ dispatch, user }) => {
             ) : (
                 <p>Không có truyện đang đọc.</p>
             )}
+
+            <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+            />
         </div>
     );
 };

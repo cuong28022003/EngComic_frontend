@@ -135,6 +135,11 @@ export default function Header() {
                             </div>
                         </div>
                         <ul className='navbar-nav__list navbar-nav__list--right'>
+                            <Link to={routeLink.gacha}>
+                                <li className="gacha-btn">
+                                    <i className="fa-solid fa-dice-d20"></i> Gacha
+                                </li>
+                            </Link>
                             <Link to={routeLink.premium}>
                                 <li className="premium-btn"><i className="fa-solid fa-crown"></i> Premium</li>
                             </Link>
@@ -142,6 +147,7 @@ export default function Header() {
                             <Link to={routeLink.createComic}>
                                 <li><i style={{ marginRight: 4 + 'px' }} className="fa-regular fa-circle-up"></i> Đăng truyện</li>
                             </Link>
+
                             {
                                 user ?
                                     <>

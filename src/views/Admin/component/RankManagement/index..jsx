@@ -1,23 +1,32 @@
-import Modal, { ModalContent } from '../../components/modal';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import Pagination from "../../components/Pagination";
-import { rankApi } from '../../api/rankApi';
+import Pagination from "../../../../components/Pagination";
+import { getAllRanks, createRank, updateRank, deleteRank } from '../../../../api/rankApi';
+import './styles.scss';
+import { getCharactersByVersion } from '../../../../api/characterApi';
+import { loginSuccess } from '../../../../redux/slice/auth';
+import LoadingSpinner from '../../../../components/LoadingSpinner';
+import ConfirmDialog from '../../../../components/ConfirmDialog'; // Đường dẫn tùy vị trí file
+import Modal from '../../../../components/Modal/index.jsx'; // Đường dẫn tùy vị trí file
+import GachaCard from '../../../../components/GachaCard'; // Đường dẫn tùy vị trí file
 
-function Rank() {
+function RankManagement() {
   const user = useSelector((state) => state.auth.login?.user);
   const [listRank, setListRank] = useState([]);
-  const [currentRank, setCurrentRank] = useState(null);
+  const [selectedRank, setSelectedRank] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  
+
   // Form state
   const [name, setName] = useState('');
   const [minXp, setMinXp] = useState(0);
   const [maxXp, setMaxXp] = useState(0);
   const [badge, setBadge] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [rewardDiamond, setRewardDiamond] = useState(0);
+  const [rewardCharacterId, setRewardCharacterId] = useState("");
+  const [characters, setCharacters] = useState([]);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,18 +39,34 @@ function Rank() {
   const currentItems = listRank.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(listRank.length / itemsPerPage);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   // Load danh sách rank
   useEffect(() => {
     const loadRanks = async () => {
       try {
-        const res = await rankApi.getAllRanks(user, dispatch, 'FETCH_RANKS_SUCCESS');
-        setListRank(res);
+        const res = await getAllRanks();
+        setListRank(res.data);
       } catch (err) {
         console.error(err);
         toast.error('Lỗi khi tải danh sách rank');
       }
     };
     loadRanks();
+  }, []);
+
+  useEffect(() => {
+    const fetchCharacters = async () => {
+      try {
+        const res = await getCharactersByVersion("SEASON_1");
+        setCharacters(res.data || []);
+      } catch (err) {
+        console.error(err);
+        toast.error('Lỗi khi tải danh sách nhân vật');
+      }
+    };
+    fetchCharacters();
   }, []);
 
   // Xử lý file upload
@@ -60,16 +85,20 @@ function Rank() {
     setMaxXp(0);
     setBadge(null);
     setPreview(null);
-    setCurrentRank(null);
+    setSelectedRank(null);
+    setRewardDiamond(0);
+    setRewardCharacterId("");
   };
 
   // Mở modal chỉnh sửa
   const onClickEdit = (rank) => {
-    setCurrentRank(rank);
+    setSelectedRank(rank);
     setName(rank.name);
     setMinXp(rank.minXp);
     setMaxXp(rank.maxXp);
     setPreview(rank.badge);
+    setRewardDiamond(rank.rewardDiamond || 0);
+    setRewardCharacterId(rank.rewardCharacter.id || null);
     setIsEditing(true);
     setModalOpen(true);
   };
@@ -82,67 +111,93 @@ function Rank() {
   };
 
   // Đóng modal
-  const closeModal = useCallback(() => {
+  const closeModal = () => {
     setModalOpen(false);
     resetForm();
-  }, []);
+  };
 
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(badge);    // Kiểm tra xem badge đã được chọn chưa
-    
+    setIsSubmitting(true);
 
     try {
-      const rankData = { name, minXp, maxXp, badge: badge };
+      const formData = new FormData();
+      formData.append("data", new Blob([JSON.stringify({
+        name: name,
+        minXp: minXp,
+        maxXp: maxXp,
+        rewardDiamond: rewardDiamond,
+        rewardCharacterId: rewardCharacterId,
+      })], { type: "application/json" }));
       
+      if (badge) {
+        formData.append("image", badge);
+      }
+
       if (isEditing) {
-        await rankApi.updateRank(
-          currentRank.id, 
-          rankData,
-          user, 
-          dispatch, 
-          'UPDATE_RANK_SUCCESS'
+        await updateRank(
+          selectedRank.id,
+          formData,
+          user,
+          dispatch,
+          loginSuccess
         );
         toast.success('Cập nhật rank thành công');
       } else {
-        await rankApi.createRank(
-          rankData,
-          user, 
-          dispatch, 
-          'CREATE_RANK_SUCCESS'
+        await createRank(
+          formData,
+          user,
+          dispatch,
+          loginSuccess
         );
         toast.success('Tạo rank thành công');
       }
-      
+
       // Load lại danh sách và đóng modal
-      const res = await rankApi.getAllRanks(user, dispatch, 'FETCH_RANKS_SUCCESS');
-      setListRank(res);
+      const res = await getAllRanks();
+      setListRank(res.data);
       closeModal();
     } catch (error) {
       toast.error(error.message || (isEditing ? 'Cập nhật rank thất bại' : 'Tạo rank thất bại'));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const handleDeleteClick = (rank) => {
+    setSelectedRank(rank);
+    setConfirmOpen(true);
+  };
+
   // Xóa rank
-  const onClickDelete = async (id) => {
+  const handleDeleteRank = async (id) => {
     try {
-      await rankApi.deleteRank(id, user, dispatch, 'DELETE_RANK_SUCCESS');
-      const res = await rankApi.getAllRanks(user, dispatch, 'FETCH_RANKS_SUCCESS');
-      setListRank(res);
+      // setIsSubmitting(true);
+      await deleteRank(id, user, dispatch, loginSuccess);
+      const res = await getAllRanks();
       toast.success('Xóa rank thành công');
+      setListRank(res.data);
     } catch (err) {
       console.error(err);
       toast.error('Xóa rank thất bại');
+    } finally {
+      // setIsSubmitting(false);
+      setConfirmOpen(false);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setConfirmOpen(false);
+    setSelectedRank(null);
   };
 
   return (
     <>
       <div className="ranks-header">
         <h1>Danh sách Rank</h1>
-        <button 
-          onClick={onClickCreate} 
+        <button
+          onClick={onClickCreate}
           className="btn btn-primary"
           style={{ marginLeft: 'auto' }}
         >
@@ -156,6 +211,8 @@ function Rank() {
             <th>Tên Rank</th>
             <th>XP tối thiểu</th>
             <th>XP tối đa</th>
+            <th>Thưởng kim cương</th>
+            <th>Thưởng nhân vật</th>
             <th>Huy hiệu</th>
             <th>Chỉnh sửa</th>
             <th>Xóa</th>
@@ -167,27 +224,34 @@ function Rank() {
               <td>{rank.name}</td>
               <td>{rank.minXp}</td>
               <td>{rank.maxXp}</td>
+              <td>{rank.rewardDiamond}</td>
+              <td>
+                {rank.rewardCharacter && (
+                  <GachaCard character={rank?.rewardCharacter} size="small" />
+                )}
+              </td>
               <td>
                 {rank.badge && (
-                  <img 
-                    src={`${rank.badge}`} 
-                    alt="Huy hiệu" 
+                  <img
+                    src={`${rank.badge}`}
+                    alt="Huy hiệu"
                     style={{ width: '50px', height: '50px' }}
                   />
                 )}
               </td>
               <td>
-                <button 
-                  onClick={() => onClickEdit(rank)} 
+                <button
+                  onClick={() => onClickEdit(rank)}
                   className="btn btn-primary"
                 >
                   Chỉnh sửa
                 </button>
               </td>
               <td>
-                <button 
-                  onClick={() => onClickDelete(rank.id)} 
+                <button
+                  onClick={() => handleDeleteClick(rank)}
                   className="btn btn-danger"
+                  disabled={isSubmitting}
                 >
                   Xoá
                 </button>
@@ -196,7 +260,15 @@ function Rank() {
           ))}
         </tbody>
       </table>
-      
+
+      {confirmOpen && (
+        <ConfirmDialog
+          message="Bạn có chắc chắn muốn xóa rank này không?"
+          onConfirm={() => handleDeleteRank(selectedRank.id)}
+          onCancel={handleCancelDelete}
+        />
+      )}
+
       {listRank.length > itemsPerPage && (
         <div style={{ marginTop: '0px', display: 'flex', justifyContent: 'center' }}>
           <Pagination
@@ -208,8 +280,7 @@ function Rank() {
       )}
 
       {modalOpen && (
-        <Modal active={modalOpen}>
-          <ModalContent onClose={closeModal}>
+        <Modal onClose={closeModal}>
             <div className="rank-form">
               <h3 style={{ textAlign: 'center' }}>
                 {isEditing ? 'Chỉnh sửa Rank' : 'Tạo Rank mới'}
@@ -224,7 +295,7 @@ function Rank() {
                     required
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>XP tối thiểu</label>
                   <input
@@ -235,7 +306,7 @@ function Rank() {
                     min="0"
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>XP tối đa</label>
                   <input
@@ -246,34 +317,70 @@ function Rank() {
                     min={minXp + 1}
                   />
                 </div>
-                
+
                 <div className="form-group">
                   <label>Huy hiệu</label>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
-                    required 
+                    required={!isEditing}
                   />
                   {preview && (
-                    <img 
-                      src={preview} 
-                      alt="Preview" 
+                    <img
+                      src={preview}
+                      alt="Preview"
                       style={{ width: '100px', height: '100px', marginTop: '10px' }}
                     />
                   )}
                 </div>
-                
-                <button type="submit" className={`btn ${isEditing ? 'btn-primary' : 'btn-success'}`}>
-                  {isEditing ? 'Cập nhật' : 'Tạo mới'}
+
+                <div className="form-group">
+                  <label>Reward Kim cương</label>
+                  <input
+                    type="number"
+                    value={rewardDiamond}
+                    onChange={(e) => setRewardDiamond(parseInt(e.target.value))}
+                    min="0"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Reward Nhân vật</label>
+                  <select
+                    value={rewardCharacterId}
+                    onChange={(e) => setRewardCharacterId(e.target.value)}
+                    required
+                  >
+                    <option value="">-- Chọn nhân vật --</option>
+                    {characters.map((char) => (
+                      <option key={char.id} value={char.id}>
+                        {char.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`btn ${isEditing ? 'btn-primary' : 'btn-success'}`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <LoadingSpinner className="me-2" size="sm" />
+                      Đang xử lý...
+                    </>
+                  ) : (
+                    isEditing ? 'Cập nhật' : 'Tạo mới'
+                  )}
                 </button>
               </form>
             </div>
-          </ModalContent>
         </Modal>
       )}
     </>
   );
 }
 
-export default Rank;
+export default RankManagement;

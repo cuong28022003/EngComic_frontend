@@ -1,13 +1,13 @@
-import Modal, { ModalContent } from '../../components/modal';
+import Modal, { ModalContent } from '../../../../components/modal';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import apiMain from '../../api/apiMain';
-import { loginSuccess } from '../../redux/slice/auth';
+import apiMain from '../../../../api/apiMain';
+import { loginSuccess } from '../../../../redux/slice/auth';
 import { toast } from 'react-toastify';
-import './Users.scss';
-import Pagination from "../../components/Pagination/index";
+import './styles.scss';
+import Pagination from "../../../../components/Pagination/index";
 
-function Users(props) {
+function UserManagement(props) {
   const user = useSelector((state) => state.auth.login?.user);
   const [listUser, setListUser] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]); // State cho danh sách người dùng đã lọc
@@ -15,7 +15,7 @@ function Users(props) {
   const [username, setUsername] = useState('');
   const [modalRole, setModalRole] = useState(false);
   const [searchTerm, setSearchTerm] = useState(''); // State cho giá trị tìm kiếm
-  
+
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(7);
   const dispatch = useDispatch();
@@ -161,8 +161,8 @@ function Users(props) {
       {modalRole && (
         <Modal active={modalRole}>
           <ModalContent onClose={closeModalRole}>
-            <ChooseRoles 
-              roles={roles} 
+            <ChooseRoles
+              roles={roles}
               username={username}
               onSuccess={handleRoleUpdated}
             />
@@ -233,4 +233,4 @@ const ChooseRoles = (props) => {
   );
 };
 
-export default Users;
+export default UserManagement;

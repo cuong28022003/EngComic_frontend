@@ -112,7 +112,7 @@ const RatingTab = ({ comicId }) => {
                 {filteredRatings.length > 0 ? (
                     filteredRatings.map(r => (
                         <div className="rating-item" key={r.id}>
-                            <div className="user">{r.userId}</div>
+                            <div className="user">{r?.user?.fullName || r?.user?.username}</div>
                             <div className="stars">
                                 {[...Array(r.rating)].map((_, i) => <span key={i}>★</span>)}
                             </div>

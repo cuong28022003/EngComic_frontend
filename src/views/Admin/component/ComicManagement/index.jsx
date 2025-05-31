@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import axios from "axios";
-import { REACT_APP_BASE_URL_API } from "../../constant/env";
-import Pagination from "../../components/Pagination";
-import apiMain from '../../api/apiMain';
-import './ComicList.css';
+import { REACT_APP_BASE_URL_API } from "../../../../constant/env";
+import Pagination from "../../../../components/Pagination";
+import apiMain from '../../../../api/apiMain';
+import './styles.scss';
 
-const ComicList = () => {
+const ComicManagement = () => {
   const [comics, setComics] = useState([]);
   const [filteredComics, setFilteredComics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -253,4 +253,4 @@ const ComicList = () => {
   );
 };
 
-export default ComicList;
+export default ComicManagement;

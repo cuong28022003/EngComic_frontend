@@ -33,9 +33,6 @@ const PaymentModal = ({ isOpen, onClose, diamonds, price, qrImageUrl, user }) =>
     return (
         <Modal onClose={onClose}>
             <div className="payment-modal">
-                <button className="close-btn" onClick={onClose}>
-                    <X size={20} />
-                </button>
                 <h3>Nạp {diamonds} 💎</h3>
                 <p>Giá: {price.toLocaleString()} VND</p>
 

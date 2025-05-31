@@ -48,3 +48,24 @@ export async function deleteComic(url, user, dispatch, stateSuccess) {
 export async function incrementViews(url) {
     return await axiosClient.patch(`${BASE_URL_API}/${url}/increment-views`);
 }
+
+export async function updateComicStatus(comicId, status, user, dispatch, stateSuccess) {
+
+    if (!comicId || typeof comicId !== 'string') {
+        throw new Error(`Invalid comicId: ${comicId}`);
+    }
+    if (!user?.accessToken) {
+        throw new Error('No access token provided');
+    }
+
+    const axi = axiosInstance(user, dispatch, stateSuccess);
+    const response = await axi.put(
+        `/comic/${comicId}/status`,
+        { status },
+        {
+            headers: { Authorization: `Bearer ${user.accessToken}` }
+        }
+    );
+
+    return response.data;
+}

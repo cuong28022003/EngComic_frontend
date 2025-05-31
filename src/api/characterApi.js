@@ -13,3 +13,7 @@ export async function getCharactersByUserId(userId, params, user, dispatch, stat
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return await axi.get(`${BASE_URL_API}/user/${userId}`, { params: params });
 }
+
+export async function getCharactersByVersion(versionId) {
+    return await axiosClient.get(`${BASE_URL_API}/version/${versionId}`);
+}   

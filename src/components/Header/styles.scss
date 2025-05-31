@@ -377,7 +377,29 @@
     }
 
     &:hover {
-        background-color: #ffcc00;
-        cursor: pointer;
+        transform: scale(1.08) rotate(-2deg);
+        box-shadow: 0 4px 16px rgba(255, 204, 51, 0.5);
+        background: linear-gradient(90deg, #ffe259, #ffa751);
+    }
+}
+
+.gacha-btn {
+    background: linear-gradient(90deg, #ffb347, #ffcc33, #f7971e);
+    color: #fff;
+    border-radius: 30px;
+    padding: 8px 20px;
+    margin: 0 8px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 204, 51, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    &:hover {
+        transform: scale(1.08) rotate(-2deg);
+        box-shadow: 0 4px 16px rgba(255, 204, 51, 0.5);
+        background: linear-gradient(90deg, #ffe259, #ffa751);
     }
 }

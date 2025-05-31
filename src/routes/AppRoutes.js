@@ -5,7 +5,7 @@ import NotFound from "../views/404";
 import MainLayout from "../layout/MainLayout";
 import PrivateRoute from "./PrivateRoute";
 import Account from "../views/Account/Account";
-import Admin from "../views/Account/Admin";
+import Admin from "../views/Admin";
 import Active from "../views/Active/Active";
 import ChapterDetail from "../views/ChapterDetail";
 import SearchPage from "../views/Search";
@@ -35,6 +35,11 @@ import PremiumPage from "../views/Premium";
 import DiamondTopupPage from "../views/DiamondTopup";
 import TopupHistoryPage from "../views/Account/TopupHistory";
 import ImagePage from "../views/ChapterDetail/component/imagePage";
+import UserManagement from "../views/Admin/component/UserManagement";
+import ComicManagement from "../views/Admin/component/ComicManagement";
+import ReportManagement from "../views/Admin/component/ReportManagement";
+import RankManagement from "../views/Admin/component/RankManagement/index.";
+import TopupManagement from "../views/Admin/component/TopupManagement";
 
 export const routeLink = {
     home: '/',
@@ -73,6 +78,8 @@ export const routeLink = {
     premium: '/upgrade-premium',
     diamondTopup: '/diamond-topup',
     topupHistory: '/topup-history',
+
+    admin: '/admin',
 };
 
 const AppRoutes = () => {
@@ -119,7 +126,7 @@ const AppRoutes = () => {
                         <Route path={routeLink.premium} element={<PremiumPage />} />
                         <Route path={routeLink.diamondTopup} element={<DiamondTopupPage />} />
                         <Route path={routeLink.topupHistory} element={<TopupHistoryPage />} />
-                        <Route path="/snipping" element={<ImagePage />} />
+                        {/* <Route path="/snipping" element={<ImagePage />} /> */}
 
                     </Route>
                 </Route>
@@ -129,7 +136,21 @@ const AppRoutes = () => {
                 <Route path='search' element={<SearchPage />} />
                 <Route path={routeLink.comics} element={<ComicList />} />
                 <Route element={<PrivateRoute roles={['ADMIN']} />}>
-                    <Route path='admin/*' element={<Admin />} />
+                    <Route path={routeLink.admin} element={<Admin />} >
+                        <Route index element={<UserManagement />} />
+                        {/* <Route path="profile" element={<Profile userInfo={userInfo} />} />
+                        <Route path="change-password" element={<ChangePassword />} /> */}
+                        <Route path="users" element={<UserManagement />} />
+                        <Route path="comics" element={<ComicManagement />} />
+                        <Route path="reports" element={<ReportManagement />} />
+                        <Route path="ranks" element={<RankManagement />} />
+                        <Route path="topups" element={<TopupManagement />} />
+                        {/* <Route path="delete-truyen" element={<ComicList dispatch={dispatch} />} /> */}
+                        {/* <Route path="tu-truyen/*" element={<Bookshelf userInfo={userInfo} />} /> */}
+                        {/* <Route path="rank" element={<AdminRank />} />
+                        <Route path="report" element={<ReportList />} />
+                        <Route path="dang-truyen" element={<CreateComic userInfo={userInfo} />} /> */}
+                    </Route>
                 </Route>
                 <Route path="*" element={<NotFound />} />
             </Routes>

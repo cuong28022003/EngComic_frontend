@@ -123,7 +123,7 @@ const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) =>
                     ))}
                 </div>
 
-                <div className="sort-options">
+                {/* <div className="sort-options">
                     <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                         <option value="name">Tên</option>
                         <option value="obtainedAt">Ngày nhận</option>
@@ -132,7 +132,7 @@ const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) =>
                         <option value="asc">↑</option>
                         <option value="desc">↓</option>
                     </select>
-                </div>
+                </div> */}
             </div>
 
             <div className="card-grid">

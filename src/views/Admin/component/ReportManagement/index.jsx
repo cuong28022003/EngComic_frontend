@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import Pagination from '../../components/Pagination';
-import './ReportList.css';
-import apiMain from '../../api/apiMain';
+import Pagination from '../../../../components/Pagination.js';
+import './styles.scss';
+import { updateComicStatus } from "../../../../api/comicApi.js";
 import { toast } from 'react-toastify';
+import Modal from "../../../../components/Modal/index.jsx";
+import { getAllReports, updateReportStatus } from "../../../../api/reportApi.js";
 
-const ReportList = () => {
+const ReportManagement = () => {
   const [reports, setReports] = useState([]);
   const [filteredReports, setFilteredReports] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ const ReportList = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const data = await apiMain.getAllReports(user, dispatch, null, currentPage, itemsPerPage);
+        const data = await getAllReports(user, dispatch, null, currentPage, itemsPerPage);
         if (data && data.content) {
           console.log("Reports data:", data.content.map(r => ({
             id: r.id,
@@ -79,7 +81,7 @@ const ReportList = () => {
 
   const getSortedItems = () => {
     if (!filteredReports) return filteredReports;
-    
+
     return [...filteredReports].sort((a, b) => {
       const aValue = a[sortConfig.key] || '';
       const bValue = b[sortConfig.key] || '';
@@ -120,13 +122,13 @@ const ReportList = () => {
   };
 
   const handleUpdateStatus = async (reportId, newStatus, comicId) => {
-    const actionText = newStatus === 'RESOLVED' ? 'khóa truyện và cập nhật báo cáo' : 
-                      newStatus === 'REJECTED' ? 'từ chối báo cáo' : 
-                      'đặt lại trạng thái báo cáo và mở khóa truyện';
+    const actionText = newStatus === 'RESOLVED' ? 'khóa truyện và cập nhật báo cáo' :
+      newStatus === 'REJECTED' ? 'từ chối báo cáo' :
+        'đặt lại trạng thái báo cáo và mở khóa truyện';
     try {
       console.log('Updating report:', { reportId, newStatus, comicId });
 
-      await apiMain.updateReportStatus(reportId, newStatus, user, dispatch, null);
+      await updateReportStatus(reportId, newStatus, user, dispatch, null);
       console.log(`Updated report ${reportId} to ${newStatus}`);
 
       if (newStatus === 'RESOLVED' && comicId) {
@@ -134,20 +136,20 @@ const ReportList = () => {
           throw new Error(`ID truyện không hợp lệ: ${comicId}`);
         }
         console.log(`Locking comic ${comicId}`);
-        await apiMain.updateComicStatus(comicId, 'LOCK', user, dispatch, null);
+        await updateComicStatus(comicId, 'LOCK', user, dispatch, null);
         toast.success("Khóa truyện và cập nhật báo cáo thành công!");
       } else if (newStatus === 'PENDING' && comicId) {
         if (!comicId || typeof comicId !== 'string' || comicId.length !== 24) {
           throw new Error(`ID truyện không hợp lệ: ${comicId}`);
         }
         console.log(`Resetting comic ${comicId} to NONE`);
-        await apiMain.updateComicStatus(comicId, 'NONE', user, dispatch, null);
+        await updateComicStatus(comicId, 'NONE', user, dispatch, null);
         toast.success("Đặt lại trạng thái báo cáo và mở khóa truyện thành công!");
       } else {
         toast.success("Cập nhật trạng thái báo cáo thành công!");
       }
 
-      setReports(reports.map(report => 
+      setReports(reports.map(report =>
         report.id === reportId ? { ...report, status: newStatus } : report
       ));
     } catch (err) {
@@ -158,7 +160,7 @@ const ReportList = () => {
         message: err.message,
         stack: err.stack
       });
-      const errorMessage = err.message.includes('Không tìm thấy truyện') 
+      const errorMessage = err.message.includes('Không tìm thấy truyện')
         ? `Lỗi xử lý truyện: ${err.message}`
         : `Cập nhật thất bại: ${err.message}`;
       setError(errorMessage);
@@ -173,7 +175,7 @@ const ReportList = () => {
   return (
     <div className="report-list-container">
       <h1>Quản Lý Báo Cáo</h1>
-      
+
       <div className="report-controls">
         <div className="search-bar">
           <input
@@ -184,7 +186,7 @@ const ReportList = () => {
           />
         </div>
       </div>
-      
+
       <div className="table-responsive">
         <table className="report-table">
           <thead>
@@ -216,8 +218,8 @@ const ReportList = () => {
                   </div>
                 </td>
                 <td>{report.username || "Ẩn danh"}</td>
-                <td 
-                  className="reason-cell" 
+                <td
+                  className="reason-cell"
                   onClick={() => handleReasonClick(report.reason)}
                   style={{ cursor: 'pointer', color: '#007bff' }}
                 >
@@ -233,13 +235,13 @@ const ReportList = () => {
                   <div className="action-buttons">
                     {report.status === 'PENDING' && (
                       <>
-                        <button 
+                        <button
                           className="resolve-btn"
                           onClick={() => handleUpdateStatus(report.id, 'RESOLVED', report.comicId)}
                         >
                           Khóa Truyện
                         </button>
-                        <button 
+                        <button
                           className="reject-btn"
                           onClick={() => handleUpdateStatus(report.id, 'REJECTED')}
                         >
@@ -248,7 +250,7 @@ const ReportList = () => {
                       </>
                     )}
                     {report.status !== 'PENDING' && (
-                      <button 
+                      <button
                         className="reset-btn"
                         onClick={() => handleUpdateStatus(report.id, 'PENDING', report.comicId)}
                       >
@@ -264,14 +266,13 @@ const ReportList = () => {
       </div>
 
       {showModal && (
-        <div className="modal-container">
-          <div className="modal-overlay" onClick={handleCloseModal}></div>
-          <div className="modal-content">
+        <Modal onClose={handleCloseModal}>
+          <div className="reason-content">
             <h2>Chi Tiết Lý Do</h2>
             <p>{modalReason}</p>
             <button className="modal-button" onClick={handleCloseModal}>Đóng</button>
           </div>
-        </div>
+        </Modal>
       )}
 
       {totalPages > 1 && (
@@ -287,4 +288,4 @@ const ReportList = () => {
   );
 };
 
-export default ReportList;
+export default ReportManagement;

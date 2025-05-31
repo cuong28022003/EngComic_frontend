@@ -5,12 +5,12 @@ import { routeLink } from '../../../../routes/AppRoutes';
 import { useNavigate } from 'react-router-dom';
 
 const Leaderboard = () => {
-    const [users, setUsers] = useState([]);
+    const [fullInfoUsers, setFullInfoUsers] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         getLeaderboard(10)
-            .then(res => setUsers(res.data.content))
+            .then(res => setFullInfoUsers(res.data.content))
             .catch(err => console.error(err));
     }, []);
 
@@ -22,16 +22,16 @@ const Leaderboard = () => {
         <div className="leaderboard">
             <h3>🏆 Top Users</h3>
             <ul>
-                {users.map((user, index) => (
-                    <li key={user.username} onClick={() => handleUserClick(user.id)}>
+                {fullInfoUsers.map((data, index) => (
+                    <li key={index} onClick={() => handleUserClick(data?.user?.id)}>
                         <span className="rank">{index + 1}</span>
                         <img
-                            src={user.rankImage}
-                            alt={user.rankName}
+                            src={data?.userStats?.rank?.badge}
+                            alt={data?.userStats?.rank?.name}
                             className="badge-icon"
                         />
-                        <span className="name">{user.username}</span>
-                        <span className="xp">{user.xp} XP</span>
+                        <span className="name">{data?.user?.username}</span>
+                        <span className="xp">{data?.userStats?.xp} XP</span>
                     </li>
                 ))}
             </ul>

@@ -16,3 +16,13 @@ export async function cancelTopupRequest(requestId, user, dispatch, stateSuccess
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return await axi.post(`${BASE_URL_API}/${requestId}/cancel`);
 }
+
+export async function getTopupRequests(params, user, dispatch, stateSuccess) {
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.get(`${BASE_URL_API}`, { params });
+}
+
+export async function confirmTopupRequest(requestId, user, dispatch, stateSuccess) {
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.post(`${BASE_URL_API}/${requestId}/confirm`);
+}

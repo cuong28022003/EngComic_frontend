@@ -1,0 +1,200 @@
+.report-list-container {
+  padding: 2rem;
+  background-color: #f9f9f9;
+
+  h1 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #2c3e50;
+  }
+
+  .report-controls {
+    margin-bottom: 1rem;
+
+    .search-bar {
+      input {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.6rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+
+        &:focus {
+          border-color: #007bff;
+          outline: none;
+          box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+        }
+      }
+    }
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+  }
+
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+    th,
+    td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    thead {
+      background-color: #f1f1f1;
+
+      th {
+        font-weight: 600;
+        cursor: default;
+
+        &.sortable {
+          cursor: pointer;
+          user-select: none;
+
+          &:hover {
+            color: #007bff;
+          }
+        }
+      }
+    }
+
+    tbody tr:hover {
+      background-color: #f8f8f8;
+    }
+
+    .comic-info {
+      span {
+        font-weight: 500;
+        color: #333;
+      }
+    }
+
+    .reason-cell {
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      display: inline-block;
+
+      &.pending {
+        background-color: #ffeeba;
+        color: #856404;
+      }
+
+      &.resolved {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      &.rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+
+        &.resolve-btn {
+          background-color: #dc3545;
+          color: white;
+
+          &:hover {
+            background-color: #c82333;
+          }
+        }
+
+        &.reject-btn {
+          background-color: #6c757d;
+          color: white;
+
+          &:hover {
+            background-color: #5a6268;
+          }
+        }
+
+        &.reset-btn {
+          background-color: #17a2b8;
+          color: white;
+
+          &:hover {
+            background-color: #138496;
+          }
+        }
+      }
+    }
+  }
+
+  .pagination-container {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .loading,
+  .error {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 1.1rem;
+    color: #555;
+  }
+
+}
+
+.reason-content {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+
+  h2 {
+    margin-bottom: 1rem;
+    color: #333;
+  }
+
+  p {
+    margin-bottom: 1.5rem;
+    color: #444;
+  }
+
+  .modal-button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #0069d9;
+    }
+  }
+}

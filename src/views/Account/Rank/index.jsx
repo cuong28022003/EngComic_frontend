@@ -36,8 +36,6 @@ const Rank = () => {
         progressText = `${current} / ${total} XP to next rank`;
     }
 
-
-
     useEffect(() => {
         const fetchRanks = async () => {
             try {
@@ -82,7 +80,6 @@ const Rank = () => {
                     <p>💎 {selectedRank?.rewardDiamond}</p>
                     <div>
                         <GachaCard
-                            pack={selectedRank?.rewardCharacter?.pack}
                             character={selectedRank?.rewardCharacter}
                         />
                     </div>

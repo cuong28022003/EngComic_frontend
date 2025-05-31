@@ -13,9 +13,9 @@ export async function getReading(url, user, dispatch, stateSuccess) {
         return (await axi.get(`${BASE_URL_API}/${url}`));
 }
 
-export async function getReadings(user, dispatch, stateSuccess) {
+export async function getReadings(params, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
-    return await axi.get(`${BASE_URL_API}`, {
+    return await axi.get(`${BASE_URL_API}`, {params},{
         headers: { Authorization: `Bearer ${user.accessToken}` },
     });
 }

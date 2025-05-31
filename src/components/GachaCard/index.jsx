@@ -51,11 +51,11 @@ const GachaCard = ({ character, mode = "default", selected = false, onSelect, di
                 ${disabled ? 'disabled' : ''}
                 ${size === 'small' ? 'small' : ''}`}
                 onClick={handleCardClick}>
-                {character.rarity === 'SSR' ? (
+                {/* {character.rarity === 'SSR' ? (
                     <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
                 ) : (
-                    <img src={character.imageUrl} alt={character.name} />
-                )}
+                )} */}
+                <img src={character.imageUrl} alt={character.name} />
                 <div className="name">{character.name}</div>
             </div>
 
@@ -64,11 +64,11 @@ const GachaCard = ({ character, mode = "default", selected = false, onSelect, di
                     <div className="card-overlay" onClick={handleClose}>
                         <div className="card-detail">
                             <div className="card-image">
-                                {character.rarity === 'SSR' ? (
+                                {/* {character.rarity === 'SSR' ? (
                                     <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
                                 ) : (
-                                    <img src={character.imageUrl} alt={character.name} />
-                                )}
+                                )} */}
+                                <img src={character.imageUrl} alt={character.name} />
                             </div>
                             <div className="card-info">
                                 <h2>{character.name}</h2>

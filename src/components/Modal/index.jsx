@@ -1,7 +1,7 @@
 import ReactDOM from 'react-dom';
 import './styles.scss'; 
 
-const OldModal = ({ children, onClose }) => {
+const Modal = ({ children, onClose }) => {
     const modalRoot = document.getElementById('modal-root');
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -25,4 +25,4 @@ const OldModal = ({ children, onClose }) => {
     );
 };
 
-export default OldModal;
+export default Modal;

@@ -21,7 +21,11 @@ function ListStory() {
   useEffect(() => {
     const getReadingList = async () => {
       if (user) {
-        getReadings(user, dispatch, loginSuccess)
+        const params = {
+          page: 0,
+          size: 10, // Số lượng truyện mỗi trang
+        }
+        getReadings(params, user, dispatch, loginSuccess)
           .then((res) => {
             setReadings(res.data.content);
           })
@@ -67,7 +71,7 @@ function ListStory() {
           <Section>
             <SectionHeading>
               <h4 className="section-title">Đang đọc</h4>
-              <Link to="/user/tu-truyen/reading">Xem tất cả</Link>
+              <Link to="/user/bookshelf">Xem tất cả</Link>
             </SectionHeading>
             <SectionBody>
               <div className="list-reading">
