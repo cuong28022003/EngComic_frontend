@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { loginSuccess } from '../../../../../redux/slice/auth';
 import Reading from '../../../../../components/Reading/Reading';
-import { getReadings } from '../../../../../api/readingApi';
+import { getReadingsByUserId } from '../../../../../api/readingApi';
 import { useSelector, useDispatch } from 'react-redux';
 import Pagination from '../../../../../components/Pagination/index.jsx';
 
@@ -17,11 +17,12 @@ const ReadingTab = () => {
             if (user) {
                 try {
                     const params = {
-                        page: currentPage-1,
+                        page: currentPage - 1,
                         size: 2, // Số lượng truyện mỗi trang
                     }
-                    const res = await getReadings(params, user, dispatch, loginSuccess);
-                    setReadings(res.data.content);
+                    const res = await getReadingsByUserId(user.id, params, user, dispatch, loginSuccess);
+                    const data = res.data.content;
+                    setReadings(data);
                     setTotalPages(res.data.totalPages);
                 } catch (err) {
                     console.log(err);

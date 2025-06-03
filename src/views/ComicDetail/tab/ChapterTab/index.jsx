@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getChapters } from "../../../../api/chapterApi";
+import { getChaptersByComicId } from "../../../../api/chapterApi";
 import Grid from "../../../../components/Grid";
-import LoadingData from "../../../../components/Loading/LoadingData";   
+import LoadingData from "../../../../components/Loading/LoadingData";
 import Pagination from "../../../../components/Pagination/index";
 import { routeLink } from "../../../../routes/AppRoutes";
 import Chapter from "../../../../components/Chapter/index";
 
-export const ChapterTab = (props) => {
+export const ChapterTab = ({comicId}) => {
     const [chapters, setChapters] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [totalChapters, setTotalChapters] = useState(0);
 
-    const url = props.url;
     useEffect(() => {
         const loadList = async () => {
             const params = {
-                url: props.url,
-                page: currentPage-1,
+                page: currentPage - 1,
                 size: 2,
             };
 
-            getChapters(params).then((res) => {
+            getChaptersByComicId(comicId, params).then((res) => {
                 // console.log(res);
                 setChapters(res?.data.content || []);
                 setTotalPages(res.data.totalPages);
@@ -33,7 +31,7 @@ export const ChapterTab = (props) => {
             });
         };
         loadList(); //gọi hàm
-    }, [props.url, currentPage]);
+    }, [comicId, currentPage]);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -45,7 +43,7 @@ export const ChapterTab = (props) => {
             {loadingData ? (
                 <LoadingData />
             ) : (
-                <Grid gap={15} col={props.col || 3} snCol={1}>
+                <Grid gap={15} col={3} snCol={1}>
                     {chapters.map((item, index) => {
                         return (
                             <Chapter key={index} chapter={item} />

@@ -5,6 +5,12 @@ import { REACT_APP_BASE_URL_API } from "../../../../constant/env";
 import Pagination from "../../../../components/Pagination";
 import apiMain from '../../../../api/apiMain';
 import './styles.scss';
+import { deleteComic } from "../../../../api/comicApi";
+import ConfirmDialog from "../../../../components/ConfirmDialog";
+import { loginSuccess } from "../../../../redux/slice/auth";
+import { toast } from "react-toastify";
+import { set } from "lodash";
+import Loading from "../../../../components/Loading/Loading";
 
 const ComicManagement = () => {
   const [comics, setComics] = useState([]);
@@ -16,41 +22,25 @@ const ComicManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const user = useSelector((state) => state.auth.login?.user);
-  const token = user?.accessToken;
   const dispatch = useDispatch();
+
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [comicToDelete, setComicToDelete] = useState(null);
 
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const response = await axios.get(`${REACT_APP_BASE_URL_API}/admin/comics`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        if (Array.isArray(response.data)) {
-          console.log("Comics data:", response.data.map(c => ({
-            _id: c._id,
-            name: c.name,
-            status: c.status
-          })));
-          setComics(response.data);
-          setFilteredComics(response.data);
-        } else {
-          setError("Dữ liệu trả về không phải mảng");
-        }
+        const response = await axios.get(`${REACT_APP_BASE_URL_API}/comic/admin`);
+        setComics(response.data);
+        setFilteredComics(response.data)
       } catch (err) {
         setError(err.response ? err.response.data.message : err.message);
       } finally {
         setLoading(false);
       }
     };
-
-    if (token) {
-      fetchComics();
-    } else {
-      setError("Không tìm thấy token xác thực");
-      setLoading(false);
-    }
-  }, [token]);
+    fetchComics();
+  }, []);
 
   useEffect(() => {
     const filtered = comics.filter(comic => {
@@ -89,24 +79,30 @@ const ComicManagement = () => {
     });
   };
 
-  const handleDelete = async (url) => {
-    if (!window.confirm("Bạn chắc chắn muốn xóa truyện này?")) return;
-    
+  const handleDeleteClick = (comicId) => {
+    setComicToDelete(comicId);
+    setShowConfirm(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!comicToDelete) return;
     try {
-      await axios.delete(`${REACT_APP_BASE_URL_API}/admin/comics/${url}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      
-      setComics(comics.filter(comic => comic.url !== url));
-      
+      setLoading(true);
+      await deleteComic(comicToDelete, user, dispatch, loginSuccess);
+      setComics(comics.filter(comic => comic.id !== comicToDelete));
       if (currentItems.length === 1 && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       }
-    
+      setLoading(false);
+      toast.success("Xóa truyện thành công!");
     } catch (err) {
+      setLoading(false);
       const errorMessage = err.response ? err.response.data.message : err.message;
       setError(errorMessage);
-     
+      toast.error(`Lỗi: ${errorMessage}`);
+    } finally {
+      setShowConfirm(false);
+      setComicToDelete(null);
     }
   };
 
@@ -146,7 +142,7 @@ const ComicManagement = () => {
   const currentItems = sortedComics.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(sortedComics.length / itemsPerPage);
 
-  if (loading) return <div className="loading">Đang tải...</div>;
+  if (loading) return <Loading />;
   if (error) return <div className="error">Lỗi: {error}</div>;
   if (comics.length === 0) return <div>Không có truyện nào</div>;
 
@@ -187,11 +183,11 @@ const ComicManagement = () => {
           </thead>
           <tbody>
             {currentItems.map((comic, index) => (
-              <tr key={comic._id || index}>
+              <tr key={comic.id || index}>
                 <td>{indexOfFirstItem + index + 1}</td>
                 <td>
                   <img 
-                    src={comic.image} 
+                    src={comic.imageUrl} 
                     alt={comic.name} 
                     className="comic-image"
                     onError={(e) => {
@@ -226,9 +222,9 @@ const ComicManagement = () => {
                         Khóa
                       </button>
                     )}
-                    <button 
+                    <button
                       className="delete-btn"
-                      onClick={() => handleDelete(comic.url)}
+                      onClick={() => handleDeleteClick(comic.id)}
                     >
                       Xóa
                     </button>
@@ -248,6 +244,14 @@ const ComicManagement = () => {
             onPageChange={setCurrentPage}
           />
         </div>
+      )}
+
+      {showConfirm && (
+        <ConfirmDialog
+          message="Bạn chắc chắn muốn xóa truyện này?"
+          onConfirm={handleConfirmDelete}
+          onCancel={() => { setShowConfirm(false); setComicToDelete(null); }}
+        />
       )}
     </div>
   );

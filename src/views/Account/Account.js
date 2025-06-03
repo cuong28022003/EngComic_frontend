@@ -12,7 +12,7 @@ import ChangePassword from './ChangePassword'
 import Profile from './Profile/Profile';
 import Bookshelf from './Bookshelf';
 import { toast } from 'react-toastify';
-import CreateComic from './CreateComic';
+import CreateAndEditComicPage from '../CreateAndEditComic';
 import LoadingData from '../../components/Loading/LoadingData';
 import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss';
@@ -20,7 +20,7 @@ import { getUserById } from '../../api/userApi';
 import { getUserStats } from '../../api/userStatsApi';
 
 function Account() {
-  const { userId } = useParams(); 
+  const { userId } = useParams();
   const user = useSelector(state => state.auth.login?.user);
   const dispatch = useDispatch();
   const isReadOnly = userId && userId !== user?.id || false;
@@ -36,18 +36,18 @@ function Account() {
       getUserById(userId, user, dispatch, loginSuccess)
         .then(res => setViewedUser(res.data))
         .catch(() => setViewedUser(null))
-      
+
       getUserStats(userId, user, dispatch, loginSuccess)
         .then(res => setViewedUserStats(res.data))
         .catch(() => setViewedUserStats(null));
-      
+
       setLoadingUser(false);
     } else {
       setViewedUser(null);
       setViewedUserStats(null);
     }
   }, [userId]);
-  
+
   const menu = [//menu dựa trên từng loại tài khoản
     {
       path: "profile",
@@ -81,10 +81,10 @@ function Account() {
 
 
   return (
-      <div className="main-content">
-        <div className="d-flex">
-          <div className="col-3">
-            <ul className="list-group">
+    <div className="main-content">
+      <div className="d-flex">
+        <div className="col-3">
+          <ul className="list-group">
             {
               menu.map((item) => {
                 // console.log("isReadOnly: ", isReadOnly)
@@ -104,9 +104,9 @@ function Account() {
                 );
               })
             }
-            </ul>
+          </ul>
 
-          </div>
+        </div>
         <div className="col-9 " style={{ 'minHeight': '500px' }}>
           {loadingUser ? (
             <LoadingData />
@@ -114,8 +114,8 @@ function Account() {
             <Outlet context={{ isReadOnly, viewedUser, viewedUserStats }} />
           )}
         </div>
-        </div>
       </div>
+    </div>
   )
 }
 

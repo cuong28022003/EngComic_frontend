@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import Reading from "../../components/Reading/Reading";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
-import Comic from "../../components/Comic";
+import Comic from "../../components/ComicCard";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { loginSuccess } from "../../redux/slice/auth";
 import "./ListStory.scss";
 import { getComics } from "../../api/comicApi";
 import NoData from "../../components/NoData";
-import { getReadings } from "../../api/readingApi";
+import { getReadingsByUserId } from "../../api/readingApi";
 import { routeLink } from "../../routes/AppRoutes";
 import HeroSlider from "../Home/component/HeroSlider";
+import ComicCard from "../../components/ComicCard";
 
 function ListStory() {
   const [datas, setData] = useState([]);
@@ -25,7 +26,7 @@ function ListStory() {
           page: 0,
           size: 10, // Số lượng truyện mỗi trang
         }
-        getReadings(params, user, dispatch, loginSuccess)
+        getReadingsByUserId(params, user, dispatch, loginSuccess)
           .then((res) => {
             setReadings(res.data.content);
           })
@@ -58,7 +59,7 @@ function ListStory() {
             <SectionBody>
               <div className="list-story">
                 {datas.length > 0 ? (
-                  datas.map((data, index) => <Comic key={index} data={data} />)
+                  datas.map((data, index) => <ComicCard key={index} comic={data} />)
                 ) : (
                   <NoData />
                 )}

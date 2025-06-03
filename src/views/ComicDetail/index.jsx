@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
-import Layout from "../../layout/MainLayout";
-import "./_StoryDetail.scss";
+import Layout from "../../layout/MainLayout/index.jsx";
+import "./styles.scss";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Loading from "../../components/Loading/Loading";
-import LoadingData from "../../components/Loading/LoadingData";
+import Loading from "../../components/Loading/Loading.js";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
-import { loginSuccess } from "../../redux/slice/auth";
-import { getDetailComic, incrementViews } from "../../api/comicApi";
-import { checkSavedComic } from "../../api/savedApi";
-import { getReading } from "../../api/readingApi";
-import { ChapterTab } from "./tab/ChapterTab";
-import { routeLink } from "../../routes/AppRoutes";
-import RatingTab from "./tab/RatingTab";
-import { saveComic, unsaveComic } from "../../api/savedApi";
+import { loginSuccess } from "../../redux/slice/auth.js";
+import { getComicById, getDetailComic, incrementViews } from "../../api/comicApi.js";
+import { checkSavedComic } from "../../api/savedApi.js";
+import { getReadingByUserIdAndComicId } from "../../api/readingApi.js";
+import { ChapterTab } from "./tab/ChapterTab/index.jsx";
+import { routeLink } from "../../routes/AppRoutes.js";
+import RatingTab from "./tab/RatingTab/index.jsx";
+import { saveComic, deleteSavedById } from "../../api/savedApi.js";
 import ReportModal from "./tab/ReportModal/index.jsx";
 
 const nav = [
@@ -39,12 +38,12 @@ const nav = [
 function ComicDetail() {
   const user = useSelector((state) => state.auth.login.user);
   const dispatch = useDispatch();
-  const { url } = useParams();
+  const { comicId } = useParams();
   const [comic, setComic] = useState(null);
   const [main, setMain] = useState(null);
   const [tab, setTab] = useState("");
   const active = nav.findIndex((e) => e.path === tab);
-  const [loadingData, setLoadingData] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [saved, setSaved] = useState(null);
   const navigate = useNavigate();
@@ -60,15 +59,15 @@ function ComicDetail() {
 
   const getComic = async () => {
     try {
-      const res = await getDetailComic(url);
+      const res = await getComicById(comicId);
       setComic(res.data);
       setTab("about"); //set tab mặc định là About
-      setLoadingData(false);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
-  
+
   const checkSaved = async () => {
     try {
       const params = {
@@ -94,8 +93,8 @@ function ComicDetail() {
 
   useEffect(() => {
     getComic();
-  }, [url]);
-  
+  }, [comicId]);
+
 
   useEffect(() => {
     //xử lý đổi tab
@@ -107,7 +106,7 @@ function ComicDetail() {
         setMain(<RatingTab key={"rate"} comicId={comic.id} />);
         break;
       case "chapter":
-        setMain(<ChapterTab key={"chapter"} url={comic.url} />);
+        setMain(<ChapterTab key={"chapter"} comicId={comic.id} />);
         break;
       default:
         setMain(<Donate key={"donate"} />);
@@ -128,7 +127,7 @@ function ComicDetail() {
           dispatch,
           loginSuccess
         );
-        setIsSaved(true);
+        await checkSaved(); // Cập nhật trạng thái saved sau khi lưu
         toast.success("Đánh dấu truyện thành công");
       } else {
         toast.warning("Bạn cần đăng nhập trước");
@@ -141,13 +140,13 @@ function ComicDetail() {
 
   const handleUnsaveComic = async () => {
     try {
-      const response = await unsaveComic(
+      const response = await deleteSavedById(
         saved?.id,
         user,
         dispatch,
         loginSuccess
       );
-      setSaved(null);
+      await checkSaved(); // Cập nhật trạng thái saved sau khi bỏ lưu
       toast.success("Bỏ đánh dấu truyện thành công");
     } catch (error) {
       console.error("Error:", error);
@@ -163,20 +162,25 @@ function ComicDetail() {
     navigate(`/search?genre=${genre}`);
   };
 
+
   const onClickReading = async () => {
     try {
       if (!user) {
-        navigate(routeLink.chapterDetail.replace(":url", url).replace(":chapterNumber", 1));
+        navigate(routeLink.chapterDetail.replace(":comicId", comicId).replace(":chapterNumber", 1));
       } else {
-        const response = await getReading(
-          url,
+        const params = {
+          comicId: comicId,
+          userId: user.id,
+        };
+        const response = await getReadingByUserIdAndComicId(
+          params,
           user,
           dispatch,
           loginSuccess
         );
-        console.log(response);
+        console.log("reading ", response);
         const reading = response.data
-        navigate(routeLink.chapterDetail.replace(":url", url).replace(":chapterNumber", reading.chapterNumber));
+        navigate(routeLink.chapterDetail.replace(":comicId", comicId).replace(":chapterNumber", reading.chapterNumber));
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -193,13 +197,13 @@ function ComicDetail() {
   const liClass = "border-primary rounded-2 color-primary";
   return (
     <div className="main-content">
-      {loadingData ? (
-        <LoadingData />
+      {loading ? (
+        <Loading />
       ) : (
         <>
           <div className="heroSide d-flex">
             <div className="img-wrap">
-              <img src={comic?.image} alt="" />
+              <img src={comic?.imageUrl} alt="" />
             </div>
             <div className="heroSide__main">
               <h2 className="mb-1">{comic?.name}</h2>
@@ -223,7 +227,7 @@ function ComicDetail() {
               <ul className="heroSide__info">
                 <li>
                   <span className="fs-16 bold">
-                    {comic?.chapterCount || "0"}
+                    {comic?.totalChapters || "0"}
                   </span>
                   <br />
                   <span>Chương</span>
@@ -233,17 +237,11 @@ function ComicDetail() {
                   <br />
                   <span>Lượt đọc</span>
                 </li>
-
-                <li>
-                  <span className="fs-16 bold">{100 || "0"}</span>
-                  <br />
-                  <span>Cất giữ</span>
-                </li>
               </ul>
 
               <div className="comic-rating-summary">
-                <StarRatingDisplay rating={comic?.averageRating} />
-                <span className="score">({comic?.averageRating?.toFixed(1)} / 5)</span>
+                <StarRatingDisplay rating={comic?.rating} />
+                <span className="score">({comic?.rating?.toFixed(1)} / 5)</span>
                 <span className="total">- {comic?.totalRatings} đánh giá</span>
               </div>
 

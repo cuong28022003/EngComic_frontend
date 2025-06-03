@@ -5,7 +5,7 @@ import { loginSuccess } from '../../redux/slice/auth';
 import { ChapterTab } from '../ComicDetail/tab/ChapterTab';
 import LoadingData from '../../components/Loading/LoadingData';
 import { routeLink } from '../../routes/AppRoutes';
-import { getChapter, getChapters } from '../../api/chapterApi';
+import { getChapterById, getChaptersByComicId, getChapterByComicIdAndChapterNumber } from '../../api/chapterApi';
 import { setReading } from '../../api/readingApi';
 import { getDecksByUserId } from '../../api/deckApi';
 import { createCard } from '../../api/cardApi';
@@ -15,10 +15,11 @@ import { toast } from 'react-toastify';
 import Modal from '../../components/Modal/index';
 import html2canvas from 'html2canvas';
 import Chapter from '../../components/Chapter';
+import { incrementViews } from '../../api/comicApi';
 
 function ChapterDetail(props) {
     const userStats = useSelector((state) => state.userStats.data);
-    const { chapterNumber, url } = useParams();
+    const { comicId, chapterNumber } = useParams();
     const [chapter, setChapter] = useState({});
     const [manual, setManual] = useState(''); // '' | 'list-chap' | 'add-card' | 'screenshot'
     const [loading, setLoading] = useState(true);
@@ -67,17 +68,17 @@ function ChapterDetail(props) {
     const fetchChapterList = async () => {
         try {
             const params = {
-                url: url,
                 page: page,
                 size: size,
             };
-            const res = await getChapters(params);
+            const res = await getChaptersByComicId(comicId, params);
             // console.log("res: ", res);  
             if (res.data.content) {
                 const newChapters = res.data.content;
                 setChapters(prev => [...prev, ...newChapters]);
                 setHasNextPage(!res.data.last); // dùng `last` từ Page<Chapter>
                 setPage(prev => prev + 1);
+                setTotalChapters(res.data.totalElements || 0);
             }
         } catch (error) {
             console.error("Failed to fetch chapters: ", error);
@@ -219,9 +220,12 @@ function ChapterDetail(props) {
         const fetchChapter = async () => {
             setLoading(true);
             try {
-                const response = await getChapter(url, chapterNumber);
+                const params = {
+                    comicId: comicId,
+                    chapterNumber: chapterNumber,
+                }
+                const response = await getChapterByComicIdAndChapterNumber(params);
                 setChapter(response.data);
-                setTotalChapters(response.data.totalChapters);
             } catch (error) {
                 console.error('Error fetching chapter:', error);
             } finally {
@@ -232,7 +236,12 @@ function ChapterDetail(props) {
         const updateReading = async () => {
             if (user) {
                 try {
-                    await setReading({ url, chapterNumber }, user, dispatch, loginSuccess);
+                    const data = {
+                        userId: user.id,
+                        comicId: comicId,
+                        chapterNumber: chapterNumber,
+                    }
+                    await setReading(data, user, dispatch, loginSuccess);
                 } catch (error) {
                     console.log(error);
                 }
@@ -241,7 +250,7 @@ function ChapterDetail(props) {
 
         fetchChapter();
         updateReading();
-    }, [chapterNumber, url, user, dispatch]);
+    }, [chapterNumber, comicId, user, dispatch]);
 
     const handleDeckCreated = () => {
         fetchDecks();
@@ -324,7 +333,7 @@ function ChapterDetail(props) {
                         <li className="chapter-manual__item">
                             <Link
                                 to={routeLink.chapterDetail
-                                    .replace(':url', url)
+                                    .replace(':comicId', comicId)
                                     .replace(':chapterNumber', Number(chapterNumber) - 1)}
                             >
                                 <i className="fa-solid fa-arrow-left"></i>
@@ -335,7 +344,7 @@ function ChapterDetail(props) {
                         <li className="chapter-manual__item">
                             <Link
                                 to={routeLink.chapterDetail
-                                    .replace(':url', url)
+                                    .replace(':comicId', comicId)
                                     .replace(':chapterNumber', Number(chapterNumber) + 1)}
                             >
                                 <i className="fa-solid fa-arrow-right"></i>
@@ -476,7 +485,7 @@ function ChapterDetail(props) {
                         )}
                     </li>
                     <li className="chapter-manual__item">
-                        <Link to={routeLink.comicDetail.replace(':url', url)}>
+                        <Link to={routeLink.comicDetail.replace(':comicId', comicId)}>
                             <i className="fa-solid fa-arrow-right-from-bracket"></i>
                         </Link>
                     </li>
@@ -485,14 +494,19 @@ function ChapterDetail(props) {
                 <div className={`chapter-content ${manual != 'list-chap' && manual != 'add-card' ? 'center-content' : ''}`}>
                     <h1 className="chapter-name">{chapter?.name}</h1>
                     <div className="image-list">
-                        {chapter?.images?.map((imageUrl, index) => (
-                            <img
-                                key={index}
-                                src={imageUrl}
-                                alt={`Page ${index + 1}`}
-                                className="chapter-image"
-                            />
-                        ))}
+                        {(chapter?.pageUrls || []).map((page, idx) => {
+                            // page là object dạng { [pageNumber]: url }
+                            const pageNumber = Object.keys(page)[0];
+                            const imageUrl = page[pageNumber];
+                            return (
+                                <img
+                                    key={idx}
+                                    src={imageUrl}
+                                    alt={`Page ${pageNumber}`}
+                                    className="chapter-image"
+                                />
+                            );
+                        })}
                     </div>
                 </div>
 

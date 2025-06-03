@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Comic from "../../components/Comic";
+import Comic from "../../components/ComicCard";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
 import LoadingData from "../../components/Loading/LoadingData";
 import { getComics } from "../../api/comicApi";

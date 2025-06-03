@@ -2,13 +2,13 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slice/auth";
 import { toast } from "react-toastify";
-import { unsaveComic } from "../api/savedApi";
+import { deleteSavedById } from "../api/savedApi";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { routeLink } from "../routes/AppRoutes";
 
 
-const Saved = (props) => {
-  const isReadOnly = props.isReadOnly;
-  const data = props.data;
+const Saved = ({ saved, isReadOnly }) => {
+  const comic = saved?.comic;
   const user = useSelector((state) => state.auth.login.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,9 +16,8 @@ const Saved = (props) => {
 
   const handleUnsaveComic = async () => {
     try {
-      const payload = { url: data.url };
-      const response = await unsaveComic(
-        payload,
+      const response = await deleteSavedById(
+        saved.id,
         user,
         dispatch,
         loginSuccess
@@ -34,19 +33,19 @@ const Saved = (props) => {
 
   const onClickTruyen = (e) => {
     //xử lý click vào tên truyện để đọc
-    navigate("/truyen/" + e.target.name); //điều hướng web
+    navigate(routeLink.comicDetail.replace(":comicId", e.target.name)); //điều hướng web
   };
 
   return (
     <div className="saved-item">
       <div className="saved-item__img-wrap">
-        <img src={data.image} alt={data.name} />
+        <img src={comic.imageUrl} alt={comic.name} />
       </div>
       <div className="saved-item__content">
-        <a onClick={onClickTruyen} name={data?.url} className="reading-card__title">
-          {data.name}
+        <a onClick={onClickTruyen} name={comic?.id} className="reading-card__title">
+          {comic.name}
         </a>
-        <p className="saved-item__info">Tác giả: {data.artist}</p>
+        <p className="saved-item__info">Tác giả: {comic.artist}</p>
         {!isReadOnly && (
           <button className="btn-remove" onClick={() => handleUnsaveComic()}>
             Bỏ đánh dấu

@@ -3,19 +3,18 @@ import getData from "./getData";
 
 const BASE_URL_API = '/reading';
 
-export async function setReading(params, user, dispatch, stateSuccess) {
+export async function setReading(data, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
-    return await axi.post(`${BASE_URL_API}`, params);
-}
-    
-export async function getReading(url, user, dispatch, stateSuccess) {
-        let axi = axiosInstance(user, dispatch, stateSuccess);
-        return (await axi.get(`${BASE_URL_API}/${url}`));
+    return await axi.post(`${BASE_URL_API}`, data);
 }
 
-export async function getReadings(params, user, dispatch, stateSuccess) {
+export async function getReadingByUserIdAndComicId(params, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
-    return await axi.get(`${BASE_URL_API}`, {params},{
-        headers: { Authorization: `Bearer ${user.accessToken}` },
-    });
+    return await axi.get(`${BASE_URL_API}`, { params });
 }
+
+export async function getReadingsByUserId(userId, params, user, dispatch, stateSuccess) {
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.get(`${BASE_URL_API}/user/${userId}`, { params });
+}
+

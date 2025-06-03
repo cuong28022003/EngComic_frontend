@@ -3,11 +3,12 @@ import "./styles.scss";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { getRatingsByComicId, submitRating } from "../../../../api/ratingApi";
-import { logoutSuccess } from "../../../../redux/slice/auth";
+import { loginSuccess, logoutSuccess } from "../../../../redux/slice/auth";
 
 const RatingTab = ({ comicId }) => {
     const [ratings, setRatings] = useState([]);
     const [myRating, setMyRating] = useState(null);
+    console.log("myRating: ", myRating);
     const [newRating, setNewRating] = useState({ rating: 0, comment: "" });
     const currentUser = useSelector(state => state.auth.login.user);
     const dispatch = useDispatch();
@@ -22,7 +23,14 @@ const RatingTab = ({ comicId }) => {
 
 
     useEffect(() => {
-        getRatingsByComicId(comicId).then(res => setRatings(res.data.content));
+        getRatingsByComicId(comicId).then(res => {
+            setRatings(res.data.content);
+            if (currentUser) {
+                const found = res.data.content.find(r => r.user.id === currentUser.id);
+                setMyRating(found || null);
+                if (found) setNewRating({ rating: found.rating, comment: found.comment });
+            }
+        });
     }, [comicId]);
 
     const handleSubmit = () => {
@@ -31,9 +39,12 @@ const RatingTab = ({ comicId }) => {
             comicId,
             userId: currentUser.id,
         };
-        submitRating(payload, currentUser, dispatch, logoutSuccess).then(res => {
+        submitRating(payload, currentUser, dispatch, loginSuccess).then(res => {
             setMyRating(res.data);
-            setRatings(prev => [res.data, ...prev.filter(r => r.userId !== currentUser.id)]);
+            setRatings(prev => [
+                res.data,
+                ...prev.filter(r => r.user.id !== currentUser.id) // Sửa lại dòng này
+            ]);
         });
     };
 
@@ -55,7 +66,7 @@ const RatingTab = ({ comicId }) => {
             </div>
 
             {currentUser && (
-                <div className="my-rating">
+                    <div className="my-rating">
                     <h4>Đánh giá của bạn</h4>
                     <div className="stars">
                         {[1, 2, 3, 4, 5].map(i => (
@@ -71,7 +82,9 @@ const RatingTab = ({ comicId }) => {
                         value={newRating.comment}
                         onChange={e => setNewRating({ ...newRating, comment: e.target.value })}
                     />
-                    <button onClick={handleSubmit}>Gửi đánh giá</button>
+                    <button onClick={handleSubmit}>
+                        {myRating ? "Sửa đánh giá" : "Gửi đánh giá"}
+                    </button>
                 </div>
             )}
 

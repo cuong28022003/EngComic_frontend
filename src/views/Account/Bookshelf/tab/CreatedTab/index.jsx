@@ -1,22 +1,32 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getComicsByUploaderId, deleteComic } from '../../../../../api/comicApi';
+import { getComicsByUploaderId, deleteComic, searchComics } from '../../../../../api/comicApi';
 import { loginSuccess } from '../../../../../redux/slice/auth';
 import { routeLink } from '../../../../../routes/AppRoutes';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import ConfirmDialog from '../../../../../components/ConfirmDialog';
 
 const CreatedTab = ({ isReadOnly }) => {
+    const navigate = useNavigate();
     console.log("isReadOnly: ", isReadOnly);
     const { userId } = useParams();
     const [comics, setComics] = useState([]);
     const user = useSelector((state) => state.auth.login.user);
     const dispatch = useDispatch();
-    const [url, setUrl] = useState("");
+
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [deleteComicId, setDeleteComicId] = useState(null);
 
     const getComics = async () => {
-        await getComicsByUploaderId(userId ? userId : user.id)
+        const params = {
+            uploaderId: userId ? userId : user.id,
+            page: 0,
+            size: 10, // Lấy tất cả truyện
+        }
+        await searchComics(params)
             .then((res) => {
                 const data = res.data.content
                 setComics(data);
@@ -33,21 +43,32 @@ const CreatedTab = ({ isReadOnly }) => {
 
     const onClickUpdateComic = (e) => {
         // setEditNovel(true);
-        setUrl(e.target.name);
+        // setUrl(e.target.name);
     };
-    const onClickDeleteComic = async (e) => {
-        // console.log(e.target.name);
-        if (e.target.name) {
-            await deleteComic(e.target.name, user, dispatch, loginSuccess)
+
+    const handleDeleteClick = (e) => {
+        setDeleteComicId(e.target.name);
+        setShowConfirm(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (deleteComicId) {
+            await deleteComic(deleteComicId, user, dispatch, loginSuccess)
                 .then((res) => {
-                    console.log(res);
                     getComics();
-                    toast.success(res.data.message);
+                    toast.success("Xóa truyện thành công!");
                 })
-                .catch((err) => {
+                .catch(() => {
                     toast.error("Đã xảy ra lỗi!");
                 });
         }
+        setShowConfirm(false);
+        setDeleteComicId(null);
+    };
+
+    const handleCancelDelete = () => {
+        setShowConfirm(false);
+        setDeleteComicId(null);
     };
 
     const onClickBackFromListChap = useCallback(() => {
@@ -56,6 +77,7 @@ const CreatedTab = ({ isReadOnly }) => {
     });
 
     const onClickComic = (e) => {
+        navigate(routeLink.comicDetail.replace(':comicId', e.target.name));
         // setUrl(e.target.name);
         // setListChap(true);
     };
@@ -79,36 +101,31 @@ const CreatedTab = ({ isReadOnly }) => {
                 />
                 ) : */
                 comics.length > 0 ? (
-                    comics.map((data) => {
+                    comics.map((comic) => {
                         return (
-                            <div key={data._id}>
+                            <div key={comic.id}>
                                 <div className="reading-card">
                                     <div className="reading-card__img-wrap">
-                                        <img src={data.image} alt="" />
+                                        <img src={comic.imageUrl} alt="" />
                                     </div>
                                     <div className="reading-card__content">
                                         <a
                                             onClick={onClickComic}
-                                            name={data?.url}
+                                            name={comic?.id}
                                             className="reading-card__title"
                                         >
-                                            {data.name}
+                                            {comic.name}
                                         </a>
                                         <div className="d-flex" style={{ gap: "15px" }}>
                                             {!isReadOnly && (
-                                                <Link to={routeLink.editComic.replace(':url', data.url)} name={data.url} state={{ url: data?.url }}>
+                                                <Link to={routeLink.editComic.replace(':comicId', comic.id)} name={comic.id} state={{ url: comic?.url }}>
                                                     <i className="fa-solid fa-marker"></i> Sửa
                                                 </Link>
                                             )}
                                             {!isReadOnly && (
-                                                <a onClick={onClickDeleteComic} name={data.url}>
+                                                <a onClick={handleDeleteClick} name={comic.id}>
                                                     <i className="fa-solid fa-trash"></i> Xóa
                                                 </a>
-                                            )}
-                                            {!isReadOnly && (
-                                                <Link to={routeLink.chapters.replace(':url', data.url)} name={data.url} state={{ url: data?.url }}>
-                                                    <i className="fa-solid fa-list"></i> Danh sách chương
-                                                </Link>
                                             )}
                                         </div>
                                     </div>
@@ -120,6 +137,14 @@ const CreatedTab = ({ isReadOnly }) => {
                 ) : (
                     <p>Không có truyện nào để hiển thị.</p>
                 )}
+            
+            {showConfirm && (
+                <ConfirmDialog
+                    message="Bạn có chắc chắn muốn xóa truyện này không?"
+                    onConfirm={handleConfirmDelete}
+                    onCancel={handleCancelDelete}
+                />
+            )}
         </>
     );
 };

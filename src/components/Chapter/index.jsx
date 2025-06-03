@@ -7,7 +7,7 @@ export default function Chapter({ chapter, isActive }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(routeLink.chapterDetail.replace(':url', chapter.comic.url).replace(':chapterNumber', chapter.chapterNumber));
+        navigate(routeLink.chapterDetail.replace(':comicId', chapter?.comicId).replace(':chapterNumber', chapter?.chapterNumber));
     };
 
     return (
@@ -16,11 +16,11 @@ export default function Chapter({ chapter, isActive }) {
             onClick={handleClick}
         >
             <div className="chapter-card__cover">
-                <img src={chapter.cover} alt="Chapter Cover" />
+                <img src={chapter.imageUrl} alt="Chapter Cover" />
             </div>
             <div className="chapter-card__info">
                 <h3 className="chapter-card__title">{chapter.name}</h3>
-                <p className="chapter-card__date">{chapter.updateAt}</p>
+                <p className="chapter-card__date">{chapter.updatedAt}</p>
             </div>
         </div>
     );

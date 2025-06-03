@@ -19,13 +19,13 @@ export async function getRankById(id) {
 export async function createRank(formData, user, dispatch, stateSuccess) {
   const axi = axiosInstance(user, dispatch, stateSuccess);
   return await axi.post(BASE_URL_API, formData,
-    { headers: { 'Content-Type': 'multipart/form-data'}}
+    { headers: { 'Content-Type': 'multipart/form-data' } }
   );
 }
 
-export async function updateRank(id, data, user, dispatch, stateSuccess) {
+export async function updateRank(id, formData, user, dispatch, stateSuccess) {
   const axi = axiosInstance(user, dispatch, stateSuccess);
-  return await axi.put(`${BASE_URL_API}/${id}`, data);
+  return await axi.put(`${BASE_URL_API}/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 }
 
 // Xóa rank

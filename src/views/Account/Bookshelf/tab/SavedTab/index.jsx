@@ -22,8 +22,7 @@ const SavedTab = ({ isReadOnly }) => {
                         dispatch,
                         loginSuccess
                     );
-                    console.log(response);
-                    setSavedComics(response);
+                    setSavedComics(response.data.content);
                 } catch (error) {
                     console.log(error);
                 }
@@ -35,9 +34,9 @@ const SavedTab = ({ isReadOnly }) => {
     return (
         <div className="saved-list">
             {savedComics.length > 0 ? (
-                savedComics.map((comic) => (
-                    <div key={comic.id}>
-                        <Saved data={comic} isReadOnly={isReadOnly} />
+                savedComics.map((saved) => (
+                    <div key={saved.id}>
+                        <Saved saved={saved} isReadOnly={isReadOnly} />
                         <hr />
                     </div>
                 ))

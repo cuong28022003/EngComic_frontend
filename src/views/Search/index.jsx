@@ -1,101 +1,132 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
-import Comic from "../../components/Comic";
-import Section, { SectionHeading, SectionBody } from "../../components/section";
-import LoadingData from "../../components/Loading/LoadingData";
+import axios from "axios";
+import "./styles.scss";
+import { useSearchParams } from "react-router-dom";
 import { searchComics } from "../../api/comicApi";
-import { set } from "lodash";
+import { ComicGenres } from "../../constant/enum";
+import Pagination from "../../components/Pagination/index.jsx";
+import ComicCard from "../../components/ComicCard/index.jsx";
+import NoData from "../../components/NoData/index.jsx";
 
-function SearchPage() {
-  const [comics, setComics] = useState([]);
-  const [sort, setSort] = useState("");
-  const [loading, setLoading] = useState(false);
+const sortOptions = [
+  { value: "views", label: "Lượt xem" },
+  { value: "updatedAt", label: "Ngày cập nhật" },
+  { value: "rating", label: "Đánh giá" },
+];
+
+const genres = ComicGenres;
+
+const SearchPage = () => {
   const [searchParams] = useSearchParams();
-  const name = searchParams.get("keyword") || "";
+
+  const [comics, setComics] = useState([]);
+
+  const [genre, setGenre] = useState(searchParams.get("genre") || "");
+  const [sortBy, setSortBy] = useState("views");
+  const [sortDir, setSortDir] = useState("desc");
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const keyword = searchParams.get("keyword") || "";
+  console.log("Keyword:", keyword);
   const artist = searchParams.get("artist") || "";
-  const genre = searchParams.get("genre") || "";
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage - 1);
+  };
+
+  const fetchComics = async () => {
+    setLoading(true);
+    try {
+      const params = {
+        keyword: keyword,
+        genre: genre,
+        artist: artist,
+        sortBy,
+        sortDir,
+        page,
+        size: 6,
+      }
+      const res = await searchComics(params);
+      setComics(res.data.content);
+      setTotalPages(res.data.totalPages);
+    } catch (err) {
+      console.error("Failed to fetch comics", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchComics = async () => {
-      if (!name && !artist && !genre) {
-        setComics([]);
-        return;
-      }
-      try {
-        setLoading(true);
-        const response = await searchComics({
-          name,
-          artist,
-          genre,
-          sort,
-        });
-        setComics(response.content || []);
-      } catch (error) {
-        console.error("Error fetching stories:", error);
-        setComics([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setPage(0);
+  }, [keyword, genre, artist]);
 
+  useEffect(() => {
     fetchComics();
-  }, [name, artist, genre, sort]);
-
-  if (loading) {
-    return <LoadingData />;
-  }
+  }, [keyword, genre, sortBy, sortDir, page]);
 
   return (
-    <>
-      <span className="imgHero"></span>
-      <div className="main">
-        <div className="container">
-          <div className="main-content">
-            <div className="d-flex">
-              <Section>
-                <SectionHeading>
-                  <h4 className="section-title">Kết quả</h4>
-                  <div className="filter">
-                    <label htmlFor="filter-select">Lọc:</label>
-                    <select
-                      id="filter-select"
-                      value={sort}
-                      onChange={(e) => setSort(e.target.value)}
-                    >
-                      <option value="">Tất cả</option>
-                      <option value="views">Lượt đọc</option>
-                      <option value="rating">Đánh giá</option>
-                      <option value="updateAt">Mới nhất</option>
-                    </select>
-                  </div>
-                </SectionHeading>
-                <SectionBody>
-                  <div className="list-story">
-                    {comics.length > 0 ? (
-                      comics.map((data, index) => (
-                        <Comic key={index} data={data} />
-                      ))
-                    ) : (
-                      <div className="no-stories">
-                        <i className="fas fa-book-open"></i>
-                        <p>
-                          {name || artist || genre ? (
-                            "Hiện tại không có truyện nào phù hợp với tiêu chí tìm kiếm."
-                          ) : (
-                            "Vui lòng nhập từ khóa để tìm kiếm truyện."
-                          )}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </SectionBody>
-              </Section>
-            </div>
+    <div className="search-container">
+      <aside className="sidebar">
+        <h2>Thể loại</h2>
+        <ul className="genre-list">
+          <li
+            className={!genre ? "active" : ""}
+            onClick={() => setGenre("")}
+          >
+            Tất cả
+          </li>
+          {genres.map((g) => (
+            <li
+              key={g}
+              className={genre === g ? "active" : ""}
+              onClick={() => setGenre(g)}
+            >
+              {g}
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <main className="main-content">
+        <div className="sort-bar">
+          <div className="sort-controls">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              {sortOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  Sắp xếp: {opt.label}
+                </option>
+              ))}
+            </select>
+
+            <select value={sortDir} onChange={(e) => setSortDir(e.target.value)}>
+              <option value="desc">Giảm dần</option>
+              <option value="asc">Tăng dần</option>
+            </select>
           </div>
         </div>
-      </div>
-    </>
+
+        {loading ? (
+          <div className="loading">Đang tải truyện...</div>
+        ) : comics.length === 0 ? (
+            <NoData message="Không tìm thấy truyện nào phù hợp." />
+        ) : (
+          <div className="comic-grid">
+            {comics.map((comic) => (
+              <ComicCard key={comic.id} comic={comic} />
+            ))}
+          </div>
+        )}
+
+        <Pagination
+          currentPage={page + 1}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </main>
+    </div>
   );
-}
+};
 
 export default SearchPage;

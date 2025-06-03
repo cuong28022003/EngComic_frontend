@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Grid from '../../components/Grid';
 import { routeLink } from '../../routes/AppRoutes';
-import { getChapters, deleteChapter } from '../../api/chapterApi';
+import { getChaptersByComicId, deleteChapterById } from '../../api/chapterApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -19,7 +19,7 @@ const ChapterList = () => {
     };
     const onClickDeleteChap = (e) => {
         if (e.target.name) {
-            deleteChapter(
+            deleteChapterById(
                 { url: url, chapterNumber: e.target.name },
                 user,
                 dispatch,
@@ -40,7 +40,7 @@ const ChapterList = () => {
         const fetchChapters = async () => {
             try {
                 const params = { url: url };
-                const res = await getChapters(params);
+                const res = await getChaptersByComicId(params);
                 // console.log("res: ", res);  
                 if (res.data.content) {
                     setChapters(res.data.content);

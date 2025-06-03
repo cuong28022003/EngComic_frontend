@@ -1,0 +1,209 @@
+.form-wrapper {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+}
+
+.form-left {
+    flex: 2;
+}
+
+.right-panel {
+    flex: 1;
+    min-width: 250px;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .add-btn {
+        background: #4caf50;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.2s ease;
+
+        &:hover {
+            background: #388e3c;
+        }
+    }
+
+    .chapter-list {
+        flex: 1;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: #f9f9f9;
+    }
+
+    .chapter-item {
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        border-radius: 6px;
+        background: white;
+        position: relative;
+        transition: background 0.2s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:hover {
+            background: #f0f8ff;
+
+            .chapter-actions {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        .chapter-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+
+            button {
+                background: none;
+                border: none;
+                font-size: 1rem;
+                cursor: pointer;
+
+                &:hover {
+                    color: red;
+                }
+            }
+        }
+    }
+}
+
+.create-comic {
+    max-width: 960px;
+    margin: 0 auto;
+    font-family: 'Segoe UI', sans-serif;
+
+    h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .comic-form {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        padding: 2rem;
+    }
+
+    .left-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .image-preview {
+            width: 100%;
+            max-width: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+
+            img {
+                width: 100%;
+                border-radius: 12px;
+                object-fit: cover;
+                border: 2px dashed #ddd;
+            }
+
+            input {
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    .right-section {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+
+            label {
+                font-weight: 500;
+                margin-bottom: 0.5rem;
+            }
+
+            input,
+            select,
+            textarea {
+                padding: 0.75rem 1rem;
+                border: 1px solid #ccc;
+                border-radius: 8px;
+                font-size: 1rem;
+                outline: none;
+
+                &:focus {
+                    border-color: #4c9ffe;
+                }
+            }
+
+            textarea {
+                resize: vertical;
+                min-height: 100px;
+            }
+        }
+
+        button {
+            align-self: flex-start;
+            padding: 0.75rem 1.5rem;
+            background: #4c9ffe;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+
+            &:hover {
+                background: #357be8;
+            }
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .create-comic {
+        .comic-form {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .left-section,
+        .right-section {
+            width: 100%;
+        }
+    }
+}
+
