@@ -1,0 +1,55 @@
+@import '../variables_test.scss';
+
+// ==== FORM WRAPPER ====
+.form {
+    background: $color-surface;
+    border-radius: $radius-lg;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    padding: $spacing-xl;
+    max-width: 600px;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    @media (max-width: 600px) {
+        padding: $spacing-lg $spacing-md;
+    }
+}
+
+// ==== FORM HEADER ====
+.form-header {
+    text-align: center;
+    margin-bottom: $spacing-md;
+
+    h2 {
+        font-size: 1.8rem;
+        color: $color-primary;
+        margin-bottom: $spacing-sm;
+    }
+
+    p {
+        font-size: $font-size-sm;
+        color: $color-subtext;
+    }
+}
+
+// ==== FORM FOOTER ====
+.form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: $spacing-md;
+
+    .link {
+        font-size: $font-size-sm;
+        color: $color-secondary;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: $color-primary;
+        }
+    }
+}

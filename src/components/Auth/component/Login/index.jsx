@@ -28,11 +28,12 @@ const Login = (props) => {
             <form>
                 <div className="form-group d-flex">
                     <div className="d-flex label-group">
-                        <label>Tên đăng nhập</label>
+                        <label className="input-label">Tên đăng nhập</label>
                         <a onClick={props.onClickActive}>Kích hoạt tài khoản</a>
                     </div>
-                    <div className="field-wrap">
+                    <div className="input-group">
                         <input
+                            className="input"
                             placeholder="Username"
                             required
                             name="username"
@@ -46,11 +47,12 @@ const Login = (props) => {
                 </div>
                 <div className="form-group d-flex">
                     <div className="label-group d-flex">
-                        <label>Mật khẩu</label>
+                        <label className="input-label">Mật khẩu</label>
                         <a onClick={props.onClickForgetpw}>Quên mật khẩu</a>
                     </div>
-                    <div className="field-wrap">
+                    <div className="input-group">
                         <input
+                            className="input"
                             placeholder="Password"
                             required
                             name="password"

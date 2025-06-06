@@ -5,6 +5,7 @@ import Login from "./component/Login";
 import Register from "./component/Register";
 import ForgetPassword from "./component/ForgetPassword";
 import ReActive from "./component/ReActive";
+import './styles.scss';
 
 function Auth(props) {
     //component đăng nhập và đăng ký

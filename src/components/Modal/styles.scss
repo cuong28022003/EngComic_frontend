@@ -1,4 +1,4 @@
-/* Modal.css */
+@import '../../scss/index.scss';
 
 .modal-overlay {
     position: fixed;
@@ -18,11 +18,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: white;
+    background: $color-surface;
     padding: 20px;
     border-radius: 10px;
     min-width: 300px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: $card-shadow;
     position: relative; // Đảm bảo nút close định vị đúng
 }
 
@@ -39,5 +39,5 @@
 }
 
 .modal-close-btn:hover {
-    color: #333;
+    color: $color-primary;
 }

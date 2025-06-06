@@ -14,6 +14,7 @@ import { routeLink } from "../../routes/AppRoutes.js";
 import RatingTab from "./tab/RatingTab/index.jsx";
 import { saveComic, deleteSavedById } from "../../api/savedApi.js";
 import ReportModal from "./tab/ReportModal/index.jsx";
+import Button from "../../components/Button/index.jsx";
 
 const nav = [
   //navigate
@@ -29,10 +30,10 @@ const nav = [
     path: "chapter",
     display: "Ds Chương",
   },
-  {
-    path: "donate",
-    display: "Hâm mộ",
-  },
+  // {
+  //   path: "donate",
+  //   display: "Hâm mộ",
+  // },
 ];
 
 function ComicDetail() {
@@ -196,94 +197,64 @@ function ComicDetail() {
   //style
   const liClass = "border-primary rounded-2 color-primary";
   return (
-    <div className="main-content">
+    <div className="comic-detail-page">
       {loading ? (
         <Loading />
       ) : (
         <>
-          <div className="heroSide d-flex">
-            <div className="img-wrap">
-              <img src={comic?.imageUrl} alt="" />
-            </div>
-            <div className="heroSide__main">
-              <h2 className="mb-1">{comic?.name}</h2>
-              <ul className="">
-                <li
-                  className={liClass}
-                  onClick={() => onClickArtist(comic?.artist)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {comic?.artist}
-                </li>
-                {/* <li className={liClass}>{comic?.status}</li> */}
-                <li
-                  className={liClass}
-                  onClick={() => onClickGenre(comic?.genre)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {comic?.genre}
-                </li>
-              </ul>
-              <ul className="heroSide__info">
-                <li>
-                  <span className="fs-16 bold">
-                    {comic?.totalChapters || "0"}
-                  </span>
-                  <br />
-                  <span>Chương</span>
-                </li>
-                <li>
-                  <span className="fs-16 bold">{comic?.views || "0"}</span>
-                  <br />
-                  <span>Lượt đọc</span>
-                </li>
-              </ul>
-
-              <div className="comic-rating-summary">
-                <StarRatingDisplay rating={comic?.rating} />
-                <span className="score">({comic?.rating?.toFixed(1)} / 5)</span>
-                <span className="total">- {comic?.totalRatings} đánh giá</span>
-              </div>
-
-              <div className="">
-                <button className="btn-primary mr-1" onClick={onClickReading}>
-                  Đọc truyện
-                </button>
-                <button
-                  className={`btn-outline mr-1 ${saved ? "saved" : ""}`}
-                  onClick={saved ? handleUnsaveComic : handleSaveComic}
-                >
-                  {saved ? "Đã đánh dấu" : "Đánh dấu"}
-                </button>
-                <button
-                  className="btn-outline"
-                  onClick={handleOpenReport}
-                >
-                  Báo cáo
-                </button>
+          <div
+            className="comic-hero"
+            style={{
+              backgroundImage: `url(${comic?.backgroundUrl || comic?.imageUrl})`,
+            }}
+          >
+            <div className="comic-hero__overlay">
+              <div className="comic-hero__content container">
+                <div className="comic-hero__left">
+                  <img src={comic?.imageUrl} alt={comic?.name} className="comic-poster" />
+                </div>
+                <div className="comic-hero__right">
+                  <h1 className="comic-title">{comic?.name}</h1>
+                  <ul className="comic-meta">
+                    <li onClick={() => onClickArtist(comic?.artist)}>{comic?.artist}</li>
+                    <li onClick={() => onClickGenre(comic?.genre)}>{comic?.genre}</li>
+                  </ul>
+                  <ul className="comic-stats">
+                    <li><strong>{comic?.totalChapters || 0}</strong> Chương</li>
+                    <li><strong>{comic?.views || 0}</strong> Lượt đọc</li>
+                  </ul>
+                  <div className="comic-rating-summary">
+                    <StarRatingDisplay rating={comic?.rating} />
+                    <span className="score">({comic?.rating?.toFixed(1)} / 5)</span>
+                    <span className="total">- {comic?.totalRatings} đánh giá</span>
+                  </div>
+                  <div className="comic-actions">
+                    <button className="button-primary" onClick={onClickReading}>Đọc truyện</button>
+                    <button className={`button-outline ${saved ? "saved" : ""}`} onClick={saved ? handleUnsaveComic : handleSaveComic}>
+                      {saved ? "Đã đánh dấu" : "Đánh dấu"}
+                    </button>
+                    <button className="button-outline" onClick={handleOpenReport}>Báo cáo</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="story-detail">
             <div className="navigate">
-              {nav.map((item, index) => {
-                return (
-                  <a
-                    className={`navigate__tab fs-20 bold ${active === index ? "tab_active" : ""
-                      }`}
-                    key={index}
-                    name={item.path}
-                    onClick={onClickTab}
-                  >
-                    {item.display}
-                  </a>
-                );
-              })}
+              {nav.map((item, index) => (
+                <a
+                  className={`navigate__tab fs-20 bold ${active === index ? "tab_active" : ""}`}
+                  key={index}
+                  name={item.path}
+                  onClick={onClickTab}
+                >
+                  {item.display}
+                </a>
+              ))}
             </div>
+            <div className="story-detail__tab__main">{main}</div>
           </div>
-
-          <div className="story-detail__tab__main">{main}</div>
         </>
       )}
       {showReportModal && (
@@ -294,6 +265,7 @@ function ComicDetail() {
       )}
     </div>
   );
+  
 }
 
 const About = (props) => {

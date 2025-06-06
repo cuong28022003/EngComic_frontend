@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginSuccess } from '../../redux/slice/auth'
-import Loading from '../../components/Loading/Loading'
+import { loginSuccess } from '../../../redux/slice/auth'
+import Loading from '../../../components/Loading/Loading'
 import { toast } from 'react-toastify'
-import { handleChangePassword } from '../../handle/handleAccount'
+import { handleChangePassword } from '../../../handle/handleAccount'
 
 function ChangePassword() {
     const loading = useSelector(state => state.message.loading)
@@ -74,22 +74,22 @@ function ChangePassword() {
     return (
         <div className="profile__main">
             <form>
-                <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Mật khẩu hiện tại</label>
-                    <input type="password" onChange={onChangeCurrentPW} value={currentPW} />
+                <div className="input-group">
+                    <label className="input-label" style={labelStyle}>Mật khẩu hiện tại</label>
+                    <input className="input" type="password" onChange={onChangeCurrentPW} value={currentPW} />
                 </div>
-                <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Mật khẩu mới</label>
-                    <input type="password" onChange={onChangeNewPW} value={newPW} />
+                <div className="input-group">
+                    <label className="input-label" style={labelStyle}>Mật khẩu mới</label>
+                    <input className="input" type="password" onChange={onChangeNewPW} value={newPW} />
                     <span>{msgNewPW}</span>
                 </div>
-                <div className="group-info">
-                    <label htmlFor="" style={labelStyle}>Xác nhận mật khẩu mới</label>
-                    <input type="password" onChange={onChangeNewCfPW} value={newCfPW} />
+                <div className="input-group">
+                    <label className="input-label" style={labelStyle}>Xác nhận mật khẩu mới</label>
+                    <input className="input" type="password" onChange={onChangeNewCfPW} value={newCfPW} />
                     <span>{msgNewCfPW}</span>
                 </div>
                 <div className="d-flex">
-                    <button onClick={onClickChangePassword}>
+                    <button className="button-primary" onClick={onClickChangePassword}>
                         {loading ? <Loading /> : 'Đổi mật khẩu'}
                     </button>
                 </div>

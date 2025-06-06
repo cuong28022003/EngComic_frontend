@@ -1,7 +1,8 @@
+@import '../../../../scss/index';
 .deck-form-container {
     max-width: 600px;
     padding: 2rem;
-    background: white;
+    background: $color-surface;
     border-radius: 16px;
 
     h2 {
@@ -9,63 +10,86 @@
         margin-bottom: 1.5rem;
         text-align: center;
     }
-}
-
-.deck-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-
-    label {
-        font-weight: bold;
+    
+    .deck-form {
         display: flex;
         flex-direction: column;
-        font-size: 1rem;
+        gap: 1.25rem;
 
-        span {
-            color: red;
-            margin-left: 0.25rem;
+        .deck-form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.25rem;
+
+            // button {
+            //     flex: 1;
+            //     padding: 0.75rem;
+            //     border-radius: 12px;
+            //     font-weight: bold;
+            //     font-size: 1rem;
+            //     transition: background 0.2s;
+
+            //     &:first-child {
+            //         margin-right: 0.5rem;
+            //     }
+
+            //     &:last-child {
+            //         margin-left: 0.5rem;
+            //     }
+            // }
         }
-
-        input,
-        textarea {
-            margin-top: 0.5rem;
-            padding: 0.75rem 1rem;
-            border: 2px solid #ddd;
-            border-radius: 12px;
-            font-size: 1rem;
-            resize: vertical;
-
-            &:focus {
-                outline: none;
-                border-color: #3ccfcf;
-            }
-        }
-
-        textarea {
-            min-height: 100px;
-        }
-    }
-
-    button {
-        background: #3ccfcf;
-        color: white;
-        margin: 10px;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 12px;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: background 0.2s;
-
-        &:hover {
-            background: #2cb4b4;
-        }
-
-        &:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
+    
+        // label {
+        //     font-weight: bold;
+        //     display: flex;
+        //     flex-direction: column;
+        //     font-size: 1rem;
+    
+        //     span {
+        //         color: red;
+        //         margin-left: 0.25rem;
+        //     }
+    
+        //     input,
+        //     textarea {
+        //         margin-top: 0.5rem;
+        //         padding: 0.75rem 1rem;
+        //         border: 2px solid #ddd;
+        //         border-radius: 12px;
+        //         font-size: 1rem;
+        //         resize: vertical;
+    
+        //         &:focus {
+        //             outline: none;
+        //             border-color: #3ccfcf;
+        //         }
+        //     }
+    
+        //     textarea {
+        //         min-height: 100px;
+        //     }
+        // }
+    
+        // button {
+        //     background: #3ccfcf;
+        //     color: white;
+        //     margin: 10px;
+        //     padding: 0.75rem;
+        //     border: none;
+        //     border-radius: 12px;
+        //     font-weight: bold;
+        //     cursor: pointer;
+        //     font-size: 1rem;
+        //     transition: background 0.2s;
+    
+        //     &:hover {
+        //         background: #2cb4b4;
+        //     }
+    
+        //     &:disabled {
+        //         background: #aaa;
+        //         cursor: not-allowed;
+        //     }
+        // }
     }
 }

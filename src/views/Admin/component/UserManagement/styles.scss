@@ -1,4 +1,4 @@
-/* Căn chỉnh bảng người dùng */
+@import '../../../../scss/index';
 .user-table {
     border-collapse: collapse;
     margin: 0px 0 0px;
@@ -13,54 +13,54 @@
   }
   
   .user-table th {
-    background-color: #f2f2f2;
+    background-color: $color-primary;
   }
   
-  /* Nút */
-  .btn {
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-  }
+  // /* Nút */
+  // .btn {
+  //   padding: 10px 15px;
+  //   border: none;
+  //   border-radius: 5px;
+  //   cursor: pointer;
+  //   font-size: 16px;
+  //   transition: background-color 0.3s;
+  // }
   
-  .btn-primary {
-    background-color: #007bff; /* Màu chính */
-    color: white;
-  }
+  // .btn-primary {
+  //   background-color: #007bff; /* Màu chính */
+  //   color: white;
+  // }
   
-  .btn-primary:hover {
-    background-color: #0056b3; /* Màu tối hơn khi hover */
-  }
+  // .btn-primary:hover {
+  //   background-color: #0056b3; /* Màu tối hơn khi hover */
+  // }
   
-  .btn-warning {
-    background-color: #ffc107; /* Màu cảnh báo */
-    color: black;
-  }
+  // .btn-warning {
+  //   background-color: #ffc107; /* Màu cảnh báo */
+  //   color: black;
+  // }
   
-  .btn-warning:hover {
-    background-color: #d39e00; /* Màu tối hơn khi hover */
-  }
+  // .btn-warning:hover {
+  //   background-color: #d39e00; /* Màu tối hơn khi hover */
+  // }
   
-  .btn-danger {
-    background-color: #dc3545; /* Màu nguy hiểm */
-    color: white;
-  }
+  // .btn-danger {
+  //   background-color: #dc3545; /* Màu nguy hiểm */
+  //   color: white;
+  // }
   
-  .btn-danger:hover {
-    background-color: #c82333; /* Màu tối hơn khi hover */
-  }
+  // .btn-danger:hover {
+  //   background-color: #c82333; /* Màu tối hơn khi hover */
+  // }
   
-  .btn-success {
-    background-color: #28a745; /* Màu thành công */
-    color: white;
-  }
+  // .btn-success {
+  //   background-color: #28a745; /* Màu thành công */
+  //   color: white;
+  // }
   
-  .btn-success:hover {
-    background-color: #218838; /* Màu tối hơn khi hover */
-  }
+  // .btn-success:hover {
+  //   background-color: #218838; /* Màu tối hơn khi hover */
+  // }
   
   /* Kiểu cho modal */
   .choose-roles {

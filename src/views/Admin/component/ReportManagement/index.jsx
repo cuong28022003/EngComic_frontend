@@ -6,6 +6,7 @@ import { updateComicStatus } from "../../../../api/comicApi.js";
 import { toast } from 'react-toastify';
 import Modal from "../../../../components/Modal/index.jsx";
 import { getAllReports, updateReportStatus } from "../../../../api/reportApi.js";
+import Loading from "../../../../components/Loading/Loading.js";
 
 const ReportManagement = () => {
   const [reports, setReports] = useState([]);
@@ -168,7 +169,7 @@ const ReportManagement = () => {
     }
   };
 
-  if (loading) return <div className="loading">Đang tải...</div>;
+  if (loading) return <Loading />;
   if (error) return <div className="error">Lỗi: {error}</div>;
   if (reports.length === 0) return <div>Không có báo cáo nào</div>;
 
@@ -179,6 +180,7 @@ const ReportManagement = () => {
       <div className="report-controls">
         <div className="search-bar">
           <input
+            className="input"
             type="text"
             placeholder="Tìm kiếm theo tên truyện, người báo cáo, lý do hoặc trạng thái..."
             value={searchTerm}

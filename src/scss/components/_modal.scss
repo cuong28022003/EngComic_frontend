@@ -1,3 +1,4 @@
+@import '../variables_test.scss';
 .modal {
     z-index: 100;
     position: fixed;
@@ -18,7 +19,7 @@
         //width: 50%;
         max-width: 500px;
         margin: auto;
-        background-color: $body-bg;
+        background-color: $color-surface;
         transition: transform .6s ease;
         opacity: 0;
         border-radius: 10px;

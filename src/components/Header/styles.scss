@@ -1,6 +1,7 @@
 @import "../../scss/variables.scss";
 @import "../../scss/mixin";
 @import "../../scss/breakpoint";
+@import "../../scss/index.scss";
 
 .logo {
     font-size: 2.5rem;
@@ -24,9 +25,10 @@
     top: 0;
     left: 0;
     width: 100%;
-    background-color: rgb(243, 237, 237);
+    background-color: $color-surface;
     z-index: 99;
     transition: height .3s ease, background-color .3s ease;
+    box-shadow: $card-shadow;
 
     &__wrap {
         @include flex (center, space-between);
@@ -49,6 +51,13 @@
             flex-grow: 1;
             list-style: none;
             @include flex (center, unset);
+
+            a,
+            li {
+                white-space: nowrap; // Ngăn chữ bị xuống dòng
+                display: flex;
+                align-items: center;
+            }
 
             @include mobile {
                 display: none;
@@ -111,8 +120,9 @@
                 top: 72px;
                 border: 1px solid #ddd;
                 border-top: none;
-                box-shadow: 0px 6px 6px 0px rgb(201, 201, 201);
-                background-color: #f3eded;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                background-color: $color-surface;
+                border-radius: 0 0 5px 5px;
 
                 &.active {
                     display: block
@@ -179,7 +189,7 @@
     width: max-content;
     padding: 0 20px 0 15px;
     padding-bottom: 10px;
-    background-color: whitesmoke;
+    background-color: $color-surface;
 }
 
 .active {
@@ -228,7 +238,7 @@
     z-index: 100;
 
     .popup-content {
-        background-color: white;
+        background-color: $color-surface;
         padding: 2rem;
         border-radius: 10px;
         width: 80%;
@@ -273,11 +283,11 @@
             background-color: transparent;
             border: none;
             font-size: 1.5rem;
-            color: #333;
+            color: $color-subtext;
             cursor: pointer;
 
             &:hover {
-                color: #ff5722;
+                color: $color-primary;
             }
         }
     }

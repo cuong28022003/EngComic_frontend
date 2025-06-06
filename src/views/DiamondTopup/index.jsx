@@ -21,7 +21,7 @@ const DiamondTopupPage = () => {
             </div>
 
             <button
-                className="topup-history-btn"
+                className="button-accent topup-history-btn"
                 onClick={() => navigate(routeLink.topupHistory)}
             >
                 Xem lịch sử yêu cầu nạp

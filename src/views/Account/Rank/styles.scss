@@ -1,3 +1,4 @@
+@import '../../../scss/index.scss';
 .rank-wrapper {
     display: flex;
     gap: 1rem;
@@ -7,10 +8,9 @@
     flex: 2;
     display: flex;
     flex-direction: column;
-    background: #fff;
+    background: transparent;
     border-radius: 12px;
     padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     animation: fadeIn 0.4s ease;
 
     .badge {
@@ -27,7 +27,7 @@
     .rank-rewards {
         margin-top: 10px;
         font-size: 14px;
-        color: #555;
+        color: $color-subtext;    
     }
 }
 
@@ -101,6 +101,6 @@
 
 .xp-info {
     font-size: 0.85rem;
-    color: #444;
+    color: $color-subtext;
     margin-top: 0.2rem;
 }

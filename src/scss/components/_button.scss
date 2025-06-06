@@ -1,0 +1,113 @@
+@import '../variables_test.scss';
+
+// ==== Base Button ====
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: $font-size-base;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-lg;
+    border: none;
+    cursor: pointer;
+    transition: all $transition-fast;
+    text-align: center;
+    text-decoration: none;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// ==== Primary Button ====
+.button-primary {
+    @extend .button;
+    background: $color-primary;
+    color: $color-text;
+    box-shadow: $glow-primary;
+
+    &:hover {
+        background: lighten($color-primary, 10%);
+        box-shadow: 0 0 12px rgba(255, 76, 152, 0.8);
+    }
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
+
+// ==== Secondary Button ====
+.button-secondary {
+    @extend .button;
+    background: $color-secondary;
+    color: #0a0a0a;
+    box-shadow: 0 0 6px rgba(91, 206, 250, 0.6);
+
+    &:hover {
+        background: lighten($color-secondary, 10%);
+        box-shadow: 0 0 12px rgba(91, 206, 250, 0.8);
+    }
+
+    &:active {
+        transform: scale(0.97);
+    }
+}
+
+// ==== Accent Button (Special Use) ====
+.button-accent {
+    @extend .button;
+    background: $color-accent;
+    color: #222;
+    box-shadow: $glow-accent;
+
+    &:hover {
+        background: lighten($color-accent, 8%);
+        box-shadow: 0 0 16px rgba(255, 217, 0, 0.9);
+    }
+}
+
+// ==== Outline Button ====
+.button-outline {
+    @extend .button;
+    background: transparent;
+    border: 2px solid $color-primary;
+    color: $color-primary;
+
+    &:hover {
+        background: rgba(255, 76, 152, 0.1);
+        box-shadow: $glow-primary;
+    }
+}
+
+// ==== Gradient Button ====
+.button-gradient {
+    @extend .button;
+    background: $color-gradient;
+    color: $color-text;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+
+    &:hover {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+        transform: scale(1.03);
+    }
+}
+
+// ==== Icon Button ====
+.button-icon {
+    @extend .button;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    font-size: 20px;
+    border-radius: 50%;
+    background: $color-surface;
+    color: $color-text;
+
+    &:hover {
+        background: $color-primary;
+        box-shadow: $glow-primary;
+    }
+}

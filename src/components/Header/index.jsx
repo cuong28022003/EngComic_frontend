@@ -37,6 +37,7 @@ export default function Header() {
         { name: "Đổi mật khẩu", path: "/user/change-password" },
         { name: "Tủ truyện", path: "/user/bookshelf" },
         { name: "Quản lý thẻ", path: routeLink.deck },
+        { name: "Bộ sưu tập", path: routeLink.collection },
         { name: "Xếp hạng", path: routeLink.rank },
     ];
 
@@ -120,7 +121,7 @@ export default function Header() {
                         <ul className='navbar-nav__list'>
                             <a className="text-bold" onClick={toggleCategoryPopup}>Thể loại</a>
 
-                            <Link to='/truyen'>
+                            <Link to={routeLink.leaderboard}>
                                 <li className='text-bold'>Bảng xếp hạng</li>
                             </Link>
                         </ul>
@@ -145,7 +146,7 @@ export default function Header() {
                             </Link>
 
                             <Link to={routeLink.createComic}>
-                                <li><i style={{ marginRight: 4 + 'px' }} className="fa-regular fa-circle-up"></i> Đăng truyện</li>
+                                <li className='text-bold'><i className="fa-regular fa-circle-up"></i>Đăng truyện</li>
                             </Link>
 
                             {
@@ -185,7 +186,7 @@ export default function Header() {
                     <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
                         <ul>
                             <li><Link to="/search?genre=Action" onClick={toggleCategoryPopup}>Thể loại</Link></li>
-                            <li><Link to="/truyen">Bảng xếp hạng</Link></li>
+                            <li><Link to={routeLink.leaderboard}>Bảng xếp hạng</Link></li>
                             <li>
                                 <Link to={routeLink.premium}><i className="fa-solid fa-crown"></i> Premium</Link>
                             </li>

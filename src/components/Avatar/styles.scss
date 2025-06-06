@@ -9,13 +9,12 @@
 }
 
 .avatar-img {
-    width: 80%;
-    height: 80%;
+    width: 70%;
+    height: 70%;
     border-radius: 50%;
     object-fit: cover;
     position: relative;
     z-index: 1;
-    border: 2px solid white;
 }
 
 .avatar-frame {
@@ -26,12 +25,11 @@
     height: 100%;
     z-index: 2;
     pointer-events: none;
-    border-radius: 50%;
 }
 
 .crown-icon {
     position: absolute;
-    top: -20%;
+    top: -15%;
     border-radius: 50%;
     padding: 2px;
     z-index: 4;

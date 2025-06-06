@@ -1,0 +1,120 @@
+@import '../variables_test.scss';
+
+// ==== Input Base Style ====
+.input {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-md;
+    font-family: inherit;
+    font-size: $font-size-base;
+    background-color: $color-input-bg;
+    border: 2px solid $color-input-border;
+    color: $color-text;
+    outline: none;
+    transition: all $transition-fast;
+
+    &::placeholder {
+        color: $color-subtext;
+        opacity: 0.8;
+    }
+
+    &:focus {
+        border-color: $color-primary;
+        box-shadow: 0 0 8px rgba(255, 76, 152, 0.5);
+        background-color: lighten($color-surface, 5%);
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+// ==== Textarea ====
+.textarea {
+    @extend .input;
+    resize: vertical;
+    min-height: 60px;
+}
+
+// ==== Select ====
+.select {
+    @extend .input;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23B8B8D1" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px 16px;
+
+    &:focus {
+        background-image: url('data:image/svg+xml;utf8,<svg fill="%23FF4C98" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    }
+}
+
+// ==== Label ====
+.input-label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-size: $font-size-sm;
+    color: $color-subtext;
+}
+
+// ==== Input Group Wrapper ====
+.input-group {
+    margin-bottom: $spacing-md;
+
+    &.error {
+        .input {
+            border-color: $color-danger;
+            box-shadow: 0 0 6px rgba(255, 94, 94, 0.5);
+        }
+
+        .input-label {
+            color: $color-danger;
+        }
+
+        .input-error-message {
+            color: $color-danger;
+            font-size: $font-size-sm;
+            margin-top: 4px;
+        }
+    }
+}
+
+// ==== Input Group with Icon ====
+.input-icon-group {
+    position: relative;
+    width: 100%;
+
+    .input {
+        padding-left: 44px; // chừa chỗ cho icon
+    }
+
+    .input-icon {
+        position: absolute;
+        top: 50%;
+        left: $spacing-md;
+        transform: translateY(-50%);
+        font-size: 18px;
+        color: $color-subtext;
+        pointer-events: none;
+        transition: color $transition-fast;
+    }
+
+    .input:focus+.input-icon {
+        color: $color-primary;
+        filter: drop-shadow(0 0 4px rgba(255, 76, 152, 0.5));
+    }
+}
+
+.input-icon-group.right {
+    .input {
+        padding-right: 44px;
+        padding-left: $spacing-md;
+    }
+
+    .input-icon {
+        left: auto;
+        right: $spacing-md;
+    }
+}

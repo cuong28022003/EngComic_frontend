@@ -1,3 +1,4 @@
+@import '../../scss/index.scss';
 .confirm-dialog-overlay {
     position: fixed;
     top: 0;
@@ -11,14 +12,13 @@
     z-index: 999;
 
     .dialog {
-        background: white;
-        color:#333;
+        background: $color-surface;
         padding: 2rem;
         border-radius: 16px;
         width: 90%;
         max-width: 400px;
         text-align: center;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        box-shadow: $card-shadow;
 
         p {
             font-size: 1.1rem;
@@ -29,24 +29,24 @@
             display: flex;
             justify-content: space-around;
 
-            button {
-                padding: 0.5rem 1.5rem;
-                font-weight: bold;
-                font-size: 1rem;
-                border-radius: 8px;
-                border: none;
-                cursor: pointer;
-            }
+            // button {
+            //     padding: 0.5rem 1.5rem;
+            //     font-weight: bold;
+            //     font-size: 1rem;
+            //     border-radius: 8px;
+            //     border: none;
+            //     cursor: pointer;
+            // }
 
-            .cancel {
-                background-color: #eee;
-                color: #333;
-            }
+            // .cancel {
+            //     background-color: #eee;
+            //     color: #333;
+            // }
 
-            .confirm {
-                background-color: crimson;
-                color: white;
-            }
+            // .confirm {
+            //     background-color: crimson;
+            //     color: white;
+            // }
         }
     }
 }

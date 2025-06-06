@@ -2,12 +2,17 @@ import "./styles.scss";
 import { useSelector } from "react-redux";
 import crownAnimation from "../../assets/lottie/crown.json";
 import Lottie from "lottie-react";
+import avt from "../../assets/image/avt.png";
 
 const RANK_FRAMES = {
-    Bronze: "/images/silver.png",
-    Silver: "/images/silver.png",
-    Gold: "/images/silver.png",
-    Diamond: "/images/silver.png",
+    Bronze: "/images/frame-avatar/bronze.png",
+    Silver: "/images/frame-avatar/silver.png",
+    Gold: "/images/frame-avatar/gold.png",
+    Platinum: "/images/frame-avatar/platinum.png",
+    Diamond: "/images/frame-avatar/diamond.png",
+    Master: "/images/frame-avatar/master.png",
+    Grandmaster: "/images/frame-avatar/grandmaster.png",
+    Legend: "/images/frame-avatar/legend.png",
 };
 
 const Avatar = ({ src, userStats, size = 64 }) => {
@@ -24,7 +29,7 @@ const Avatar = ({ src, userStats, size = 64 }) => {
         <div className="avatar-wrapper" style={avatarSize}>
             {frameSrc && <img src={frameSrc} alt="frame" className="avatar-frame" />}
             <img
-                src={src}
+                src={src || avt}
                 alt="avatar"
                 className="avatar-img"
             />

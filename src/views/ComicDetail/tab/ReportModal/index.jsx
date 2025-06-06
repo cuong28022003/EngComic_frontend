@@ -48,21 +48,22 @@ function ReportModal({ comicId, onClose }) {
             <div className="report-container">
                 <h3>Báo cáo truyện</h3>
                 <textarea
-                    className="report-textarea"
+                    className="textarea"
+                    rows={5}
                     placeholder="Nhập lý do báo cáo..."
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                 />
                 <div className="modal-actions">
                     <button
-                        className="btn-outline"
+                        className="button-outline"
                         onClick={onClose}
                         disabled={isSubmitting}
                     >
                         Hủy
                     </button>
                     <button
-                        className="btn-primary"
+                        className="button-primary"
                         onClick={handleSubmit}
                         disabled={isSubmitting}
                     >

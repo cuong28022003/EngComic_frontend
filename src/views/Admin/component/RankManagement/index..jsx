@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import Pagination from "../../../../components/Pagination";
+import Pagination from "../../../../components/Pagination/index.jsx";
 import { getAllRanks, createRank, updateRank, deleteRank } from '../../../../api/rankApi';
 import './styles.scss';
 import { getCharactersByVersion } from '../../../../api/characterApi';
@@ -30,7 +30,7 @@ function RankManagement() {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(8);
+  const [itemsPerPage] = useState(4);
   const dispatch = useDispatch();
 
   // Tính toán phân trang
@@ -287,8 +287,9 @@ function RankManagement() {
               </h3>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                  <label>Tên Rank</label>
-                  <input
+                  <label className='input-label'>Tên Rank</label>
+                <input
+                    className="input"
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -297,8 +298,9 @@ function RankManagement() {
                 </div>
 
                 <div className="form-group">
-                  <label>XP tối thiểu</label>
-                  <input
+                <label className='input-label'>XP tối thiểu</label>
+                <input
+                    className="input"
                     type="number"
                     value={minXp}
                     onChange={(e) => setMinXp(parseInt(e.target.value))}
@@ -308,8 +310,9 @@ function RankManagement() {
                 </div>
 
                 <div className="form-group">
-                  <label>XP tối đa</label>
-                  <input
+                <label className='input-label'>XP tối đa</label>
+                <input
+                    className="input"
                     type="number"
                     value={maxXp}
                     onChange={(e) => setMaxXp(parseInt(e.target.value))}
@@ -319,8 +322,9 @@ function RankManagement() {
                 </div>
 
                 <div className="form-group">
-                  <label>Huy hiệu</label>
-                  <input
+                <label className='input-label'>Huy hiệu</label>
+                <input
+                    className="input"
                     type="file"
                     accept="image/*"
                     onChange={handleFileChange}
@@ -336,8 +340,9 @@ function RankManagement() {
                 </div>
 
                 <div className="form-group">
-                  <label>Reward Kim cương</label>
-                  <input
+                <label className='input-label'>Reward Kim cương</label>
+                <input
+                    className="input"
                     type="number"
                     value={rewardDiamond}
                     onChange={(e) => setRewardDiamond(parseInt(e.target.value))}
@@ -346,8 +351,9 @@ function RankManagement() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Reward Nhân vật</label>
-                  <select
+                <label className='input-label'>Reward Nhân vật</label>
+                <select
+                    className="select"
                     value={rewardCharacterId}
                     onChange={(e) => setRewardCharacterId(e.target.value)}
                     required

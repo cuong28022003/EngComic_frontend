@@ -4,6 +4,14 @@
     align-items: center;
     gap: 1rem;
     padding: 2rem;
+    min-height: 100vh;
+    width: 100%;
+
+    // Thêm đoạn này để đặt ảnh nền
+    background-image: url('../../assets/image/gacha-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 
 
     .controls {
@@ -11,29 +19,29 @@
         gap: 1rem;
     }
 
-    button {
-        padding: 0.5rem 1rem;
-        font-size: 1rem;
-        border: none;
-        border-radius: 8px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
+    // button {
+    //     padding: 0.5rem 1rem;
+    //     font-size: 1rem;
+    //     border: none;
+    //     border-radius: 8px;
+    //     background-color: #007bff;
+    //     color: white;
+    //     cursor: pointer;
+    //     transition: background-color 0.3s ease;
 
-        &:hover {
-            background-color: #0056b3;
-        }
+    //     &:hover {
+    //         background-color: #0056b3;
+    //     }
 
-        &:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    }
+    //     &:disabled {
+    //         background-color: #ccc;
+    //         cursor: not-allowed;
+    //     }
+    // }
 
     .pack-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(5, minmax(120px, 1fr));
         gap: 1rem;
         width: 100%;
         max-width: 800px;

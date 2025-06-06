@@ -13,6 +13,7 @@ import { checkCanUseSkill } from '../../api/characterUsageApi';
 import CardFormModal from './component/AddEditCard';
 import { toast } from 'react-toastify';
 import Pagination from '../../components/Pagination/index.jsx';
+import Loading from '../../components/Loading/Loading.js';
 
 const DeckDetailPage = () => {
     const { deckId } = useParams();
@@ -143,7 +144,7 @@ const DeckDetailPage = () => {
         }
     };
 
-    if (!deck) return <p>Loading...</p>;
+    if (!deck) return <Loading />;
 
     return (
         <div className={"deck-detail-container"}>
@@ -159,7 +160,6 @@ const DeckDetailPage = () => {
                 </div>
             )}
 
-            <h2>Đồng hành</h2>
             <CompanionSelector
                 selectedCharacters={companions}
                 onChange={setCompanions}

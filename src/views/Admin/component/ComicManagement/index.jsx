@@ -152,6 +152,7 @@ const ComicManagement = () => {
       
       <div className="search-bar">
         <input
+          className="input"
           type="text"
           placeholder="Tìm kiếm theo tên truyện, thể loại hoặc người đăng..."
           value={searchTerm}

@@ -74,7 +74,7 @@ function CreateOrEditChapterPage() {
 
         setPages(combined);
     };
-    
+
 
     const handleRemovePage = (index) => {
         const updated = [...pages];
@@ -126,18 +126,19 @@ function CreateOrEditChapterPage() {
     };
 
     return (
-        <div className="chapter-container">
+        <div className="create-edit-chapter-container">
             <h2>{isEdit ? "Chỉnh sửa chương" : "Tạo chương mới"}</h2>
             <div className="chapter-grid">
                 <form className="chapter-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label>Tên chương</label>
-                        <input type="text" value={name} onChange={e => setName(e.target.value)} />
+                    <div className="input-group">
+                        <label className='input-label'>Tên chương</label>
+                        <input className='input' type="text" value={name} onChange={e => setName(e.target.value)} />
                     </div>
 
-                    <div className="form-group">
-                        <label>Số chương</label>
+                    <div className="input-group">
+                        <label className='input-label'>Số chương</label>
                         <input
+                            className='input'
                             type="number"
                             value={chapterNumber}
                             min={1}
@@ -154,9 +155,9 @@ function CreateOrEditChapterPage() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>Ảnh bìa (nếu có)</label>
-                        <input type="file" accept="image/*" onChange={handleImageChange} />
+                    <div className="input-group">
+                        <label className='input-label'>Ảnh bìa (nếu có)</label>
+                        <input className='input' type="file" accept="image/*" onChange={handleImageChange} />
                     </div>
 
                     {previewImageUrl && (
@@ -166,14 +167,16 @@ function CreateOrEditChapterPage() {
                         </div>
                     )}
 
-                    <button type="submit" className="submit-btn" disabled={loading}>
+                    <button type="submit" className="button-secondary" disabled={loading}>
                         {loading ? <Loading /> : isEdit ? "Lưu chương" : "Tạo chương"}
                     </button>
                 </form>
 
                 <div className="chapter-upload">
-                    <label>Chọn trang truyện</label>
-                    <input type="file" accept="image/*" multiple onChange={handlePagesChange} />
+                    <div className="input-group">
+                        <label className='input-label'>Chọn trang truyện</label>
+                        <input className='input' type="file" accept="image/*" multiple onChange={handlePagesChange} />
+                    </div>
 
                     <div className="pages-preview">
                         {pages.map((p, index) => (

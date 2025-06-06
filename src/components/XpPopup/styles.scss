@@ -1,6 +1,7 @@
+@import '../../scss/index.scss';
 .xp-popup {
     text-align: center;
-    background: white;
+    background: $color-accent;
     padding: 1rem;
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);

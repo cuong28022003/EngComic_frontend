@@ -1,6 +1,6 @@
-// PremiumPage/PlanCard/PlanCard.scss
+@import '../../../../scss/index.scss';
 .plan-card {
-    background: #fdfdfd;
+    background: $color-accent;
     border-radius: 15px;
     padding: 1.5rem;
     text-align: center;

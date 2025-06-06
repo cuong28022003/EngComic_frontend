@@ -55,7 +55,7 @@ const PlanCard = ({ days, cost, bestChoice }) => {
             <p className="cost">
                 <Gem size={18} className="gem-icon" /> {cost} kim cương
             </p>
-            <button className="buy-button" onClick={handleBuyClick}>Nâng cấp</button>
+            <button className="button-gradient" onClick={handleBuyClick}>Nâng cấp</button>
             {showConfirm && (
                 <ConfirmDialog
                     message={`Bạn có chắc chắn muốn nâng cấp gói ${days} ngày với ${cost} kim cương?`}

@@ -153,9 +153,10 @@ const Register = (props) => {
         <div className="form-wrap">
             <form>
                 <div className="form-group d-flex">
-                    <label>Email</label>
+                    <label className="input-label">Email</label>
                     <div className="field-wrap">
                         <input
+                            className="input"
                             placeholder="example@gmail.com"
                             required
                             name="emailRegister"
@@ -169,9 +170,10 @@ const Register = (props) => {
                     </span>
                 </div>
                 <div className="form-group d-flex">
-                    <label>Tên đăng nhập</label>
+                    <label className="input-label">Tên đăng nhập</label>
                     <div className="field-wrap">
                         <input
+                            className="input"
                             required
                             name="usernameRegister"
                             type="text"
@@ -184,9 +186,10 @@ const Register = (props) => {
                     </span>
                 </div>
                 <div className="form-group d-flex">
-                    <label>Mật khẩu</label>
+                    <label className="input-label">Mật khẩu</label>
                     <div className="field-wrap">
                         <input
+                            className="input"
                             required={true}
                             name={"passwordRegister"}
                             type="password"
@@ -199,9 +202,10 @@ const Register = (props) => {
                     </span>
                 </div>
                 <div className="form-group d-flex">
-                    <label>Nhập lại mật khẩu</label>
+                    <label className="input-label">Nhập lại mật khẩu</label>
                     <div className="field-wrap">
                         <input
+                            className="input"
                             required={true}
                             name={"passwordCfRegister"}
                             type="password"

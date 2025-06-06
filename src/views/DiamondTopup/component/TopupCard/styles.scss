@@ -1,9 +1,9 @@
-/* TopupCard.scss */
+@import '../../../../scss/index.scss';
 .topup-card {
-    background: #fff;
+    background: $color-surface;
     padding: 1.2rem;
     border-radius: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+    box-shadow: $card-shadow;
     transition: transform 0.2s ease;
     position: relative;
     border: 2px solid transparent;

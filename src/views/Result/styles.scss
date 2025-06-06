@@ -1,3 +1,4 @@
+@import '../../scss/index.scss';
 .result-page {
     max-width: 720px;
     margin: 0 auto;
@@ -8,11 +9,10 @@
         font-size: 2.2rem;
         text-align: center;
         margin-bottom: 1.5rem;
-        color: #0f172a;
     }
 
     p {
-        color: #334155;
+        color: $color-subtext;
     }
 
     button {
@@ -36,7 +36,7 @@
 }
 
 .xp-summary {
-    background: #f0f7ff;
+    background: $color-surface;
     border-radius: 12px;
     padding: 1.5rem 1.2rem;
     margin-bottom: 2rem;
@@ -70,7 +70,7 @@
 }
 
 .skills-used {
-    background: #fffbea;
+    background: $color-surface;
     border-radius: 10px;
     padding: 1rem 1.2rem;
     margin-bottom: 2rem;
@@ -100,7 +100,7 @@
     margin-bottom: 2rem;
 
     p {
-        background: #f1f5f9;
+        background: $color-surface;
         padding: 0.75rem 1rem;
         border-radius: 10px;
     }
@@ -115,14 +115,13 @@
         border: 1px solid #e2e8f0;
         padding: 1rem;
         border-radius: 12px;
-        background-color: #f8fafc;
+        background-color: $color-surface;
 
         div {
             margin-bottom: 0.4rem;
             line-height: 1.4;
 
             strong {
-                color: #0f172a;
             }
         }
     }

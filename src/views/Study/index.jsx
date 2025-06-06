@@ -10,6 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { routeLink } from "../../routes/AppRoutes";
 import { v4 as uuidv4 } from 'uuid';
 import GachaCard from "../../components/GachaCard";
+import Loading from "../../components/Loading/Loading";
 
 const StudyPage = () => {
     const [sessionId] = useState(uuidv4());
@@ -179,7 +180,7 @@ const StudyPage = () => {
     }, [loading, currentIndex]);
 
     if (loading) {
-        return <div className="loading">Loading...</div>;
+        return <Loading />;
     }
 
     return (
@@ -195,12 +196,13 @@ const StudyPage = () => {
             <div className="flashcard-wrapper"
                 onClick={() => (canFlip ? handleFlip() : (showAnswer && handleFlip()))}
                 style={{ cursor: canFlip || showAnswer ? "pointer" : "default" }}>
-                <Flashcard front={cards[currentIndex]?.front} back={cards[currentIndex]?.back} isFlipped={showAnswer} />
+                <Flashcard front={cards[currentIndex]?.front} back={cards[currentIndex]?.back} ipa={cards[currentIndex]?.ipa} isFlipped={showAnswer} />
             </div>
 
             {!showReview && (
                 <form className="answer-form" onSubmit={handleSubmit}>
                     <input
+                        className="input"
                         ref={inputRef}
                         type="text"
                         placeholder="Nhập đáp án..."

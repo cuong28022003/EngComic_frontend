@@ -22,6 +22,7 @@ function ChapterDetail(props) {
     const { comicId, chapterNumber } = useParams();
     const [chapter, setChapter] = useState({});
     const [manual, setManual] = useState(''); // '' | 'list-chap' | 'add-card' | 'screenshot'
+    console.log("manual: ", manual);
     const [loading, setLoading] = useState(true);
     const [totalChapters, setTotalChapters] = useState(0);
     const [ocrResult, setOcrResult] = useState({
@@ -184,7 +185,7 @@ function ChapterDetail(props) {
             const formData = new FormData();
             formData.append('file', blob, 'screenshot.png');
 
-            const response = await fetch('https://web-production-9252.up.railway.app/extract-text', {
+            const response = await fetch('https://ocr-api-p4y3.onrender.com/extract-text', {
                 method: 'POST',
                 body: formData,
             });
@@ -394,36 +395,37 @@ function ChapterDetail(props) {
                                         ) : (
                                             <div className="ocr-details">
                                                 <div className="ocr-section">
-                                                    <h4>Văn bản:</h4>
-                                                    <textarea
-                                                        className="ocr-text"
+                                                    <label className='input-label'>Văn bản:</label>
+                                                        <textarea
+                                                        className="textarea"
                                                         value={ocrResult.text}
                                                         onChange={e =>
                                                             setOcrResult(prev => ({ ...prev, text: e.target.value }))
                                                         }
-                                                        rows={3}
+                                                        rows={2}
                                                     />
                                                 </div>
                                                 <div className="ocr-section">
-                                                    <h4>Phiên âm:</h4>
+                                                    <label className='input-label'>Phiên âm:</label>
                                                     <textarea
-                                                        className="ocr-text"
+                                                        className="textarea"
                                                         value={ocrResult.pronunciation}
                                                         onChange={e =>
                                                             setOcrResult(prev => ({ ...prev, pronunciation: e.target.value }))
                                                         }
+                                                            rows={2}
                                                     />
                                                 </div>
 
                                                 <div className="ocr-section">
-                                                    <h4>Bản dịch:</h4>
+                                                    <label className='input-label'>Bản dịch:</label>
                                                     <textarea
-                                                        className="ocr-text"
+                                                        className="textarea"
                                                         value={ocrResult.translation}
                                                         onChange={e =>
                                                             setOcrResult(prev => ({ ...prev, translation: e.target.value }))
                                                         }
-                                                        rows={2}
+                                                            rows={2}
                                                     />
                                                 </div>
 
@@ -432,7 +434,7 @@ function ChapterDetail(props) {
                                                     <div className="form-group">
                                                         <label>Chọn bộ thẻ (Deck)</label>
                                                         <div className="deck-selection">
-                                                            <select className="form-control" id="deckSelect">
+                                                            <select className="select" id="deckSelect">
                                                                 <option value="">-- Chọn bộ thẻ --</option>
                                                                 {loadingDecks ? (
                                                                     <option disabled>Đang tải bộ thẻ...</option>

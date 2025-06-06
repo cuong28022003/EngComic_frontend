@@ -112,14 +112,14 @@ const GachaPage = () => {
                 <div className="controls">
                 {!packs.length || allOpened ? (
                     <>
-                        <button onClick={() => summon(1)}>Mở 1 ({GACHA_COST}💎)</button>
-                        <button onClick={() => summon(10)}>Mở 10 ({GACHA_COST * 10}💎)</button>
+                        <button className="button-primary" onClick={() => summon(1)}>Mở 1 ({GACHA_COST}💎)</button>
+                        <button className="button-primary" onClick={() => summon(10)}>Mở 10 ({GACHA_COST * 10}💎)</button>
                     </>
                 ) : (
                     !autoOpening &&
                     packs.length > 0 &&
                     !allOpened && (
-                        <button onClick={openAll}>Mở tất cả</button>
+                        <button className="button-accent" onClick={openAll}>Mở tất cả</button>
                     )
                 )}
             </div>

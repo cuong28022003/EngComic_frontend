@@ -5,26 +5,22 @@ import { createDeck, updateDeckById } from '../../../../api/deckApi';
 import { useSelector, useDispatch } from 'react-redux';
 import { loginSuccess } from '../../../../redux/slice/auth';
 import Modal from '../../../../components/Modal/index.jsx';
+import { toast } from 'react-toastify';
 
-const DeckFormModal = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
-    const { deckId: paramDeckId } = useParams();
-    const location = useLocation();
+const DeckFormModal = ({ onDeckCreated, deck, onClose }) => {
     const user = useSelector((state) => state.auth.login?.user);
     const dispatch = useDispatch();
-
-    const deckId = propDeckId || paramDeckId;
-    const isEdit = !!deckId;
+    const isEdit = !!deck;
 
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 
     useEffect(() => {
-        if (isEdit && location.state) {
-            const { name, description } = location.state;
-            setName(name);
-            setDescription(description);
+        if (isEdit) {
+            setName(deck?.name);
+            setDescription(deck?.description);
         }
-    }, [deckId, isEdit, location.state]);
+    }, [deck, isEdit]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -32,9 +28,21 @@ const DeckFormModal = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
 
         try {
             if (isEdit) {
-                await updateDeckById(deckId, data, user, dispatch, loginSuccess);
+                await updateDeckById(deck?.id, data, user, dispatch, loginSuccess)
+                    .then((response) => {
+                        toast.success('Cập nhật deck thành công');
+                    }).catch((error) => {
+                        console.error('Error updating deck:', error);
+                        toast.error('Cập nhật deck thất bại');
+                });
             } else {
-                await createDeck(data, user, dispatch, loginSuccess);
+                await createDeck(data, user, dispatch, loginSuccess)
+                    .then((response) => {
+                        toast.success('Tạo deck thành công');
+                    }).catch((error) => {
+                        console.error('Error creating deck:', error);
+                        toast.error('Tạo deck thất bại');
+                });
             }
             onDeckCreated();
             onClose();
@@ -47,29 +55,35 @@ const DeckFormModal = ({ onDeckCreated, onClose, deckId: propDeckId }) => {
     return (
         <Modal onClose={onClose}>
             <div className="deck-form-container">
-                <h2>{isEdit ? 'Edit Deck' : 'Create Deck'}</h2>
+                <h2>{isEdit ? 'Chỉnh sửa Deck' : 'Tạo Deck'}</h2>
                 <form onSubmit={handleSubmit} className="deck-form">
-                    <label>
-                        Deck Name <span>*</span>
+                    <div className='input-group'>
+                        <label className='input-label'>
+                            Tên <span>*</span>
+                        </label>
                         <input
+                            className='input'
                             type="text"
                             required
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                         />
-                    </label>
+                    </div>
 
-                    <label>
-                        Description:
+                    <div className='input-group'>
+                        <label className='input-label'>
+                            Mô tả:
+                        </label>
                         <textarea
+                            className='textarea'
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                         />
-                    </label>
+                    </div>
 
                     <div className="deck-form-buttons">
-                        <button type="submit">{isEdit ? 'Update Deck' : 'Create Deck'}</button>
-                        <button type="button" onClick={onClose}>
+                        <button className='button-primary' type="submit">{isEdit ? 'Lưu Deck' : 'Tạo Deck'}</button>
+                        <button className='button-outline' type="button" onClick={onClose}>
                             Cancel
                         </button>
                     </div>

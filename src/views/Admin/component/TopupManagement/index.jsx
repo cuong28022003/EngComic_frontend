@@ -84,6 +84,7 @@ const TopupManagement = () => {
             <div className="topup-controls">
                 <div className="search">
                     <input
+                        className="input"
                         type="text"
                         placeholder="Tìm kiếm ghi chú..."
                         value={searchTerm}

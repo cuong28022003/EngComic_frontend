@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "../views/Home";
+import Home from "../views/HomeOld";
 import ComicDetail from "../views/ComicDetail";
 import NotFound from "../views/404";
 import MainLayout from "../layout/MainLayout";
@@ -39,6 +39,8 @@ import ReportManagement from "../views/Admin/component/ReportManagement";
 import RankManagement from "../views/Admin/component/RankManagement/index.";
 import TopupManagement from "../views/Admin/component/TopupManagement";
 import CreateOrEditChapterPage from "../views/CreateOrEditChapterPage";
+import HomePage from "../views/Home";
+import LeaderboardPage from "../views/Leaderboard";
 
 export const routeLink = {
     home: '/',
@@ -47,11 +49,10 @@ export const routeLink = {
 
     account: '/user',
     userAccount: '/user/:userId',
-    userCollection: '/user/gacha-collection',
+    collection: '/user/collection',
     createComic: '/user/create-comic',
     rank: '/user/rank',
 
-    userDetail: '/users/:id',
     comics: '/comics',
     createComic: '/comics/create',
     editComic: '/comics/:comicId/edit',
@@ -80,6 +81,7 @@ export const routeLink = {
     premium: '/upgrade-premium',
     diamondTopup: '/diamond-topup',
     topupHistory: '/topup-history',
+    leaderboard: '/leaderboard',
 
     admin: '/admin',
 };
@@ -89,7 +91,7 @@ const AppRoutes = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<MainLayout />}>
-                    <Route path={routeLink.home} element={<Home />} />
+                    {/* <Route path={routeLink.home} element={<Home />} /> */}
                     <Route path={routeLink.comicDetail} element={<ComicDetail />} />
                     <Route path={routeLink.comics} element={<ComicList />} />
 
@@ -136,7 +138,9 @@ const AppRoutes = () => {
                         {/* <Route path="/snipping" element={<ImagePage />} /> */}
 
                     </Route>
-                    <Route path='search' element={<SearchPage />} />
+                    <Route path={routeLink.search} element={<SearchPage />} />
+                    <Route path={routeLink.home} element={<HomePage />} />
+                    <Route path={routeLink.leaderboard} element={<LeaderboardPage />} />
                 </Route>
                 <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
 

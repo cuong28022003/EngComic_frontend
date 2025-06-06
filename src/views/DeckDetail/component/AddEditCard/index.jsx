@@ -63,19 +63,28 @@ const CardFormModal = ({ onClose, onCardChanged, cardId }) => {
             <div className={"card-form-container"}>
                 <h2>{isEdit ? 'Sửa Card' : 'Tạo Card Mới'}</h2>
                 <form onSubmit={handleSubmit}>
-                    <label>
-                        Front:
-                        <textarea value={front} onChange={(e) => setFront(e.target.value)} />
-                    </label>
-                    <label>
-                        Back:
-                        <textarea value={back} onChange={(e) => setBack(e.target.value)} />
-                    </label>
-                    <label>
-                        IPA:
-                        <textarea value={ipa} onChange={(e) => setIpa(e.target.value)} />
-                    </label>
-                    <button type="submit">Lưu</button>
+                    <div className='input-group'>
+                        <label className='input-label'>
+                            Front:
+                        </label>
+                        <textarea className='textarea' value={front} onChange={(e) => setFront(e.target.value)} />
+
+                    </div>
+                    <div className='input-group'>
+                        <label className='input-label'>
+                            Back:
+                        </label>
+                        <textarea className='textarea' value={back} onChange={(e) => setBack(e.target.value)} />
+
+                    </div>
+                    <div className='input-group'>
+                        <label className='input-label'>
+                            IPA:
+                        </label>
+                        <textarea className='textarea' value={ipa} onChange={(e) => setIpa(e.target.value)} />
+
+                    </div>
+                    <button className='button-primary' type="submit">Lưu</button>
                 </form>
             </div>
         </Modal>

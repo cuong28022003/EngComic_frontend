@@ -1,4 +1,4 @@
-// src/components/Header/component/Diamond.scss
+@import '../../../../scss/index.scss';
 .diamond-container {
     position: relative;
     margin: 0 10px;
@@ -20,7 +20,7 @@
         top: 100%;
         left: 50%;
         transform: translateX(-50%);
-        background: white;
+        background: $color-accent;
         border: 1px solid #ccc;
         border-radius: 8px;
         padding: 1rem;

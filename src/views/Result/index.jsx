@@ -11,6 +11,13 @@ import { useDispatch } from "react-redux";
 import { updateUserStats } from "../../redux/slice/userStats";
 import { checkAndUseSkill } from "../../api/characterUsageApi";
 import { routeLink } from "../../routes/AppRoutes";
+import Loading from "../../components/Loading/Loading";
+
+const skillNameMap = {
+    SHOW_ANSWER: "LẬT ĐÁP ÁN",
+    DOUBLE_XP: "NHÂN ĐÔI XP",
+    // Thêm các kỹ năng khác nếu có
+};
 
 const ResultPage = () => {
     const { state } = useLocation();
@@ -113,7 +120,7 @@ const ResultPage = () => {
         let totalXp = baseXp + bonusXpFromSessionLength + bonusXpFromCharacters;
         if (isDoubleXp) totalXp *= 2;
         setTotalXp(totalXp);
-            
+
         return {
             baseXp,
             bonusXpFromSessionLength,
@@ -206,43 +213,42 @@ const ResultPage = () => {
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; // Hoặc một spinner/loading component
+        return <Loading />;
     }
 
     return (
         <>
             <div className="result-page">
-                <h2>🎉 You've finished your session!</h2>
-                <p>Total Cards Reviewed: <strong>{results.length}</strong></p>
+                <h2>🎉 Bạn đã hoàn thành phiên học!</h2>
                 <div className="xp-summary">
-                    <p>XP from answers: <strong>{baseXp}</strong></p>
-                    <p>Bonus XP from session length: <strong>{bonusXpFromSessionLength}</strong></p>
-                    <p>Bonus XP from characters: <strong>{bonusXpFromCharacters}</strong></p>
+                    <p>Tổng số thẻ đã ôn: <strong>{results.length}</strong></p>
+                    <p>XP từ câu trả lời: <strong>{baseXp}</strong></p>
+                    <p>XP thưởng theo độ dài phiên: <strong>{bonusXpFromSessionLength}</strong></p>
+                    <p>XP thưởng từ nhân vật: <strong>{bonusXpFromCharacters}</strong></p>
                     <p className="total-xp">
-                        <strong>Total XP Earned: </strong>
+                        <strong>Tổng XP nhận được: </strong>
                         {isDoubleXp ? (
                             <span>
-                                <s>{baseXp + bonusXpFromSessionLength + bonusXpFromCharacters}</s> <strong>{totalXp}</strong> (DOUBLE XP)
+                                <s>{baseXp + bonusXpFromSessionLength + bonusXpFromCharacters}</s> <strong>{totalXp}</strong> (NHÂN ĐÔI XP)
                             </span>
                         ) : (
                             <strong>{totalXp}</strong>
                         )}
                     </p>
-                    {bonusDiamond > 0 && <p className="bonus-diamond">💎 Bonus Diamonds: <strong>{bonusDiamond}</strong></p>}
+                    {bonusDiamond > 0 && <p className="bonus-diamond">💎 Kim cương thưởng: <strong>{bonusDiamond}</strong></p>}
                 </div>
                 {activeSkills.length > 0 && (
                     <div className="skills-used">
-                        <h4>Skills Used:</h4>
+                        <h4>Kỹ năng đã sử dụng:</h4>
                         <ul>
                             {activeSkills.map((item, idx) => (
                                 <li key={idx}>
-                                    <strong>{item.skill}</strong> - Character: <strong>{item.character.name}</strong>
+                                    <strong>{skillNameMap[item.skill] || item.skill}</strong> - Nhân vật: <strong>{item.character.name}</strong>
                                 </li>
                             ))}
                         </ul>
                     </div>
                 )}
-
 
                 <div className="stats">
                     <p>🟥 Again: {countByType("AGAIN")}</p>
@@ -255,14 +261,14 @@ const ResultPage = () => {
                     {incorrectCards.map((r, idx) => (
                         <div key={idx} className="card-result">
                             <div><strong>Q:</strong> {r.front}</div>
-                            <div><strong>Your Answer:</strong> {r.userAnswer}</div>
-                            <div><strong>Correct Answer:</strong> {r.back}</div>
-                            <div><strong>Review:</strong> {r.reviewState}</div>
+                            <div><strong>Câu trả lời của bạn:</strong> {r.userAnswer}</div>
+                            <div><strong>Đáp án đúng:</strong> {r.back}</div>
+                            <div><strong>Đánh giá:</strong> {r.reviewState}</div>
                         </div>
                     ))}
                 </div>
 
-                <button onClick={() => navigate("/")}>🔁 Back to Home</button>
+                <button onClick={() => navigate("/")}>🔁 Quay về Deck</button>
             </div>
 
             {/* Hiển thị XpPopup */}

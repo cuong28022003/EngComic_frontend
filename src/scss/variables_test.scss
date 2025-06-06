@@ -1,0 +1,43 @@
+// ==== Color Palette ====
+$color-primary: #FF4C98; // Hồng anh đào đậm
+$color-secondary: #5BCEFA; // Xanh trời pastel
+$color-accent: #FFD900; // Vàng neon
+$color-background: #1A1A2E; // Tím than
+$color-surface: #2E2E48; // Card surface
+$color-text: #FFFFFF; // Text chính
+$color-subtext: #B8B8D1; // Text phụ
+$color-danger: #FF5E5E;
+$color-success: #00FFAB;
+$color-gradient: linear-gradient(135deg, #FF4C98, #5BCEFA);
+
+// Input
+$color-input-bg: #54597a; // input nên khác card
+$color-input-border: #d3d6ea;
+
+// ==== Typography ====
+$font-family-main: 'Poppins', 'Noto Sans JP', sans-serif;
+$font-size-base: 16px;
+$font-size-sm: 14px;
+$font-size-lg: 20px;
+$font-size-xl: 28px;
+
+// ==== Spacing ====
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 40px;
+
+// ==== Border Radius ====
+$radius-sm: 6px;
+$radius-md: 12px;
+$radius-lg: 20px;
+
+// ==== Shadows & Effects ====
+$glow-primary: 0 0 8px rgba(255, 76, 152, 0.6);
+$glow-accent: 0 0 10px rgba(255, 217, 0, 0.8);
+$card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+
+// ==== Transition ====
+$transition-fast: 0.2s ease-in-out;
+$transition-slow: 0.4s ease;

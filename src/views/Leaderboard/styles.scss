@@ -1,0 +1,106 @@
+@import '../../scss/index.scss';
+.leaderboard-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+
+    .title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 30px;
+        color: $color-text;
+    }
+
+    .leaderboard-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .leaderboard-card {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        background: white;
+        border-radius: 16px;
+        padding: 16px 24px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .rank {
+            font-size: 1.5rem;
+            font-weight: bold;
+            width: 60px;
+            text-align: center;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 2px solid #ddd;
+        }
+
+        .user-info {
+            flex: 1;
+
+            .name {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: #222;
+            }
+
+            .badge {
+                font-size: 0.9rem;
+                color: #666;
+            }
+        }
+
+        .stats {
+            text-align: right;
+
+            .xp {
+                color: #ff9800;
+                font-weight: 600;
+            }
+
+            .streak {
+                color: #f44336;
+            }
+        }
+    }
+
+    // Rank-specific styles
+    .rank-1 {
+        background: linear-gradient(to right, #ffe259, #ffa751);
+
+        .rank {
+            color: #b8860b;
+        }
+    }
+
+    .rank-2 {
+        background: linear-gradient(to right, #e0e0e0, #c0c0c0);
+
+        .rank {
+            color: #6e6e6e;
+        }
+    }
+
+    .rank-3 {
+        background: linear-gradient(to right, #d7a36b, #cd7f32);
+
+        .rank {
+            color: #8b4513;
+        }
+    }
+}

@@ -1,13 +1,14 @@
+@import '../../scss/index.scss';
 .search-container {
     display: flex;
     gap: 2rem;
     padding: 2rem;
-    background: #f9f9f9;
+    background: transparent;
     min-height: 100vh;
 
     .sidebar {
         width: 220px;
-        background: #fff;
+        background: $color-surface;
         border-radius: 16px;
         padding: 1.5rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -15,7 +16,6 @@
         h2 {
             font-size: 1.2rem;
             margin-bottom: 1rem;
-            color: #333;
         }
 
         .genre-list {
@@ -33,12 +33,12 @@
                 color: #333;
 
                 &:hover {
-                    background: #007bff;
-                    color: white;
+                    background: lighten($color-primary, 10%);
+                    box-shadow: 0 0 12px rgba(255, 76, 152, 0.8);
                 }
 
                 &.active {
-                    background: #007bff;
+                    background: $color-primary;
                     color: white;
                 }
             }

@@ -9,8 +9,7 @@ export async function getComicById(comicId) {
 }
 
 export async function getComics(params) {
-    const res = await axiosClient.get(`${BASE_URL_API}`, { params: params });
-    return getData(res);
+    return await axiosClient.get(`${BASE_URL_API}`, { params: params });
 }
 
 export async function searchComics(params) {

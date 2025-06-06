@@ -21,7 +21,7 @@ const TopupCard = ({ diamonds, price, bonus = 0, popular, bestValue }) => {
                 <h3>{diamonds} <Gem size={18} className="icon" /></h3>
                 <p className="price">Giá: {price.toLocaleString()}đ</p>
                 {bonus > 0 && <p className="bonus">🎁 Tặng thêm {bonus} KC</p>}
-                <button className="topup-button" onClick={handleTopup}>Nạp ngay</button>
+                <button className="button-secondary" onClick={handleTopup}>Nạp ngay</button>
             </div>
 
             <PaymentModal

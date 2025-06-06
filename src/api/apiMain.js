@@ -94,25 +94,25 @@ const apiMain = {
     }
   },
   updateComicStatus: async (comicId, status, user, dispatch, stateSuccess) => {
-    
-      if (!comicId || typeof comicId !== 'string') {
-        throw new Error(`Invalid comicId: ${comicId}`);
-      }
-      if (!user?.accessToken) {
-        throw new Error('No access token provided');
-      }
 
-      const axi = axiosInstance(user, dispatch, stateSuccess);
-      const response = await axi.put(
-        `/comic/${comicId}/status`,
-        { status },
-        {
-          headers: { Authorization: `Bearer ${user.accessToken}` }
-        }
-      );
+    if (!comicId || typeof comicId !== 'string') {
+      throw new Error(`Invalid comicId: ${comicId}`);
+    }
+    if (!user?.accessToken) {
+      throw new Error('No access token provided');
+    }
 
-      return response.data;
-    },
+    const axi = axiosInstance(user, dispatch, stateSuccess);
+    const response = await axi.put(
+      `/comic/${comicId}/status`,
+      { status },
+      {
+        headers: { Authorization: `Bearer ${user.accessToken}` }
+      }
+    );
+
+    return response.data;
+  },
   ///report
   createReport: async (user, params, dispatch, stateSuccess) => {
     const url = "/report";

@@ -1,3 +1,4 @@
+@import '../../../scss/index';
 .bookshelf {
     padding: 20px;
 
@@ -21,7 +22,7 @@
             }
 
             &.active {
-                background: #ff6600;
+                background: $color-secondary;
                 color: white;
             }
         }

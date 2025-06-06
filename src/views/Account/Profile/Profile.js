@@ -19,6 +19,7 @@ import { updateUser } from "../../../redux/slice/auth";
 function Profile() {
   const { isReadOnly } = useOutletContext();
   const { viewedUser } = useOutletContext();
+  console.log("viewedUser", viewedUser);
   const { viewedUserStats } = useOutletContext();
   const { userId } = useParams();
   const loggedUser = useSelector((state) => state.auth.login?.user);
@@ -90,7 +91,8 @@ function Profile() {
               <Avatar src={preview} userStats={isReadOnly ? viewedUserStats: userStats} size={180} />
 
               {!isReadOnly && ( // Ẩn input tải ảnh lên nếu isReadOnly là true
-                <input
+              <input
+                className="input"
                   type="file"
                   accept=".jpg, .png, .jpeg, .gif, .bmp, .tif, .tiff|image/*"
                   name="avatar"
@@ -104,7 +106,8 @@ function Profile() {
               <form className="form-profile">
                 <div className="group-info">
                   <label htmlFor="fullName">Tên hiển thị</label>
-                  <input
+                <input
+                  className="input"
                     id="fullName"
                     type="text"
                     onChange={onChangeFullName}
@@ -114,11 +117,12 @@ function Profile() {
                 </div>
                 <div className="group-info">
                   <label>Email</label>
-                  <input readOnly value={user?.email || ""} />
+                  <input className="input" readOnly value={user?.email || ""} />
                 </div>
                 <div className="group-info">
                   <label htmlFor="birthday">Ngày sinh</label>
-                  <input
+                <input
+                    className="input"
                     onChange={onChangeBirthDate}
                     type="date"
                     id="birthday"

@@ -82,48 +82,48 @@ $val in $colors {
         font-size: map-get($attrs, font-size);
     } }
 
-.container {
-    width: 100%;
-    max-width: 1620px;
-    padding: 0 50px;
-    margin: auto;
-    position: relative;
-    @include tablet {
-        padding: 0 20px;
-    }
-    @include mobile {
-        padding: 0 10px;
-    }
-}
+// .container {
+//     width: 100%;
+//     max-width: 1620px;
+//     padding: 0 50px;
+//     margin: auto;
+//     position: relative;
+//     @include tablet {
+//         padding: 0 20px;
+//     }
+//     @include mobile {
+//         padding: 0 10px;
+//     }
+// }
 
-.main {
-    margin-top: 72px;
-    margin-bottom: 2rem;
-    min-height: 100vh;
-}
+// .main {
+//     margin-top: 72px;
+//     margin-bottom: 2rem;
+//     min-height: 100vh;
+// }
 
 .grid {
     display: grid;
 }
 
-form {
-    button {
-        min-width: 120px;
-        margin: 10px auto;
-        padding: 10px 20px;
-        margin: auto;
-        color: #fff;
-        font-size: 16px;
-        font-weight: 600;
-        border: .5px solid rgba(248, 170, 106, 0.514);
-        border-radius: 20px;
-        background-color: $main-color;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: $main-color-hover;
-    }
-}
+// form {
+//     button {
+//         min-width: 120px;
+//         margin: 10px auto;
+//         padding: 10px 20px;
+//         margin: auto;
+//         color: #fff;
+//         font-size: 16px;
+//         font-weight: 600;
+//         border: .5px solid rgba(248, 170, 106, 0.514);
+//         border-radius: 20px;
+//         background-color: $main-color;
+//         cursor: pointer;
+//     }
+//     button:hover {
+//         background-color: $main-color-hover;
+//     }
+// }
 
 // .btn-primary {
 //     min-width: 120px;

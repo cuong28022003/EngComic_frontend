@@ -45,11 +45,11 @@ export default function Diamond() {
             {popoverVisible && (
                 <div className="diamond-popover">
                     <ul>
-                        <li>
+                        {/* <li>
                             <button className="diamond-popover-btn">
                                 <span role="img" aria-label="ad">🎬</span> Xem quảng cáo để nhận kim cương
                             </button>
-                        </li>
+                        </li> */}
                         <li>
                             <button className="diamond-popover-btn"
                                 onClick={handleNavigate}>

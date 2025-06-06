@@ -1,9 +1,10 @@
+@import '../../scss/index.scss';
 .chapter-card {
     display: flex;
     align-items: center;
     gap: 16px;
     padding: 12px;
-    background: #ffffff;
+    background: $color-surface;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     cursor: pointer;
@@ -11,8 +12,8 @@
     overflow: hidden;
 
     &.active {
-        border: 2px solid #007bff;
-        background-color: #eef6ff;
+        border: 2px solid $color-primary;
+        background-color: $color-surface;
     }
 
     &:hover {
@@ -43,7 +44,6 @@
         .chapter-card__title {
             font-size: 1.1rem;
             font-weight: bold;
-            color: #333;
             margin-bottom: 6px;
             transition: color 0.3s;
         }
@@ -55,7 +55,7 @@
     }
 
     &:hover .chapter-card__title {
-        color: #ff6600; // màu cam khi hover
+        color: $color-primary; // màu cam khi hover
     }
 
     @media (max-width: 768px) {

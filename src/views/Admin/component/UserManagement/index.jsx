@@ -17,7 +17,7 @@ function UserManagement(props) {
   const [searchTerm, setSearchTerm] = useState(''); // State cho giá trị tìm kiếm
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage] = useState(5);
   const dispatch = useDispatch();
 
   // Tính toán phân trang dựa trên danh sách đã lọc
@@ -100,11 +100,12 @@ function UserManagement(props) {
         <h1>Danh sách tài khoản</h1>
         <div className="search-bar" style={{ marginLeft: 'auto' }}>
           <input
+            className='input'
             type="text"
             placeholder="Điền tên đăng nhập cần tìm..."
             value={searchTerm}
             onChange={handleSearchChange}
-            style={{ padding: '8px', width: '250px' }}
+            style={{ padding: '8px', width: '250px', margin: '15px 0'}}
           />
         </div>
       </div>

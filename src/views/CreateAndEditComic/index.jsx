@@ -31,6 +31,9 @@ function CreateAndEditComicPage() {
     const [genre, setGenre] = useState(ComicGenres[0]);
     const [image, setImage] = useState('');
     const [preview, setPreview] = useState(avt);
+    const [background, setBackground] = useState('');
+    const [previewBackground, setPreviewBackground] = useState(avt);
+
     const [chapters, setChapters] = useState([]);
 
     const [showConfirm, setShowConfirm] = useState(false);
@@ -41,6 +44,7 @@ function CreateAndEditComicPage() {
             const data = res.data.content;
             setChapters(data);
         }).catch(() => {
+            setChapters([]);
             console.error("Không tải được danh sách chương");
         });
         setLoadingPage(false);
@@ -55,6 +59,7 @@ function CreateAndEditComicPage() {
                 setArtist(comic.artist);
                 setGenre(comic.genre);
                 setPreview(comic.imageUrl);
+                setPreviewBackground(comic.backgroundUrl);
                 setLoadingPage(false);
             }).catch(() => {
                 toast.error("Không tìm thấy truyện");
@@ -131,6 +136,9 @@ function CreateAndEditComicPage() {
             if (image) {
                 formData.append("image", image);
             }
+            if (background) {
+                formData.append("background", background);
+            }
 
             if (isEdit) {
                 await updateComic(comicId, formData, user, dispatch, loginSuccess);
@@ -156,6 +164,14 @@ function CreateAndEditComicPage() {
         }
     };
 
+    const handleBackgroundChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setBackground(file);
+            setPreviewBackground(URL.createObjectURL(file));
+        }
+    };
+
     if (loadingPage) return <Loading />;
 
     return (
@@ -165,31 +181,36 @@ function CreateAndEditComicPage() {
                     <form className="comic-form" onSubmit={handleSubmit}>
                         <div className="left-section">
                             <h2>{isEdit ? "Chỉnh sửa truyện" : "Tạo truyện mới"}</h2>
-                            <div className="image-preview">
+
+                            <div className="image-preview cover-preview">
                                 <img src={preview} alt="preview" />
-                                <input type="file" accept="image/*" onChange={handleImageChange} />
+                                <input className='input' type="file" accept="image/*" onChange={handleImageChange} />
+                            </div>
+                            <div className="image-preview background-preview">
+                                <img src={previewBackground} alt="background-preview"/>
+                                <input className='input' type="file" accept="image/*" onChange={handleBackgroundChange} />
                             </div>
                         </div>
                         <div className="right-section">
-                            <div className="form-group">
-                                <label>Tên truyện *</label>
-                                <input type="text" value={name} onChange={e => setName(e.target.value)} required />
+                            <div className="input-group">
+                                <label className="input-label">Tên truyện *</label>
+                                <input className="input" type="text" value={name} onChange={e => setName(e.target.value)} required />
                             </div>
-                            <div className="form-group">
-                                <label>Mô tả *</label>
-                                <textarea value={description} onChange={e => setDescription(e.target.value)} />
+                            <div className="input-group">
+                                <label className="input-label">Mô tả *</label>
+                                <textarea className="textarea" value={description} onChange={e => setDescription(e.target.value)} />
                             </div>
-                            <div className="form-group">
-                                <label>Tác giả *</label>
-                                <input type="text" value={artist} onChange={e => setArtist(e.target.value)} required />
+                            <div className="input-group">
+                                <label className='input-label'>Tác giả *</label>
+                                <input className='input' type="text" value={artist} onChange={e => setArtist(e.target.value)} required />
                             </div>
-                            <div className="form-group">
-                                <label>Thể loại *</label>
-                                <select value={genre} onChange={e => setGenre(e.target.value)}>
+                            <div className="input-group">
+                                <label className='input-label'>Thể loại *</label>
+                                <select className='select' value={genre} onChange={e => setGenre(e.target.value)}>
                                     {ComicGenres.map((g, idx) => <option key={idx} value={g}>{g}</option>)}
                                 </select>
                             </div>
-                            <button type="submit" disabled={loadingPage}>
+                            <button className='button-primary' type="submit" disabled={loadingPage}>
                                 {isEdit ? "Lưu thay đổi" : "Tạo truyện"}
                             </button>
                         </div>
@@ -198,7 +219,7 @@ function CreateAndEditComicPage() {
             </div>
 
             <div className="right-panel">
-                <button className="add-btn" onClick={handleAddChapter}>+ Thêm chương</button>
+                <button className="button-secondary" onClick={handleAddChapter}>+ Thêm chương</button>
                 <div className="chapter-list">
                     {chapters.length === 0 ? (
                         <div className="empty-chapter">Chưa có chương nào.</div>

@@ -1,4 +1,4 @@
-// PaymentModal/PaymentModal.scss
+@import '../../../../scss/index.scss';
 .payment-overlay {
     position: fixed;
     top: 0;
@@ -13,7 +13,7 @@
 }
 
 .payment-modal {
-    background: white;
+    background: $color-surface;
     border-radius: 12px;
     padding: 2rem;
     max-width: 400px;
@@ -41,6 +41,7 @@
             display: block;
             margin: 0.5rem auto;
             background: #f1f1f1;
+            color: #333;
             padding: 0.5rem;
             border-radius: 6px;
             font-size: 0.95rem;

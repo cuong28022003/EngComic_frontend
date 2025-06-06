@@ -7,6 +7,8 @@ import { loginSuccess } from "../../redux/slice/auth";
 import './styles.scss';
 import { routeLink } from "../../routes/AppRoutes";
 import ConfirmDialog from "../../components/ConfirmDialog";
+import { toast } from "react-toastify";
+import DeckFormModal from "./component/AddEditDeck";
 
 const DeckPage = () => {
     const [decks, setDecks] = useState([]);
@@ -15,6 +17,9 @@ const DeckPage = () => {
     const navigate = useNavigate();
     const user = useSelector((state) => state.auth.login?.user);
     const dispatch = useDispatch();
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingDeck, setEditingDeck] = useState(null);
 
     useEffect(() => {
         const fetchDecks = async () => {
@@ -28,12 +33,30 @@ const DeckPage = () => {
         fetchDecks();
     }, []);
 
+    const handleDeckCreated = async () => {
+        // Sau khi tạo/sửa, reload lại danh sách deck
+        try {
+            const response = await getDecksByUserId(user.id, user, dispatch, loginSuccess);
+            setDecks(response.data.content || []);
+        } catch (error) {
+            console.error("Error fetching decks:", error);
+        }
+        setModalOpen(false);
+        setEditingDeck(null);
+    };
+
     const handleClickDeck = (deckId) => {
         navigate(routeLink.deckDetail.replace(':deckId', deckId));
     };
 
+    const handleAddDeck = () => {
+        setEditingDeck(null);
+        setModalOpen(true);
+    };
+
     const handleEditDeck = (deck) => {
-        navigate(routeLink.editDeck.replace(':deckId', deck.id), { state: deck });
+        setEditingDeck(deck);
+        setModalOpen(true);
     };
 
     const handleDeleteDeck = (deckId) => {
@@ -49,14 +72,18 @@ const DeckPage = () => {
                 setDecks(prev => prev.filter(d => d.id !== selectedDeckId));
                 setConfirmOpen(false);
                 setSelectedDeckId(null);
+                toast.success("Xóa deck thành công!");
             })
-            .catch(err => console.error(err));
+            .catch(err => {
+                console.error(err)
+                toast.error("Xóa deck thất bại!");
+            });
     };
 
     return (
-        <div className={"container"}>
+        <div className={"deck-container"}>
             <h1>Your Decks</h1>
-            <button className={"addButton"} onClick={() => navigate(routeLink.createDeck)}>
+            <button className={"addButton"} onClick={handleAddDeck}>
                 ➕ Create New Deck
             </button>
 
@@ -66,11 +93,19 @@ const DeckPage = () => {
                         key={deck.id}
                         deck={deck}
                         onClick={handleClickDeck}
-                        onEdit={handleEditDeck}
+                        onEdit={() => handleEditDeck(deck)}
                         onDelete={handleDeleteDeck}
                     />
                 ))}
             </div>
+
+            {modalOpen && (
+                <DeckFormModal
+                    onDeckCreated={handleDeckCreated}
+                    deck={editingDeck}
+                    onClose={() => setModalOpen(false)}
+                />
+            )}
 
             {confirmOpen && (
                 <ConfirmDialog
