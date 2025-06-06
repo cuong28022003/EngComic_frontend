@@ -24,17 +24,17 @@
             background-color: $color-primary;
         }
 
-        tr.processed {
-            background-color: $color-success;
-        }
+        // tr.processed {
+        //     background-color: $color-success;
+        // }
 
-        tr.pending {
-            background-color: $color-surface
-        }
+        // tr.pending {
+        //     background-color: $color-surface
+        // }
 
-        tr.canceled {
-            background-color: $color-danger;
-        }
+        // tr.canceled {
+        //     background-color: $color-danger;
+        // }
 
         button {
             background-color: #4caf50;

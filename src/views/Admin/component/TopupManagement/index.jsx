@@ -127,7 +127,7 @@ const TopupManagement = () => {
                     {filtered.map((item) => (
                         <tr key={item.id} className={item.processed ? "processed" : item.canceled ? "canceled" : "pending"}>
                             <td>{item.userId}</td>
-                            <td>{item.diamonds}</td>
+                            <td>{item.diamond}</td>
                             <td>{item.note}</td>
                             <td>{new Date(item.createdAt).toLocaleString()}</td>
                             <td>
