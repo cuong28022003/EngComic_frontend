@@ -6,10 +6,10 @@ import { toast } from "react-toastify";
 import { logoutSuccess } from "../redux/slice/auth";
 import { REACT_APP_BASE_URL_API } from "../constant/env";
 
-// export const baseURL = "https://web-production-815a.up.railway.app/api";
+export const baseURL = "web-production-73fb63.up.railway.app/api";
 
 export const axiosClient = axios.create({
-  baseURL: REACT_APP_BASE_URL_API,
+  baseURL: baseURL,
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
@@ -30,7 +30,7 @@ const refreshToken = async (user) => {
 
 export const axiosInstance = (user, dispatch, stateSuccess) => {
   const newInstance = axios.create({
-    baseURL: REACT_APP_BASE_URL_API,
+    baseURL: baseURL,
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${user.accessToken}`,
