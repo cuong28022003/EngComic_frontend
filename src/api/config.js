@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { logoutSuccess } from "../redux/slice/auth";
 import { REACT_APP_BASE_URL_API } from "../constant/env";
 
-export const baseURL = "web-production-73fb63.up.railway.app/api";
+export const baseURL = "https://web-production-73fb63.up.railway.app/api";
 
 export const axiosClient = axios.create({
   baseURL: baseURL,
