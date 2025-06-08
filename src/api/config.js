@@ -8,6 +8,8 @@ import { REACT_APP_BASE_URL_API } from "../constant/env";
 
 export const baseURL = "https://web-production-73fb63.up.railway.app/api";
 
+// export const baseURL = "http://localhost:8080/api";
+
 export const axiosClient = axios.create({
   baseURL: baseURL,
   timeout: 15000,

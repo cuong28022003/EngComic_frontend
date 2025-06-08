@@ -186,8 +186,9 @@ function ChapterDetail(props) {
             const formData = new FormData();
             formData.append('file', blob, 'screenshot.png');
 
-            //https://ocr-api-p4y3.onrender.com/extract-text
-            const response = await fetch('http://localhost:5000/extract-text', {
+            const apiUrl = 'https://web-production-b5c49.up.railway.app/extract-text'; // Thay đổi URL nếu cần
+            // const apiUrl = 'http://localhost:5000/extract-text'; 
+            const response = await fetch(apiUrl, {
                 method: 'POST',
                 body: formData,
             });
