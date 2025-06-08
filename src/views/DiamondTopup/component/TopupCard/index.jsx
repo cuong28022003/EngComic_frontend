@@ -3,6 +3,7 @@ import "./styles.scss";
 import { Gem } from "lucide-react";
 import PaymentModal from "../PaymentModal";
 import { useSelector } from "react-redux";
+import qrImageUrl from "../../../../assets/image/qr.jpg";
 
 const TopupCard = ({ diamonds, price, bonus = 0, popular, bestValue }) => {
     const user = useSelector((state) => state.auth.login?.user);
@@ -29,7 +30,7 @@ const TopupCard = ({ diamonds, price, bonus = 0, popular, bestValue }) => {
                 onClose={() => setOpen(false)}
                 diamonds={diamonds + bonus}
                 price={price}
-                qrImageUrl="/qr/momo.png" // Đường dẫn tới ảnh QR bạn đã có
+                qrImageUrl={qrImageUrl} // Đường dẫn tới ảnh QR bạn đã có
                 user={user}
             />
         </>

@@ -268,7 +268,7 @@ const ResultPage = () => {
                     ))}
                 </div>
 
-                <button onClick={() => navigate("/")}>🔁 Quay về Deck</button>
+                <button onClick={() => navigate(routeLink.deck)}>🔁 Quay về Deck</button>
             </div>
 
             {/* Hiển thị XpPopup */}

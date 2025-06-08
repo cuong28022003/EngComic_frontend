@@ -3,12 +3,22 @@ import './styles.scss';
 import ReadingTab from './tab/ReadingTab';
 import SavedTab from './tab/SavedTab';
 import CreatedTab from './tab/CreatedTab';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const Bookshelf = () => {
     const { isReadOnly } = useOutletContext();
+    const navigate = useNavigate();
 
-    const [activeTab, setActiveTab] = useState('reading');
+    const [searchParams] = useSearchParams();
+    const defaultTab = searchParams.get('tab') || 'reading';
+
+    const [activeTab, setActiveTab] = useState(defaultTab);
+
+    const handleTabChange = (tab) => {
+        setActiveTab(tab);
+        navigate(`?tab=${tab}`);
+    };
 
     const renderTab = () => {
         switch (activeTab) {
@@ -28,19 +38,19 @@ const Bookshelf = () => {
             <div className="bookshelf-tabs">
                 <button
                     className={activeTab === 'reading' ? 'active' : ''}
-                    onClick={() => setActiveTab('reading')}
+                    onClick={() => handleTabChange('reading')}
                 >
                     Reading
                 </button>
                 <button
                     className={activeTab === 'bookmark' ? 'active' : ''}
-                    onClick={() => setActiveTab('bookmark')}
+                    onClick={() => handleTabChange('bookmark')}
                 >
                     Bookmark
                 </button>
                 <button
                     className={activeTab === 'created' ? 'active' : ''}
-                    onClick={() => setActiveTab('created')}
+                    onClick={() => handleTabChange('created')}
                 >
                     Created
                 </button>

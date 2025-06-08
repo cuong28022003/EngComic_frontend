@@ -40,10 +40,26 @@
         }
     }
 
-    &__logo h2 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-        color: #ffcd3c;
+    &__logo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .footer__logo-img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #ffcd3c;
+        }
     }
 
     &__socials .footer__icons {

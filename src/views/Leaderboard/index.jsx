@@ -6,6 +6,8 @@ import { routeLink } from "../../routes/AppRoutes";
 import { useNavigate } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import Pagination from "../../components/Pagination/index.jsx";
+import { set } from "lodash";
+import Loading from "../../components/Loading/Loading.js";
 
 const mockLeaderboard = [
     { fullName: "Alice Nguyen", avatar: "/avatars/alice.png", badge: "Diamond", xp: 12000, longestStreak: 45 },
@@ -26,9 +28,11 @@ const LeaderboardPage = () => {
     const [topUsers, setTopUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false); 
     const navigate = useNavigate();
 
     useEffect(() => {
+        setLoading(true); // Bắt đầu tải dữ liệu
         const params = {
             page: currentPage - 1, // API uses 0-based index for pages
             size: 3, // Number of users per page
@@ -38,13 +42,15 @@ const LeaderboardPage = () => {
                 setTopUsers(res.data.content)
                 setTotalPages(res.data.totalPages || 1);
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false)); // Kết thúc tải dữ liệu
     }, [currentPage]);
 
     const handleUserClick = (userId) => {
         navigate(routeLink.userAccount.replace(":userId", userId)); // Chuyển hướng đến trang Rank của người dùng
     };
 
+    if (loading) return <Loading />; // Hiển thị loading khi đang tải dữ liệu
 
     return (
         <div className="leaderboard-container">

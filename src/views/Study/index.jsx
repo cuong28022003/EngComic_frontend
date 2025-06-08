@@ -34,6 +34,8 @@ const StudyPage = () => {
     const navigate = useNavigate();
     const inputRef = useRef(null); // Reference to the input element
 
+    const [isFlipped, setIsFlipped] = useState(false);
+
     useEffect(() => {
         const fetchCards = async () => {
             try {
@@ -61,6 +63,7 @@ const StudyPage = () => {
         e.preventDefault();
         setShowAnswer(true);
         setShowReview(true);
+        setIsFlipped(true);
         const correctAnswer = cards[currentIndex].back;
         speak(correctAnswer); // Text To Speech
 
@@ -71,7 +74,12 @@ const StudyPage = () => {
     };
 
     const handleFlip = () => {
-        setShowAnswer(!showAnswer);
+        if (showAnswer) {
+            setIsFlipped((prev) => !prev); // Cho phép flip qua lại sau khi submit
+        } else if (canFlip) {
+            setShowAnswer(true);
+            setIsFlipped(true);
+        }
     };
 
     const speak = (text) => {
@@ -97,6 +105,7 @@ const StudyPage = () => {
         setShowAnswer(false);
         setShowReview(false);
         setHighlightedAnswer("");
+        setIsFlipped(false); // Reset flip khi sang thẻ mới
 
         console.log("isCorrect:", correct);
         console.log("reviewState:", reviewState);
@@ -196,7 +205,10 @@ const StudyPage = () => {
             <div className="flashcard-wrapper"
                 onClick={() => (canFlip ? handleFlip() : (showAnswer && handleFlip()))}
                 style={{ cursor: canFlip || showAnswer ? "pointer" : "default" }}>
-                <Flashcard front={cards[currentIndex]?.front} back={cards[currentIndex]?.back} ipa={cards[currentIndex]?.ipa} isFlipped={showAnswer} />
+                <Flashcard
+                    front={cards[currentIndex]?.front} back={cards[currentIndex]?.back} ipa={cards[currentIndex]?.ipa}
+                    isFlipped={isFlipped}
+                />
             </div>
 
             {!showReview && (

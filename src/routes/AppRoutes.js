@@ -52,6 +52,7 @@ export const routeLink = {
     collection: '/user/collection',
     createComic: '/user/create-comic',
     rank: '/user/rank',
+    bookshelf: '/user/bookshelf',
 
     comics: '/comics',
     createComic: '/comics/create',

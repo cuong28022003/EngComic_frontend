@@ -4,6 +4,7 @@
     display: flex;
     gap: 2rem;
     align-items: flex-start;
+    margin-top: 95px;
 
     @media (max-width: 768px) {
         flex-direction: column;

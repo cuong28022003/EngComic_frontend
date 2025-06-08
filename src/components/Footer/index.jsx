@@ -1,13 +1,19 @@
 import React from "react";
 import "./styles.scss";
 import { FaFacebook, FaDiscord, FaGithub } from "react-icons/fa";
+import logo from "../../assets/image/logo.png";
 
 const Footer = () => {
     return (
         <footer className="footer">
             <div className="footer__container">
                 <div className="footer__section footer__logo">
-                    <h2>📚 TruyenHub</h2>
+                    <img
+                        src={logo}// Đường dẫn tới ảnh logo, thay đổi nếu cần
+                        alt="EngComic Logo"
+                        className="footer__logo-img"
+                    />
+                    <h2>EngComic</h2>
                     <p>Trang web đọc truyện tranh online miễn phí, cập nhật liên tục.</p>
                 </div>
 

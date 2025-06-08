@@ -16,6 +16,7 @@ import Modal from '../../components/Modal/index';
 import html2canvas from 'html2canvas';
 import Chapter from '../../components/Chapter';
 import { incrementViews } from '../../api/comicApi';
+import { translateText } from '../../api/translatorApi';
 
 function ChapterDetail(props) {
     const userStats = useSelector((state) => state.userStats.data);
@@ -174,10 +175,10 @@ function ChapterDetail(props) {
             });
 
             const dataUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `screenshot-${Date.now()}.png`;
-            link.click();
+            // const link = document.createElement('a');
+            // link.href = dataUrl;
+            // link.download = `screenshot-${Date.now()}.png`;
+            // link.click();
 
             if (!dataUrl) throw new Error('Không có nội dung trong vùng chọn.');
 
@@ -185,7 +186,8 @@ function ChapterDetail(props) {
             const formData = new FormData();
             formData.append('file', blob, 'screenshot.png');
 
-            const response = await fetch('https://ocr-api-p4y3.onrender.com/extract-text', {
+            //https://ocr-api-p4y3.onrender.com/extract-text
+            const response = await fetch('http://localhost:5000/extract-text', {
                 method: 'POST',
                 body: formData,
             });
@@ -268,6 +270,29 @@ function ChapterDetail(props) {
         setBox(null);       // reset box chọn cũ
         setOcrResult({ text: '', pronunciation: '', translation: '' });
     }
+
+    const handleTranslate = async () => {
+        if (!ocrResult.text.trim()) {
+            toast.warning('Vui lòng nhập văn bản để dịch!');
+            return;
+        }
+        setIsProcessing(true);
+        try {
+            const response = await translateText({ text: ocrResult.text }, user, dispatch, loginSuccess);
+            const result = response.data;
+            console.log('Translation result:', result);
+            setOcrResult(prev => ({
+                ...prev,
+                pronunciation: result?.ipa || '',
+                translation: result?.meaning || '',
+            }));
+        } catch (error) {
+            console.error('Error translating text:', error);
+            toast.error('Không thể dịch văn bản!');
+        } finally {
+            setIsProcessing(false);
+        }
+    };
 
     if (loading) return <LoadingData />;
 
@@ -396,7 +421,7 @@ function ChapterDetail(props) {
                                             <div className="ocr-details">
                                                 <div className="ocr-section">
                                                     <label className='input-label'>Văn bản:</label>
-                                                        <textarea
+                                                    <textarea
                                                         className="textarea"
                                                         value={ocrResult.text}
                                                         onChange={e =>
@@ -404,6 +429,14 @@ function ChapterDetail(props) {
                                                         }
                                                         rows={2}
                                                     />
+                                                    <button
+                                                        className="button-secondary"
+                                                        style={{ marginTop: 8 }}
+                                                        onClick={handleTranslate}
+                                                        disabled={isProcessing || !ocrResult.text.trim()}
+                                                    >
+                                                        Dịch
+                                                    </button>
                                                 </div>
                                                 <div className="ocr-section">
                                                     <label className='input-label'>Phiên âm:</label>
@@ -413,7 +446,7 @@ function ChapterDetail(props) {
                                                         onChange={e =>
                                                             setOcrResult(prev => ({ ...prev, pronunciation: e.target.value }))
                                                         }
-                                                            rows={2}
+                                                        rows={2}
                                                     />
                                                 </div>
 
@@ -425,7 +458,7 @@ function ChapterDetail(props) {
                                                         onChange={e =>
                                                             setOcrResult(prev => ({ ...prev, translation: e.target.value }))
                                                         }
-                                                            rows={2}
+                                                        rows={2}
                                                     />
                                                 </div>
 
@@ -449,7 +482,7 @@ function ChapterDetail(props) {
                                                                 )}
                                                             </select>
                                                             <button
-                                                                className="btn-primary btn-sm"
+                                                                className="button-secondary"
                                                                 onClick={() => setIsModalOpen(true)}
                                                             >
                                                                 Thêm Deck

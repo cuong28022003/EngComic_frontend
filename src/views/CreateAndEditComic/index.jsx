@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import avt from '../../assets/image/avt.png';
+import avt from '../../assets/image/default-picture.png';
 import { ComicGenres } from '../../constant/enum';
 import { createComic, getComicById, updateComic } from '../../api/comicApi';
 import { loginSuccess } from '../../redux/slice/auth';
@@ -48,7 +48,7 @@ function CreateAndEditComicPage() {
             console.error("Không tải được danh sách chương");
         });
         setLoadingPage(false);
-    }, [comicId]);
+    }, [comicId, isEdit]);
 
     useEffect(() => {
         if (isEdit) {
@@ -66,7 +66,7 @@ function CreateAndEditComicPage() {
                 setLoadingPage(false);
             });
         } else {
-            setPreview(require('../../assets/image/avt.png'));
+            setPreview(require('../../assets/image/default-picture.png'));
         }
     }, [comicId, isEdit]);
 
@@ -143,11 +143,11 @@ function CreateAndEditComicPage() {
             if (isEdit) {
                 await updateComic(comicId, formData, user, dispatch, loginSuccess);
                 toast.success("Cập nhật truyện thành công!");
-                navigate(routeLink.comics);
+                navigate(`${routeLink.bookshelf}?tab=created`);
             } else {
                 await createComic(formData, user, dispatch, loginSuccess);
                 toast.success("Đăng truyện thành công!");
-                navigate(routeLink.comics);
+                navigate(`${routeLink.bookshelf}?tab=created`);
             }
         } catch (error) {
             toast.error("Đăng truyện thất bại!");
@@ -219,7 +219,11 @@ function CreateAndEditComicPage() {
             </div>
 
             <div className="right-panel">
-                <button className="button-secondary" onClick={handleAddChapter}>+ Thêm chương</button>
+                {isEdit ? (
+                    <button className="button-secondary" onClick={handleAddChapter}>+ Thêm chương</button>
+                ) : (
+                    <button className="button-secondary" disabled>+ Thêm chương (Lưu truyện trước)</button>
+                )}
                 <div className="chapter-list">
                     {chapters.length === 0 ? (
                         <div className="empty-chapter">Chưa có chương nào.</div>

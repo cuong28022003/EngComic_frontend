@@ -27,6 +27,9 @@
 
     .qr-section {
         margin: 1rem 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
         img {
             width: 220px;
