@@ -5,7 +5,7 @@ import { REACT_APP_BASE_URL_API } from "../../../../constant/env";
 import Pagination from "../../../../components/Pagination";
 import apiMain from '../../../../api/apiMain';
 import './styles.scss';
-import { deleteComic, getComicsAdmin } from "../../../../api/comicApi";
+import { deleteComic, getComics, getComicsAdmin } from "../../../../api/comicApi";
 import ConfirmDialog from "../../../../components/ConfirmDialog";
 import { loginSuccess } from "../../../../redux/slice/auth";
 import { toast } from "react-toastify";
@@ -30,9 +30,13 @@ const ComicManagement = () => {
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const response = await getComicsAdmin();
-        setComics(response.data);
-        setFilteredComics(response.data)
+        const params = {
+          page: 0,
+          size: 1000, // Lấy tất cả truyện để quản lý
+        }
+        const response = await getComics(params);
+        setComics(response.data.content);
+        setFilteredComics(response.data.content)
       } catch (err) {
         setError(err.response ? err.response.data.message : err.message);
       } finally {
@@ -204,7 +208,7 @@ const ComicManagement = () => {
                 <td>
                   {comic.rating?.toFixed(1) || 0}/5 
                   <br />
-                  ({comic.ratingCount || 0} lượt)
+                  ({comic.totalRatings || 0} lượt)
                 </td>
                 <td>
                   <div className="action-buttons">
