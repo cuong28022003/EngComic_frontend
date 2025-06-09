@@ -119,7 +119,7 @@ function UserManagement(props) {
             <th>Quyền hạn</th>
             <th>Kích hoạt/Khóa</th>
             <th>Cấp quyền</th>
-            <th>Xóa</th>
+            {/* <th>Xóa</th> */}
           </tr>
         </thead>
         <tbody>
@@ -141,11 +141,11 @@ function UserManagement(props) {
                   Cấp quyền
                 </button>
               </td>
-              <td>
+              {/* <td>
                 <button onClick={() => onClickDelete(item.username)} className="btn btn-warning">
                   Xoá
                 </button>
-              </td>
+              </td> */}
             </tr>
           ))}
         </tbody>

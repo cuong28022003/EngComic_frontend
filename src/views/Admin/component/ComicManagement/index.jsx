@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import axios from "axios";
 import { REACT_APP_BASE_URL_API } from "../../../../constant/env";
-import Pagination from "../../../../components/Pagination";
+import Pagination from "../../../../components/Pagination/index";
 import apiMain from '../../../../api/apiMain';
 import './styles.scss';
 import { deleteComic, getComics, getComicsAdmin } from "../../../../api/comicApi";
@@ -18,7 +18,7 @@ const ComicManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(7);
+  const [itemsPerPage] = useState(4);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
   const user = useSelector((state) => state.auth.login?.user);
@@ -115,7 +115,7 @@ const ComicManagement = () => {
     try {
       await apiMain.updateComicStatus(comicId, 'LOCK', user, dispatch, null);
       setComics(comics.map(comic => 
-        comic._id === comicId ? { ...comic, status: 'LOCK' } : comic
+        comic.id === comicId ? { ...comic, status: 'LOCK' } : comic
       ));
 
     } catch (err) {
@@ -130,7 +130,7 @@ const ComicManagement = () => {
     try {
       await apiMain.updateComicStatus(comicId, 'NONE', user, dispatch, null);
       setComics(comics.map(comic => 
-        comic._id === comicId ? { ...comic, status: 'NONE' } : comic
+        comic.id === comicId ? { ...comic, status: 'NONE' } : comic
       ));
       
     } catch (err) {
@@ -215,14 +215,14 @@ const ComicManagement = () => {
                     {comic.status === 'LOCK' ? (
                       <button 
                         className="unlock-btn"
-                        onClick={() => handleUnlock(comic._id)}
+                        onClick={() => handleUnlock(comic.id)}
                       >
                         Mở khóa
                       </button>
                     ) : (
                       <button 
                         className="lock-btn"
-                        onClick={() => handleLock(comic._id)}
+                        onClick={() => handleLock(comic.id)}
                       >
                         Khóa
                       </button>
