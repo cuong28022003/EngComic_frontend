@@ -61,7 +61,7 @@ export default function Home() {
             setLoading(true);
             const params = {
                 page: 0,
-                size: 4,
+                size: 10,
                 sort: "views",
                 order: "desc",
             }
