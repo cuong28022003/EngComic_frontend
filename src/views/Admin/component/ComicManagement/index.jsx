@@ -5,7 +5,7 @@ import { REACT_APP_BASE_URL_API } from "../../../../constant/env";
 import Pagination from "../../../../components/Pagination";
 import apiMain from '../../../../api/apiMain';
 import './styles.scss';
-import { deleteComic } from "../../../../api/comicApi";
+import { deleteComic, getComicsAdmin } from "../../../../api/comicApi";
 import ConfirmDialog from "../../../../components/ConfirmDialog";
 import { loginSuccess } from "../../../../redux/slice/auth";
 import { toast } from "react-toastify";
@@ -30,7 +30,7 @@ const ComicManagement = () => {
   useEffect(() => {
     const fetchComics = async () => {
       try {
-        const response = await axios.get(`${REACT_APP_BASE_URL_API}/comic/admin`);
+        const response = await getComicsAdmin();
         setComics(response.data);
         setFilteredComics(response.data)
       } catch (err) {

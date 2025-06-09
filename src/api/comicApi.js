@@ -65,3 +65,8 @@ export async function updateComicStatus(comicId, status, user, dispatch, stateSu
 
     return response.data;
 }
+
+export async function getComicsAdmin() {
+    let axi = axiosClient;
+    return await axi.get(`${BASE_URL_API}/admin`);
+}
