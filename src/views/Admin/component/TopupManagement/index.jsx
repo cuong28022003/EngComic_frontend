@@ -18,7 +18,7 @@ const TopupManagement = () => {
 
     const [currentPage, setCurrentPage] = useState(1); // page starts from 1 for UI
     const [totalPages, setTotalPages] = useState(1);
-    const pageSize = 3;
+    const pageSize = 7;
 
     const [showConfirm, setShowConfirm] = useState(false);
     const [selectedId, setSelectedId] = useState(null);
