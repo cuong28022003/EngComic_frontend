@@ -34,7 +34,7 @@ const ComicManagement = () => {
           page: 0,
           size: 1000, // Lấy tất cả truyện để quản lý
         }
-        const response = await getComics(params);
+        const response = await getComicsAdmin(params);
         setComics(response.data.content);
         setFilteredComics(response.data.content)
       } catch (err) {
