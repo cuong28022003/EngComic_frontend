@@ -87,6 +87,13 @@ function ChapterDetail(props) {
         }
     }
 
+    const speak = (text) => {
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = "en-US";
+        speech.rate = 0.7;
+        window.speechSynthesis.speak(speech);
+    };
+
 
     useEffect(() => {
         fetchDecks();
@@ -430,6 +437,7 @@ function ChapterDetail(props) {
                                                         }
                                                         rows={2}
                                                     />
+
                                                     <button
                                                         className="button-secondary"
                                                         style={{ marginTop: 8 }}
@@ -438,6 +446,18 @@ function ChapterDetail(props) {
                                                     >
                                                         Dịch
                                                     </button>
+
+                                                    {ocrResult.text.trim() && (
+                                                        <button
+                                                            type="button"
+                                                            className="speaker-btn"
+                                                            style={{ marginLeft: 8, background: 'none', border: 'none', cursor: 'pointer', color: 'white' }}
+                                                            onClick={() => { speak(ocrResult.text) }}
+                                                            title="Đọc văn bản"
+                                                        >
+                                                            <i className="fa-solid fa-volume-high"></i>
+                                                        </button>
+                                                    )}
                                                 </div>
                                                 <div className="ocr-section">
                                                     <label className='input-label'>Phiên âm:</label>
