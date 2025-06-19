@@ -11,8 +11,11 @@ import { loginSuccess } from "../../../../redux/slice/auth";
 import { toast } from "react-toastify";
 import { set } from "lodash";
 import Loading from "../../../../components/Loading/Loading";
+import { useNavigate } from "react-router-dom";
+import { routeLink } from "../../../../routes/AppRoutes";
 
 const ComicManagement = () => {
+  const navigate = useNavigate();
   const [comics, setComics] = useState([]);
   const [filteredComics, setFilteredComics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +29,8 @@ const ComicManagement = () => {
 
   const [showConfirm, setShowConfirm] = useState(false);
   const [comicToDelete, setComicToDelete] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('');
+
 
   useEffect(() => {
     const fetchComics = async () => {
@@ -49,15 +54,17 @@ const ComicManagement = () => {
   useEffect(() => {
     const filtered = comics.filter(comic => {
       const searchLower = searchTerm.toLowerCase();
-      return (
+      const matchesSearch = (
         comic.name.toLowerCase().includes(searchLower) ||
         (comic.genre && comic.genre.toLowerCase().includes(searchLower)) ||
         (comic.uploader?.username && comic.uploader.username.toLowerCase().includes(searchLower))
       );
+      const matchesStatus = statusFilter === '' || comic.status === statusFilter;
+      return matchesSearch && matchesStatus;
     });
     setFilteredComics(filtered);
     setCurrentPage(1);
-  }, [searchTerm, comics]);
+  }, [searchTerm, comics, statusFilter]);
 
   const requestSort = (key) => {
     let direction = 'ascending';
@@ -69,7 +76,7 @@ const ComicManagement = () => {
 
   const getSortedItems = () => {
     if (!sortConfig.key) return filteredComics;
-    
+
     return [...filteredComics].sort((a, b) => {
       const aValue = a[sortConfig.key] || 0;
       const bValue = b[sortConfig.key] || 0;
@@ -114,7 +121,7 @@ const ComicManagement = () => {
 
     try {
       await apiMain.updateComicStatus(comicId, 'LOCK', user, dispatch, null);
-      setComics(comics.map(comic => 
+      setComics(comics.map(comic =>
         comic.id === comicId ? { ...comic, status: 'LOCK' } : comic
       ));
 
@@ -128,17 +135,32 @@ const ComicManagement = () => {
   const handleUnlock = async (comicId) => {
 
     try {
-      await apiMain.updateComicStatus(comicId, 'NONE', user, dispatch, null);
-      setComics(comics.map(comic => 
-        comic.id === comicId ? { ...comic, status: 'NONE' } : comic
+      await apiMain.updateComicStatus(comicId, 'ACTIVE', user, dispatch, null);
+      setComics(comics.map(comic =>
+        comic.id === comicId ? { ...comic, status: 'ACTIVE' } : comic
       ));
-      
+
     } catch (err) {
       const errorMessage = err.response ? err.response.data.message : err.message;
       setError(errorMessage);
-      
+
     }
   };
+
+  const handleApprove = async (comicId) => {
+    try {
+      await apiMain.updateComicStatus(comicId, 'ACTIVE', user, dispatch, null);
+      setComics(comics.map(comic =>
+        comic.id === comicId ? { ...comic, status: 'ACTIVE' } : comic
+      ));
+      toast.success("Duyệt truyện thành công!");
+    } catch (err) {
+      const errorMessage = err.response ? err.response.data.message : err.message;
+      setError(errorMessage);
+      toast.error(`Lỗi: ${errorMessage}`);
+    }
+  };
+  
 
   const sortedComics = getSortedItems();
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -153,17 +175,33 @@ const ComicManagement = () => {
   return (
     <div className="comic-list-container">
       <h1>Danh Sách Truyện</h1>
-      
-      <div className="search-bar">
-        <input
-          className="input"
-          type="text"
-          placeholder="Tìm kiếm theo tên truyện, thể loại hoặc người đăng..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+
+      <div className="control-bar">
+        <div className="search-bar">
+          <input
+            className="input"
+            type="text"
+            placeholder="Tìm kiếm theo tên truyện, thể loại hoặc người đăng..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="filter-bar">
+          <label htmlFor="status-filter">Lọc theo trạng thái:</label>
+          <select
+            id="status-filter"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">Tất cả</option>
+            <option value="ACTIVE">Hoạt động</option>
+            <option value="PENDING">Chờ duyệt</option>
+            <option value="LOCK">Đã khóa</option>
+          </select>
+        </div>
       </div>
-      
+
       <div className="table-responsive">
         <table className="comic-table">
           <thead>
@@ -183,6 +221,7 @@ const ComicManagement = () => {
                   sortConfig.direction === 'ascending' ? '↑' : '↓'
                 )}
               </th>
+              <th>Trạng thái</th>
               <th>Hành Động</th>
             </tr>
           </thead>
@@ -191,9 +230,9 @@ const ComicManagement = () => {
               <tr key={comic.id || index}>
                 <td>{indexOfFirstItem + index + 1}</td>
                 <td>
-                  <img 
-                    src={comic.imageUrl} 
-                    alt={comic.name} 
+                  <img
+                    src={comic.imageUrl}
+                    alt={comic.name}
                     className="comic-image"
                     onError={(e) => {
                       e.target.onerror = null;
@@ -201,32 +240,49 @@ const ComicManagement = () => {
                     }}
                   />
                 </td>
-                <td>{comic.name}</td>
+                <td>
+                  <span
+                    className="comic-name-link"
+                    onClick={() => navigate(routeLink.comicDetail.replace(':comicId', comic.id))}
+                  >
+                    {comic.name}
+                  </span>
+                </td>
                 <td>{comic.uploader?.username || "Đang cập nhật"}</td>
                 <td>{comic.genre || "Đang cập nhật"}</td>
                 <td>{comic.views || 0}</td>
                 <td>
-                  {comic.rating?.toFixed(1) || 0}/5 
+                  {comic.rating?.toFixed(1) || 0}/5
                   <br />
                   ({comic.totalRatings || 0} lượt)
                 </td>
+                <td>{comic.status || "Đang cập nhật"}</td>
                 <td>
                   <div className="action-buttons">
-                    {comic.status === 'LOCK' ? (
-                      <button 
+
+                    {comic.status === 'PENDING' && (
+                      <button
+                        className="approve-btn"
+                        onClick={() => handleApprove(comic.id)}
+                      >
+                        Duyệt
+                      </button>
+                    )}
+                    {comic.status !== 'PENDING' && (comic.status === 'LOCK' ? (
+                      <button
                         className="unlock-btn"
                         onClick={() => handleUnlock(comic.id)}
                       >
                         Mở khóa
                       </button>
                     ) : (
-                      <button 
+                      <button
                         className="lock-btn"
                         onClick={() => handleLock(comic.id)}
                       >
                         Khóa
                       </button>
-                    )}
+                    ))}
                     <button
                       className="delete-btn"
                       onClick={() => handleDeleteClick(comic.id)}

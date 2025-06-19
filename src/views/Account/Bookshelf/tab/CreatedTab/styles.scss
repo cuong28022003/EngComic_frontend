@@ -1,0 +1,17 @@
+.created-status {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+
+    &.pending {
+        color: orange;
+    }
+
+    &.active {
+        color: green;
+    }
+
+    &.lock {
+        color: red;
+    }
+}

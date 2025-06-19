@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import ConfirmDialog from '../../../../../components/ConfirmDialog';
+import './styles.scss';
 
 const CreatedTab = ({ isReadOnly }) => {
     const navigate = useNavigate();
@@ -116,6 +117,12 @@ const CreatedTab = ({ isReadOnly }) => {
                                         >
                                             {comic.name}
                                         </a>
+                                        <p className={`created-status ${comic.status.toLowerCase()}`}>
+                                            Trạng thái: {comic.status === 'PENDING' ? 'Chờ duyệt' :
+                                                comic.status === 'LOCK' ? 'Đã khóa' :
+                                                    comic.status === 'APPROVED' ? 'Đã duyệt' :
+                                                        comic.status}
+                                        </p>
                                         <div className="d-flex" style={{ gap: "15px" }}>
                                             {!isReadOnly && (
                                                 <Link to={routeLink.editComic.replace(':comicId', comic.id)} name={comic.id} state={{ url: comic?.url }}>

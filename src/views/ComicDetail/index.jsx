@@ -163,6 +163,10 @@ function ComicDetail() {
     navigate(`/search?genre=${genre}`);
   };
 
+  const onClickEnglishLevel = async (englishLevel) => {
+    navigate(`/search?level=${englishLevel}`);
+  };
+
 
   const onClickReading = async () => {
     try {
@@ -217,7 +221,8 @@ function ComicDetail() {
                   <h1 className="comic-title">{comic?.name}</h1>
                   <ul className="comic-meta">
                     <li onClick={() => onClickArtist(comic?.artist)}>{comic?.artist}</li>
-                    <li onClick={() => onClickGenre(comic?.genre)}>{comic?.genre}</li>
+                      <li onClick={() => onClickGenre(comic?.genre)}>{comic?.genre}</li>
+                      <li onClick={() => onClickEnglishLevel(comic?.englishLevel)}>{comic?.englishLevel}</li>
                   </ul>
                   <ul className="comic-stats">
                     <li><strong>{comic?.totalChapters || 0}</strong> Chương</li>

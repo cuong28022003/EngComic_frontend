@@ -14,6 +14,8 @@ const sortOptions = [
   { value: "rating", label: "Đánh giá" },
 ];
 
+const englishLevels = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
 const genres = ComicGenres;
 
 const SearchPage = () => {
@@ -22,6 +24,7 @@ const SearchPage = () => {
   const [comics, setComics] = useState([]);
 
   const [genre, setGenre] = useState(searchParams.get("genre") || "");
+  const [englishLevel, setEnglishLevel] = useState(searchParams.get("level") || "");
   const [sortBy, setSortBy] = useState("views");
   const [sortDir, setSortDir] = useState("desc");
   const [page, setPage] = useState(0);
@@ -43,6 +46,8 @@ const SearchPage = () => {
         keyword: keyword,
         genre: genre,
         artist: artist,
+        status: "ACTIVE",
+        englishLevel: englishLevel,
         sortBy,
         sortDir,
         page,
@@ -64,7 +69,7 @@ const SearchPage = () => {
 
   useEffect(() => {
     fetchComics();
-  }, [keyword, genre, sortBy, sortDir, page]);
+  }, [keyword, genre, englishLevel, sortBy, sortDir, page]);
 
   return (
     <div className="search-container">
@@ -92,6 +97,19 @@ const SearchPage = () => {
       <main className="main-content">
         <div className="sort-bar">
           <div className="sort-controls">
+            {/* Thêm dropdown chọn English Level */}
+            <select
+              value={englishLevel}
+              onChange={(e) => setEnglishLevel(e.target.value)}
+            >
+              <option value="">Trình độ: Tất cả</option>
+              {englishLevels.map((level) => (
+                <option key={level} value={level}>
+                  Trình độ: {level}
+                </option>
+              ))}
+            </select>
+
             <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               {sortOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>

@@ -33,6 +33,7 @@ function CreateAndEditComicPage() {
     const [preview, setPreview] = useState(avt);
     const [background, setBackground] = useState('');
     const [previewBackground, setPreviewBackground] = useState(avt);
+    const [englishLevel, setEnglishLevel] = useState("A1");
 
     const [chapters, setChapters] = useState([]);
 
@@ -60,6 +61,7 @@ function CreateAndEditComicPage() {
                 setGenre(comic.genre);
                 setPreview(comic.imageUrl);
                 setPreviewBackground(comic.backgroundUrl);
+                setEnglishLevel(comic.englishLevel);
                 setLoadingPage(false);
             }).catch(() => {
                 toast.error("Không tìm thấy truyện");
@@ -132,6 +134,7 @@ function CreateAndEditComicPage() {
                 genre,
                 url: slug,
                 uploaderId: user?.id,
+                englishLevel
             })], { type: "application/json" }));
             if (image) {
                 formData.append("image", image);
@@ -210,6 +213,21 @@ function CreateAndEditComicPage() {
                                     {ComicGenres.map((g, idx) => <option key={idx} value={g}>{g}</option>)}
                                 </select>
                             </div>
+
+                            <div className='input-group'>
+                                <label className='input-label'>English Level:</label>
+                                <select className='select' id="englishLevel" value={englishLevel} onChange={e => setEnglishLevel(e.target.value)} required>
+                                    <option value="">Select level</option>
+                                    <option value="A1">A1</option>
+                                    <option value="A2">A2</option>
+                                    <option value="B1">B1</option>
+                                    <option value="B2">B2</option>
+                                    <option value="C1">C1</option>
+                                    <option value="C2">C2</option>
+                                </select>
+
+                            </div>
+
                             <button className='button-primary' type="submit" disabled={loadingPage}>
                                 {isEdit ? "Lưu thay đổi" : "Tạo truyện"}
                             </button>
