@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import Layout from "../../layout/MainLayout/index.jsx";
 import "./styles.scss";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Loading from "../../components/Loading/Loading.js";
+import Loading from "../../components/Loading/index.jsx";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { loginSuccess } from "../../redux/slice/auth.js";
@@ -221,8 +221,8 @@ function ComicDetail() {
                   <h1 className="comic-title">{comic?.name}</h1>
                   <ul className="comic-meta">
                     <li onClick={() => onClickArtist(comic?.artist)}>{comic?.artist}</li>
-                      <li onClick={() => onClickGenre(comic?.genre)}>{comic?.genre}</li>
-                      <li onClick={() => onClickEnglishLevel(comic?.englishLevel)}>{comic?.englishLevel}</li>
+                    <li onClick={() => onClickGenre(comic?.genre)}>{comic?.genre}</li>
+                    <li onClick={() => onClickEnglishLevel(comic?.englishLevel)}>{comic?.englishLevel}</li>
                   </ul>
                   <ul className="comic-stats">
                     <li><strong>{comic?.totalChapters || 0}</strong> Chương</li>
@@ -270,7 +270,7 @@ function ComicDetail() {
       )}
     </div>
   );
-  
+
 }
 
 const About = (props) => {

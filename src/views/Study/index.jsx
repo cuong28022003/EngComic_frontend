@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { routeLink } from "../../routes/AppRoutes";
 import { v4 as uuidv4 } from 'uuid';
 import GachaCard from "../../components/GachaCard";
-import Loading from "../../components/Loading/Loading";
+import Loading from "../../components/Loading";
 
 const StudyPage = () => {
     const [sessionId] = useState(uuidv4());
@@ -42,7 +42,7 @@ const StudyPage = () => {
                 const params = {
                     size: 100
                 }
-                const response = await getCardsByDeckId(deckId,params, user, dispatch, loginSuccess);
+                const response = await getCardsByDeckId(deckId, params, user, dispatch, loginSuccess);
                 // console.log("Cards:", response); 
                 setCards(response?.data?.content || []);
                 setLoading(false);
@@ -110,7 +110,7 @@ const StudyPage = () => {
         console.log("isCorrect:", correct);
         console.log("reviewState:", reviewState);
         console.log("currentIndex:", currentIndex);
-        
+
         const resultData = {
             ...cards[currentIndex],
             reviewState,
@@ -223,7 +223,7 @@ const StudyPage = () => {
                     />
                 </form>
             )}
-            
+
             {showReview && (
                 <div className="user-answer">
                     <p>Your Answer:</p>
@@ -236,7 +236,7 @@ const StudyPage = () => {
                     <ReviewButton text="Again (A)" color="red" handleNextCard={() => handleReview("AGAIN")} />
                     <ReviewButton text="Hard (H)" color="orange" handleNextCard={() => handleReview("HARD")} />
                     <ReviewButton text="Good (G)" color="green" handleNextCard={() => handleReview("GOOD")} />
-                    <ReviewButton text="Easy (E)" color="blue" handleNextCard={() =>handleReview("EASY")} />
+                    <ReviewButton text="Easy (E)" color="blue" handleNextCard={() => handleReview("EASY")} />
                 </div>
             )}
         </div>

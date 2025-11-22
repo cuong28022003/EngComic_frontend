@@ -1,4 +1,5 @@
 @import '../../../scss/index.scss';
+
 .rank-wrapper {
     display: flex;
     gap: 1rem;
@@ -25,15 +26,36 @@
     }
 
     .rank-rewards {
-        margin-top: 10px;
-        font-size: 14px;
-        color: $color-subtext;    
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+
+            .reward-icon {
+                font-size: 1.2rem;
+            }
+
+            .reward-value {
+                font-size: 1rem;
+                font-weight: 600;
+                color: #333;
+            }
+        }
     }
 }
 
 .rank-list {
     flex: 1;
-    max-height: 400px;
+    max-height: 410px;
     overflow-y: auto;
     background: #fafafa;
     border-radius: 12px;

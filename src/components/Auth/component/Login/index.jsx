@@ -1,9 +1,9 @@
-import Loading from "../../../Loading/Loading";
+import Loading from "../../../Loading";
 import { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLogin } from "../../../../handle/handleAuth";
-import { clearMessageLogin} from "../../../../redux/messageSlice";
+import { clearMessageLogin } from "../../../../redux/messageSlice";
 import { toast } from "react-toastify";
 
 const Login = (props) => {

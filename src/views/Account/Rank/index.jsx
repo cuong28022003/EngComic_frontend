@@ -33,7 +33,7 @@ const Rank = () => {
         const current = xp - selectedRank?.minXp;
         const total = selectedRank?.maxXp - selectedRank?.minXp;
         percent = Math.floor((current / total) * 100);
-        progressText = `${current} / ${total} XP to next rank`;
+        progressText = `${selectedRank?.maxXp - xp} XP to next rank`;
     }
 
     useEffect(() => {
@@ -69,7 +69,7 @@ const Rank = () => {
                 <div className="info">
                     <h3>{selectedRank?.name}</h3>
                     <p className="xp-info">
-                        XP: {xp} / {selectedRank.minXp}
+                        XP: {xp} / {selectedRank.maxXp}
                     </p>
                     <div className="progress-bar">
                         <div className="fill" style={{ width: `${percent}%` }}></div>
@@ -77,11 +77,12 @@ const Rank = () => {
                     <p>{progressText}</p>
                 </div>
                 <div className="rank-rewards">
-                    <p>💎 {selectedRank?.rewardDiamond}</p>
-                    <div>
-                        <GachaCard
-                            character={selectedRank?.rewardCharacter}
-                        />
+                    <div className="reward-item">
+                        <span className="reward-icon">💎</span>
+                        <span className="reward-value">{selectedRank?.rewardDiamond}</span>
+                    </div>
+                    <div className="reward-item">
+                        <GachaCard character={selectedRank?.rewardCharacter} />
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@ import "./styles.scss";
 import { getComics } from "../../api/comicApi";
 import ComicCard from "../../components/ComicCard";
 import { getLeaderboard } from "../../api/userStatsApi";
-import Loading from "../../components/Loading/Loading";
+import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { routeLink } from "../../routes/AppRoutes";
 

@@ -13,7 +13,7 @@ import Profile from './Profile/Profile';
 import Bookshelf from './Bookshelf';
 import { toast } from 'react-toastify';
 import CreateAndEditComicPage from '../CreateAndEditComic';
-import LoadingData from '../../components/Loading/LoadingData';
+import LoadingData from '../../components/LoadingData';
 import { routeLink } from '../../routes/AppRoutes';
 import './styles.scss';
 import { getUserById } from '../../api/userApi';

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Comic from "../../components/ComicCard";
 import Section, { SectionHeading, SectionBody } from "../../components/section";
-import LoadingData from "../../components/Loading/LoadingData";
+import LoadingData from "../../components/LoadingData";
 import { getComics } from "../../api/comicApi";
 import Pagination from "../../components/Pagination/index";
 

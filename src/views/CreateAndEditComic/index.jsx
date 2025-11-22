@@ -4,12 +4,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import avt from '../../assets/image/default-picture.png';
-import { ComicGenres } from '../../constant/enum';
+import { ComicGenres, AgeRatings } from '../../constant/enum';
 import { createComic, getComicById, updateComic } from '../../api/comicApi';
 import { loginSuccess } from '../../redux/slice/auth';
 import { routeLink } from '../../routes/AppRoutes';
 
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/Loading';
 import { getChaptersByComicId, deleteChapterById } from '../../api/chapterApi';
 import ConfirmDialog from '../../components/ConfirmDialog';
 
@@ -34,6 +34,7 @@ function CreateAndEditComicPage() {
     const [background, setBackground] = useState('');
     const [previewBackground, setPreviewBackground] = useState(avt);
     const [englishLevel, setEnglishLevel] = useState("A1");
+    const [ageRating, setAgeRating] = useState(AgeRatings[0]);
 
     const [chapters, setChapters] = useState([]);
 
@@ -62,6 +63,13 @@ function CreateAndEditComicPage() {
                 setPreview(comic.imageUrl);
                 setPreviewBackground(comic.backgroundUrl);
                 setEnglishLevel(comic.englishLevel);
+
+                // Kiểm tra ageRating từ database, nếu hợp lệ thì dùng, không thì dùng mặc định
+                const validAgeRating = comic.ageRating && AgeRatings.includes(comic.ageRating)
+                    ? comic.ageRating
+                    : AgeRatings[0];
+                setAgeRating(validAgeRating);
+
                 setLoadingPage(false);
             }).catch(() => {
                 toast.error("Không tìm thấy truyện");
@@ -115,7 +123,7 @@ function CreateAndEditComicPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!name || !description || !artist || !genre || (!preview && !image)) {
+        if (!name || !artist || !genre || (!preview && !image)) {
             toast.warning("Vui lòng điền đầy đủ thông tin");
             return;
         }
@@ -134,7 +142,8 @@ function CreateAndEditComicPage() {
                 genre,
                 url: slug,
                 uploaderId: user?.id,
-                englishLevel
+                englishLevel,
+                ageRating
             })], { type: "application/json" }));
             if (image) {
                 formData.append("image", image);
@@ -190,7 +199,7 @@ function CreateAndEditComicPage() {
                                 <input className='input' type="file" accept="image/*" onChange={handleImageChange} />
                             </div>
                             <div className="image-preview background-preview">
-                                <img src={previewBackground} alt="background-preview"/>
+                                <img src={previewBackground} alt="background-preview" />
                                 <input className='input' type="file" accept="image/*" onChange={handleBackgroundChange} />
                             </div>
                         </div>
@@ -200,7 +209,7 @@ function CreateAndEditComicPage() {
                                 <input className="input" type="text" value={name} onChange={e => setName(e.target.value)} required />
                             </div>
                             <div className="input-group">
-                                <label className="input-label">Mô tả *</label>
+                                <label className="input-label">Mô tả</label>
                                 <textarea className="textarea" value={description} onChange={e => setDescription(e.target.value)} />
                             </div>
                             <div className="input-group">
@@ -225,7 +234,17 @@ function CreateAndEditComicPage() {
                                     <option value="C1">C1</option>
                                     <option value="C2">C2</option>
                                 </select>
+                            </div>
 
+                            <div className='input-group'>
+                                <label className='input-label'>Age Rating *</label>
+                                <select className='select' value={ageRating} onChange={e => setAgeRating(e.target.value)} required>
+                                    {AgeRatings.map((rating, idx) => (
+                                        <option key={idx} value={rating}>
+                                            {rating === 'Kids' ? 'Kids' : 'Adult'}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <button className='button-primary' type="submit" disabled={loadingPage}>

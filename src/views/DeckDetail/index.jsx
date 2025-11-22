@@ -13,7 +13,7 @@ import { checkCanUseSkill } from '../../api/characterUsageApi';
 import CardFormModal from './component/AddEditCard';
 import { toast } from 'react-toastify';
 import Pagination from '../../components/Pagination/index.jsx';
-import Loading from '../../components/Loading/Loading.js';
+import Loading from '../../components/Loading/index.jsx';
 
 const DeckDetailPage = () => {
     const { deckId } = useParams();
@@ -28,7 +28,7 @@ const DeckDetailPage = () => {
     const [companions, setCompanions] = useState([null, null, null]);
 
     const [addCardOpen, setAddCardOpen] = useState(false);
-    const [editCardId, setEditCardId] = useState(null); 
+    const [editCardId, setEditCardId] = useState(null);
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);

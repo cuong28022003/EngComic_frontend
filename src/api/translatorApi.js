@@ -6,3 +6,8 @@ export async function translateText(data, user, dispatch, stateSuccess) {
     let axi = axiosInstance(user, dispatch, stateSuccess);
     return await axi.post(`${BASE_URL_API}/ipa-meaning`, data);
 }
+
+export async function ocr(data, user, dispatch, stateSuccess) {
+    let axi = axiosInstance(user, dispatch, stateSuccess);
+    return await axi.post(`${BASE_URL_API}/ocr`, data);
+}

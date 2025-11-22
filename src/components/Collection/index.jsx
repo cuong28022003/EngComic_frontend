@@ -7,6 +7,8 @@ import { loginSuccess } from '../../redux/slice/auth';
 import GachaCard from '../GachaCard';
 import Pagination from '../Pagination/index';
 import { useOutletContext } from 'react-router-dom';
+import LoadingData from '../LoadingData';
+import { set } from 'lodash';
 
 const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) => {
     const outletContext = useOutletContext() || {};
@@ -24,6 +26,8 @@ const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) =>
 
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
+
+    const [loadingData, setLoadingData] = useState(true);
     // console.log('searchTerm: ', searchTerm);
     // console.log("totalPages: ", totalPages)
 
@@ -51,12 +55,19 @@ const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) =>
     }, [user]);
 
     const fetchCharacters = async () => {
-        const res = await getCharactersByUserId(user.id,
-            { searchTerm, rarity: rarityFilter, sortBy, sortDirection, page: currentPage - 1, size: 5 }
-            , user, dispatch, loginSuccess);
-        const data = res.data.content;
-        setCharacters(data);
-        setTotalPages(res.data.totalPages);
+        try {
+            setLoadingData(true);
+            const res = await getCharactersByUserId(user.id,
+                { searchTerm, rarity: rarityFilter, sortBy, sortDirection, page: currentPage - 1, size: 5 }
+                , user, dispatch, loginSuccess);
+            const data = res.data.content;
+            setCharacters(data);
+            setTotalPages(res.data.totalPages);
+        } catch (error) {
+            console.error('Error fetching characters:', error);
+        } finally {
+            setLoadingData(false);
+        }
     };
 
     useEffect(() => {
@@ -135,19 +146,21 @@ const GachaCollection = ({ mode = "default", onCardClick, selectedIds = [] }) =>
                 </div> */}
             </div>
 
-            <div className="card-grid">
-                {characters.map((char, index) => (
+            {loadingData ? <LoadingData /> :
+                <div className="card-grid">
+                    {characters.map((char, index) => (
 
-                    <GachaCard
-                        key={index}
-                        character={char}
-                        mode={mode}
-                        selected={selectedIds.includes(char?.id)}
-                        disabled={checkDisabled(char)}
-                        onSelect={onCardClick}
-                    />
-                ))}
-            </div>
+                        <GachaCard
+                            key={index}
+                            character={char}
+                            mode={mode}
+                            selected={selectedIds.includes(char?.id)}
+                            disabled={checkDisabled(char)}
+                            onSelect={onCardClick}
+                        />
+                    ))}
+                </div>
+            }
 
             <Pagination
                 currentPage={currentPage}

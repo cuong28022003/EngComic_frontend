@@ -18,12 +18,14 @@ import languageSlice from "./languageSlice"
 import userStatsReducer from "./slice/userStats"
 import rewardReducer from "./slice/reward"
 import characterReducer from "./slice/character"
+import adultModeReducer from "./slice/adultMode"
 
 const rootReducer = combineReducers({
   auth: authReducer,
   userStats: userStatsReducer,
   reward: rewardReducer,
   character: characterReducer,
+  adultMode: adultModeReducer,
   modal: modalReducer,
   message: messageReducer,
   lang: languageSlice

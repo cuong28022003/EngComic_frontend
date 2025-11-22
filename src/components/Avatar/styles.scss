@@ -39,3 +39,35 @@
     display: flex;
     justify-content: center;
 }
+
+// Premium avatar effects
+.avatar-wrapper.premium {
+    .avatar-img {
+        animation: premiumGlow 2s ease-in-out infinite alternate;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    .premium-frame {
+        animation: premiumRotate 4s linear infinite;
+    }
+}
+
+@keyframes premiumGlow {
+    0% {
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+    }
+
+    100% {
+        box-shadow: 0 0 30px rgba(255, 215, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.4);
+    }
+}
+
+@keyframes premiumRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

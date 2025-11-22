@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import apiMain from '../../api/apiMain'
 import Layout from '../../layout/MainLayout'
-import LoadingData from '../../components/Loading/LoadingData'
+import LoadingData from '../../components/LoadingData'
 
 function Active(props) {
     const { token } = useParams()

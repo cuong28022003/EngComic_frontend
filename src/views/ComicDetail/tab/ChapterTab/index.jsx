@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getChaptersByComicId } from "../../../../api/chapterApi";
 import Grid from "../../../../components/Grid";
-import LoadingData from "../../../../components/Loading/LoadingData";
+import LoadingData from "../../../../components/LoadingData";
 import Pagination from "../../../../components/Pagination/index";
 import { routeLink } from "../../../../routes/AppRoutes";
 import Chapter from "../../../../components/Chapter/index";
 
-export const ChapterTab = ({comicId}) => {
+export const ChapterTab = ({ comicId }) => {
     const [chapters, setChapters] = useState([]);
     const [loadingData, setLoadingData] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);

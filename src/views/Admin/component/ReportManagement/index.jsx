@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
-import Pagination from '../../../../components/Pagination.js';
+import Pagination from '../../../../components/Pagination';
 import './styles.scss';
 import { updateComicStatus } from "../../../../api/comicApi.js";
 import { toast } from 'react-toastify';
 import Modal from "../../../../components/Modal/index.jsx";
 import { getAllReports, updateReportStatus } from "../../../../api/reportApi.js";
-import Loading from "../../../../components/Loading/Loading.js";
+import Loading from "../../../../components/Loading/index.jsx";
 
 const ReportManagement = () => {
   const [reports, setReports] = useState([]);

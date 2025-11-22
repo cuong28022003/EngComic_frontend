@@ -41,6 +41,7 @@ import TopupManagement from "../views/Admin/component/TopupManagement";
 import CreateOrEditChapterPage from "../views/CreateOrEditChapterPage";
 import HomePage from "../views/Home";
 import LeaderboardPage from "../views/Leaderboard";
+import FightingGame from "../views/FightingGame/FightingGame";
 
 export const routeLink = {
     home: '/',
@@ -85,6 +86,8 @@ export const routeLink = {
     leaderboard: '/leaderboard',
 
     admin: '/admin',
+
+    fightingGame: '/fighting-game',
 };
 
 const AppRoutes = () => {
@@ -142,6 +145,7 @@ const AppRoutes = () => {
                     <Route path={routeLink.search} element={<SearchPage />} />
                     <Route path={routeLink.home} element={<HomePage />} />
                     <Route path={routeLink.leaderboard} element={<LeaderboardPage />} />
+                    <Route path={routeLink.fightingGame} element={<FightingGame />} />
                 </Route>
                 <Route path={routeLink.chapterDetail} element={<ChapterDetail />} />
 

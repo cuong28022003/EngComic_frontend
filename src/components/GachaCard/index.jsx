@@ -2,15 +2,17 @@ import './styles.scss';
 import React, { useEffect, useState } from 'react';
 import confetti from 'canvas-confetti';
 import Modal from '../Modal/index.jsx';
+import SpriteCanvas from '../SpriteCanvas/index.jsx';
 
-const GachaCard = ({ character, mode = "default", selected = false, onSelect, disabled = false, size}) => {
+const GachaCard = ({ character, mode = "default", selected = false, onSelect, disabled = false, size }) => {
     const [isOpen, setIsOpen] = useState(false);
     // console.log("mode: ", mode);
+    // console.log("character in GachaCard: ", character);
 
     const skillNameMap = {
         SHOW_ANSWER: "LẬT ĐÁP ÁN",
         DOUBLE_XP: "NHÂN ĐÔI XP",
-    // Thêm các kỹ năng khác nếu có
+        // Thêm các kỹ năng khác nếu có
     };
 
     // useEffect(() => {
@@ -44,17 +46,26 @@ const GachaCard = ({ character, mode = "default", selected = false, onSelect, di
         e.target.play(); // Phát lại video ngay lập tức
     };
 
+    // Lấy sprite idle từ character
+    const idleSprite = character?.sprites?.idle;
+    const spriteScale = character?.scale || 1;
+    const spriteOffset = character?.offset || { x: 0, y: 0 };
+    const width = 300;
+    const height = 200;
+    const spriteWidth = character?.width || 200;
+    const spriteHeight = character?.height || 200;
+    const spritePosition = { x: (width - spriteWidth) / 2, y: (height - spriteHeight) / 2 };
+
     return (
         <>
-            <div className={`gacha-card rarity-${character.rarity} 
+            <div
+                className={`gacha-card rarity-${character.rarity} 
                 ${selected ? 'selected' : ''} 
                 ${disabled ? 'disabled' : ''}
                 ${size === 'small' ? 'small' : ''}`}
-                onClick={handleCardClick}>
-                {/* {character.rarity === 'SSR' ? (
-                    <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
-                ) : (
-                )} */}
+                onClick={handleCardClick}
+            >
+                {/* Chỉ hiển thị ảnh tĩnh ở card ngoài */}
                 <img src={character.imageUrl} alt={character.name} />
                 <div className="name">{character.name}</div>
             </div>
@@ -63,23 +74,71 @@ const GachaCard = ({ character, mode = "default", selected = false, onSelect, di
                 <Modal>
                     <div className="card-overlay" onClick={handleClose}>
                         <div className="card-detail">
-                            <div className="card-image">
-                                {/* {character.rarity === 'SSR' ? (
-                                    <video src={character.imageUrl} autoPlay loop muted onEnded={handleVideoEnd} />
-                                ) : (
-                                )} */}
-                                <img src={character.imageUrl} alt={character.name} />
-                            </div>
-                            <div className="card-info">
-                                <h2>{character.name}</h2>
-                                <p>{character.description}</p>
+                            <div className="card-left">
+                                <div className="card-image">
+                                    {/* Ảnh tĩnh phía trên */}
+                                    <img src={character.imageUrl} alt={character.name} />
+                                </div>
+                                <p className="description">{character.description}</p>
                                 <div className="pack-info">
                                     <img src={character?.pack.imageUrl} alt={character?.pack.name} />
                                     <span>{character?.pack.name}</span>
                                 </div>
-                                <div className={`rarity-tag rarity-${character.rarity}`}>
-                                    {character.rarity}
+                            </div>
+                            <div className="card-info">
+                                <div className="character-header">
+                                    <h2>{character.name}</h2>
+                                    <div className={`rarity-tag rarity-${character.rarity}`}>
+                                        {character.rarity}
+                                    </div>
                                 </div>
+                                {idleSprite && idleSprite.imageSrc && (
+                                    <div className="sprite-container">
+                                        <SpriteCanvas
+                                            imageSrc={idleSprite.imageSrc}
+                                            width={width}
+                                            height={height}
+                                            scale={spriteScale}
+                                            framesMax={idleSprite.framesMax}
+                                            framesHold={8}
+                                            position={spritePosition}
+                                            offset={spriteOffset}
+                                            facing={1}
+                                            animate={true}
+                                            loop={true}
+                                        />
+                                    </div>
+                                )}
+                                {/* Stats Info */}
+                                {character.stats && (
+                                    <div className="stats-info">
+                                        <h4>Chỉ số:</h4>
+                                        <div className="stats-grid">
+                                            <div className="stat-item">
+                                                <span className="stat-label">❤️ Máu:</span>
+                                                <span className="stat-value">{character.stats.health}</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">⚔️ Tấn công:</span>
+                                                <span className="stat-value">{character.stats.attack}</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">🛡️ Phòng thủ:</span>
+                                                <span className="stat-value">{character.stats.defense}</span>
+                                            </div>
+                                            <div className="stat-item">
+                                                <span className="stat-label">⚡ Tốc độ:</span>
+                                                <span className="stat-value">{character.stats.speed}</span>
+                                            </div>
+                                            {/* {character.stats.gravity && (
+                                                <div className="stat-item">
+                                                    <span className="stat-label">🌍 Trọng lực:</span>
+                                                    <span className="stat-value">{character.stats.gravity}</span>
+                                                </div>
+                                            )} */}
+                                        </div>
+                                    </div>
+                                )}
                                 {/* Bonus Info */}
                                 {(character.bonusXp > 0 || character.bonusDiamond > 0) && (
                                     <div className="bonus-info">

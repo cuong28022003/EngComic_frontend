@@ -1,8 +1,7 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import axios from 'axios';
-import Loading from '../../components/Loading/Loading';
+import Loading from '../../components/Loading';
 import { getChapterById, updateChapter, createChapter } from '../../api/chapterApi';
 import './styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
@@ -102,8 +101,7 @@ function CreateOrEditChapterPage() {
 
         setLoading(true);
         const formData = new FormData();
-        const processedName = `Chương ${chapterNumber}: ${name}`;
-        formData.append("name", processedName);
+        formData.append("name", name);
         formData.append("chapterNumber", chapterNumber);
         formData.append("comicId", comicId);
         pages.forEach(page => formData.append("pages", page.file));

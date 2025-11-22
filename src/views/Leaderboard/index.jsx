@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "../../components/Avatar";
 import Pagination from "../../components/Pagination/index.jsx";
 import { set } from "lodash";
-import Loading from "../../components/Loading/Loading.js";
+import Loading from "../../components/Loading/index.jsx";
 
 const mockLeaderboard = [
     { fullName: "Alice Nguyen", avatar: "/avatars/alice.png", badge: "Diamond", xp: 12000, longestStreak: 45 },
@@ -28,7 +28,7 @@ const LeaderboardPage = () => {
     const [topUsers, setTopUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [loading, setLoading] = useState(false); 
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {

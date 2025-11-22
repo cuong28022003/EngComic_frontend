@@ -10,7 +10,7 @@ import ConfirmDialog from "../../../../components/ConfirmDialog";
 import { loginSuccess } from "../../../../redux/slice/auth";
 import { toast } from "react-toastify";
 import { set } from "lodash";
-import Loading from "../../../../components/Loading/Loading";
+import Loading from "../../../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { routeLink } from "../../../../routes/AppRoutes";
 
@@ -160,7 +160,7 @@ const ComicManagement = () => {
       toast.error(`Lỗi: ${errorMessage}`);
     }
   };
-  
+
 
   const sortedComics = getSortedItems();
   const indexOfLastItem = currentPage * itemsPerPage;

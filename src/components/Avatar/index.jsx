@@ -13,12 +13,14 @@ const RANK_FRAMES = {
     Master: "/images/frame-avatar/master.png",
     Grandmaster: "/images/frame-avatar/grandmaster.png",
     Legend: "/images/frame-avatar/legend.png",
+    Premium: "/images/frame-avatar/premium.png",
 };
 
 const Avatar = ({ src, userStats, size = 64 }) => {
     const isPremium = userStats?.premium;
     const rank = userStats?.rank?.name || "Bronze";
     const frameSrc = RANK_FRAMES[rank] || null;
+    const premiumFrameSrc = RANK_FRAMES.Premium;
 
     const avatarSize = {
         width: size,
@@ -26,7 +28,8 @@ const Avatar = ({ src, userStats, size = 64 }) => {
     };
 
     return (
-        <div className="avatar-wrapper" style={avatarSize}>
+        <div className={`avatar-wrapper ${isPremium ? 'premium' : ''}`} style={avatarSize}>
+            {isPremium && <img src={premiumFrameSrc} alt="premium frame" className="avatar-frame premium-frame" />}
             {frameSrc && <img src={frameSrc} alt="frame" className="avatar-frame" />}
             <img
                 src={src || avt}
@@ -34,11 +37,11 @@ const Avatar = ({ src, userStats, size = 64 }) => {
                 className="avatar-img"
             />
 
-            {isPremium && (
-                <div className="crown-icon  " title="VIP Member">
+            {/* {isPremium && (
+                <div className="crown-icon" title="VIP Member">
                     <Lottie animationData={crownAnimation} loop={true} />
                 </div>
-            )}
+            )} */}
         </div>
     );
 };

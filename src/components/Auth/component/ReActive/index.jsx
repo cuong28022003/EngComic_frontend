@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import apiMain from "../../../../api/apiMain";
-import Loading from "../../../Loading/Loading"; 
+import Loading from "../../../Loading";
 
 const ReActive = (props) => {
     const [email, setEmail] = useState("");

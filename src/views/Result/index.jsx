@@ -11,7 +11,7 @@ import { useDispatch } from "react-redux";
 import { updateUserStats } from "../../redux/slice/userStats";
 import { checkAndUseSkill } from "../../api/characterUsageApi";
 import { routeLink } from "../../routes/AppRoutes";
-import Loading from "../../components/Loading/Loading";
+import Loading from "../../components/Loading";
 
 const skillNameMap = {
     SHOW_ANSWER: "LẬT ĐÁP ÁN",
