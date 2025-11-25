@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# EngComic - E-Learning Platform 🚀
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Nền tảng học tiếng Anh sáng tạo kết hợp truyện tranh, gamification và AI-powered learning
 
-## Available Scripts
+[![React](https://img.shields.io/badge/React-17.0.2-blue.svg)](https://reactjs.org/)
+[![Redux](https://img.shields.io/badge/Redux_Toolkit-1.7.2-purple.svg)](https://redux-toolkit.js.org/)
+[![Firebase](https://img.shields.io/badge/Firebase-9.6.8-orange.svg)](https://firebase.google.com/)
 
-In the project directory, you can run:
+## 🎯 Highlights
 
-### `npm start`
+**EngComic** là một full-stack web application độc đáo, biến việc học tiếng Anh thành trải nghiệm giải trí tương tác thông qua truyện tranh và game mechanics.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 💡 Điểm nổi bật
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **🎮 Gamification System** - Gacha mechanics, deck building, và fighting game với sprite animation
+- **📚 Content Management** - CMS hoàn chỉnh với CKEditor, upload hình ảnh qua Firebase Storage
+- **🔐 JWT Authentication** - Bảo mật với access/refresh token và auto-renewal
+- **🌐 Internationalization** - Hỗ trợ đa ngôn ngữ (vi/en) với Redux i18n
+- **📊 Real-time Analytics** - XP system, streak tracking, leaderboard và user statistics
+- **🎨 Modern UI/UX** - Responsive design với GSAP animations, Lottie effects, và Tailwind CSS
+- **⚡ Performance Optimized** - Code splitting, lazy loading, và Redux Persist
 
-### `npm test`
+## 🛠️ Tech Stack
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Frontend Architecture:**
 
-### `npm run build`
+- React 17 + React Router 6 (SPA with dynamic routing)
+- Redux Toolkit + Redux Persist (centralized state management)
+- SCSS/Sass + Tailwind CSS (modular styling system)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+**Advanced Features:**
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- GSAP + Lottie (complex animations & micro-interactions)
+- Firebase Storage (cloud file management)
+- Axios Interceptors (JWT refresh & error handling)
+- Canvas API + HTML2Canvas (screenshot & image generation)
+- Swiper.js (touch-enabled carousels)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Development:**
 
-### `npm run eject`
+- CKEditor5 (WYSIWYG content editor)
+- React Toastify (notification system)
+- date-fns (date utilities)
+- Lodash (functional programming utilities)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🚀 Quick Start
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+# Clone & Install
+git clone https://github.com/cuong28022003/EngComic_frontend.git
+cd EngComic_frontend
+npm install
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+# Configure environment
+echo "REACT_APP_BASE_URL_API=http://localhost:8080/api" > .env
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+# Run development server
+npm start
+```
 
-## Learn More
+**Production Build:**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run build
+npm run deploy  # Deploy to GitHub Pages
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📦 Key Features
 
-### Code Splitting
+| Module              | Description                                                                       |
+| ------------------- | --------------------------------------------------------------------------------- |
+| **Comic Reader**    | Multi-chapter reading system với progress tracking, bookmarks, ratings & comments |
+| **Gacha System**    | Probability-based character collection với rarity tiers & animations              |
+| **Fighting Game**   | Canvas-based mini-game với sprite sheets & collision detection                    |
+| **Deck Builder**    | Strategic card management system                                                  |
+| **Leaderboard**     | Real-time ranking system với filtered views                                       |
+| **Admin Dashboard** | Full CRUD operations cho comics, chapters, users & reports                        |
+| **Payment System**  | Diamond topup integration                                                         |
+| **User Profile**    | Customizable avatars với frames, stats tracking & achievement system              |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 🏗️ Architecture Patterns
 
-### Analyzing the Bundle Size
+- **Component-Based Architecture** - Reusable components với props drilling prevention
+- **Redux Slices** - Modular state management (auth, language, modal, messages)
+- **Custom Hooks** - `useAdultMode`, business logic abstraction
+- **Layout System** - MainLayout & AuthLayout cho consistent UI
+- **API Layer** - Centralized API services với error handling
+- **Route Protection** - PrivateRoute component cho authentication guards
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🎓 Professional Skills Demonstrated
 
-### Making a Progressive Web App
+✅ **Frontend Development** - Modern React patterns, hooks, lifecycle management  
+✅ **State Management** - Redux architecture, normalized state, optimistic updates  
+✅ **API Integration** - RESTful APIs, JWT authentication, interceptors  
+✅ **UI/UX Design** - Responsive layouts, animations, accessibility  
+✅ **Performance** - Code optimization, lazy loading, bundle size reduction  
+✅ **Cloud Services** - Firebase integration, storage management  
+✅ **Version Control** - Git workflow, branch management  
+✅ **Problem Solving** - Complex business logic implementation
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📞 Contact
 
-### Advanced Configuration
+**GitHub:** [@cuong28022003](https://github.com/cuong28022003)  
+**Repository:** [EngComic Frontend](https://github.com/cuong28022003/EngComic_frontend)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+⭐ _Built with modern web technologies and best practices_

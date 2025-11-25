@@ -15,19 +15,6 @@ export const ComicGenres = [
     'Khác',
 ];
 
-// // Adult only
-// export const ComicGenres = [
-//     'Ecchi',
-//     'Hentai',
-//     'Yaoi',
-//     'Yuri',
-//     'Smut',
-//     'Doujinshi',
-//     'Adult',
-//     'Mature',
-//     'Erotica',
-// ];
-
 export const AgeRatings = [
     'Kids',
     'Adult'
