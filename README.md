@@ -10,6 +10,73 @@
 
 **EngComic** là một full-stack web application độc đáo, biến việc học tiếng Anh thành trải nghiệm giải trí tương tác thông qua truyện tranh và game mechanics.
 
+## 📸 Screenshots
+
+### Trang chủ (Home Page)
+
+![Home Page](docs/images/home_page.png)
+_Giao diện trang chủ với danh sách truyện tranh và các tính năng nổi bật_
+
+### Công cụ OCR (OCR Tool)
+
+![OCR Tool](docs/images/ocr_tool.png)
+_Công cụ nhận dạng văn bản từ ảnh chụp màn hình khi đọc truyện_
+
+### Dịch thuật (Translator)
+
+![Translator](docs/images/translator.png)
+_Tính năng dịch văn bản tiếng Anh sang tiếng Việt với phiên âm IPA_
+
+### Lưu vào bộ thẻ (Save to Deck)
+
+![Save to Deck](docs/images/save_to_deck.png)
+_Lưu từ vựng từ truyện vào bộ thẻ học tập cá nhân_
+
+### Quản lý bộ thẻ (Deck Page)
+
+![Deck Page](docs/images/deck_page.png)
+_Trang quản lý các bộ thẻ flashcard với thống kê tiến độ học_
+
+### Học tập (Study Page)
+
+![Study Page](docs/images/study_page.png)
+_Giao diện học flashcard với hệ thống lặp lại ngắt quãng_
+
+### Học tập - Mặt sau thẻ (Study Page Flip)
+
+![Study Page 1](docs/images/study_page1.png)
+_Hiển thị đáp án và các tùy chọn đánh giá độ khó_
+
+### Kết quả học tập (Result Page)
+
+![Result Page](docs/images/result_page.png)
+_Thống kê kết quả sau mỗi phiên học với điểm XP và streak_
+
+### Bảng xếp hạng (Leaderboard)
+
+![Leaderboard](docs/images/leaderboard.png)
+_Bảng xếp hạng người dùng theo XP và thành tích_
+
+### Trang xếp hạng chi tiết (Ranking Page)
+
+![Ranking Page](docs/images/ranking_page.png)
+_Chi tiết thứ hạng và thống kê cá nhân_
+
+### Hệ thống Gacha (Gacha Page)
+
+![Gacha Page](docs/images/gacha_page.png)
+_Hệ thống gacha để thu thập nhân vật với các độ hiếm khác nhau_
+
+### Bộ sưu tập nhân vật (Character Collection)
+
+![Character Collection](docs/images/character_collection.png)
+_Quản lý bộ sưu tập nhân vật đã sở hữu_
+
+### Mini Game chiến đấu (Fighting Game)
+
+![Fighting Game](docs/images/fighting_game.png)
+\*Mini game chiến đấu với sprite animation - **Đang phát triển\***
+
 ### 💡 Điểm nổi bật
 
 - **🎮 Gamification System** - Gacha mechanics, deck building, và fighting game với sprite animation
